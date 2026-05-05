@@ -536,6 +536,224 @@ function showLecture(cIdx, tIdx) {
 showPage('home');
 
 </script>
+<!-- ================= CHAT BUTTON ================= -->
+<div id="chatBtn" onclick="toggleChat()">
+💬
+</div>
 
+<!-- ================= CHAT BOX ================= -->
+<div id="chatBox">
+
+    <!-- HEADER -->
+    <div class="chat-header">
+        <span>🎓 Student Chat</span>
+        <span class="status">● Online</span>
+        <button onclick="toggleChat()">✖</button>
+    </div>
+
+    <!-- CHAT BODY -->
+    <div id="chatBody" class="chat-body">
+        <div class="msg bot">
+            Hello 👋<br>Welcome to CampusConnect Chat.<br>Ask anything about your courses.
+            <div class="time">Now</div>
+        </div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type message..." onkeypress="enterSend(event)">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+
+</div>
+
+<!-- ================= STYLE ================= -->
+<style>
+
+/* FLOAT BUTTON */
+#chatBtn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#1B5E20;
+    color:white;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+    z-index:999;
+}
+
+/* CHAT BOX */
+#chatBox{
+    position:fixed;
+    bottom:90px;
+    right:15px;
+    width:320px;
+    max-height:500px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.2);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    z-index:999;
+    animation:fadeIn 0.3s;
+}
+
+/* HEADER */
+.chat-header{
+    background:#1B5E20;
+    color:white;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+}
+.status{
+    font-size:10px;
+    color:#A5D6A7;
+}
+.chat-header button{
+    background:none;
+    border:none;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* BODY */
+.chat-body{
+    padding:10px;
+    height:300px;
+    overflow-y:auto;
+    background:#F5F5F5;
+}
+
+/* MESSAGES */
+.msg{
+    max-width:75%;
+    padding:10px;
+    border-radius:10px;
+    margin:6px 0;
+    font-size:12px;
+    position:relative;
+}
+.msg.user{
+    background:#1B5E20;
+    color:white;
+    margin-left:auto;
+}
+.msg.bot{
+    background:#E0E0E0;
+    color:#333;
+}
+.time{
+    font-size:9px;
+    opacity:0.6;
+    margin-top:3px;
+}
+
+/* INPUT */
+.chat-input{
+    display:flex;
+    border-top:1px solid #eee;
+}
+.chat-input input{
+    flex:1;
+    padding:10px;
+    border:none;
+    outline:none;
+}
+.chat-input button{
+    background:#1B5E20;
+    color:white;
+    border:none;
+    padding:0 15px;
+    cursor:pointer;
+}
+
+/* ANIMATION */
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;}
+}
+
+</style>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+
+function toggleChat(){
+    const box = document.getElementById("chatBox");
+    box.style.display = (box.style.display === "flex") ? "none" : "flex";
+}
+
+/* SEND MESSAGE */
+function sendMessage(){
+    let input = document.getElementById("chatInput");
+    let text = input.value.trim();
+    if(text === "") return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    setTimeout(() => autoReply(text), 800);
+}
+
+/* ENTER KEY */
+function enterSend(e){
+    if(e.key === "Enter"){
+        sendMessage();
+    }
+}
+
+/* ADD MESSAGE */
+function addMessage(text, type){
+    let body = document.getElementById("chatBody");
+
+    let msg = document.createElement("div");
+    msg.className = "msg " + type;
+
+    let time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+    msg.innerHTML = text + `<div class="time">${time}</div>`;
+
+    body.appendChild(msg);
+    body.scrollTop = body.scrollHeight;
+}
+
+/* AUTO REPLY (SMART DEMO) */
+function autoReply(text){
+    let reply = "I understand 👍";
+
+    text = text.toLowerCase();
+
+    if(text.includes("course")){
+        reply = "Go to 📚 Courses section to view all your subjects.";
+    }
+    else if(text.includes("timetable")){
+        reply = "Check 🗓️ Timetable for your weekly schedule.";
+    }
+    else if(text.includes("exam")){
+        reply = "Prepare using 📝 Past Questions and revise all topics.";
+    }
+    else if(text.includes("hello") || text.includes("hi")){
+        reply = "Hello 👋 How can I help you today?";
+    }
+    else if(text.includes("lecturer")){
+        reply = "Go to 📞 Lecturers section to contact them directly.";
+    }
+
+    addMessage(reply, "bot");
+}
+
+</script>
 </body>
   </html>
