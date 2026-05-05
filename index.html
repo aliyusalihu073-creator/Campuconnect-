@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusConnect - Aliyu Salihu</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #F5F5F5;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+}
+
+body::after {
+    content: "ASPLY";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 100px;
+    color: rgba(0,0,0,0.03);
+    font-weight: 900;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.header {
+    background: linear-gradient(135deg, #1B5E20, #2E7D32);
+    color: white;
+    padding: 18px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.search {
+    padding: 12px 15px;
+    background: white;
+    position: sticky;
+    top: 60px;
+    z-index: 99;
+}
+.search input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 25px;
+    border: 2px solid #E0E0E0;
+    font-size: 14px;
+    outline: none;
+}
+.search input:focus {
+    border-color: #1B5E20;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    background: #2E7D32;
+    position: sticky;
+    top: 112px;
+    z-index: 99;
+    padding: 4px;
+}
+.nav button {
+    flex: 1 1 24%;
+    padding: 12px 6px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 2px;
+}
+.nav button:hover, .nav button.active {
+    background: rgba(255,255,255,0.25);
+}
+
+.content {
+    padding: 15px;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+}
+.btn-green { background: #1B5E20; color: white; }
+.btn-white { background: white; color: #333; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.btn-light { background: #E8F5E9; color: #1B5E20; }
+.btn-orange { background: #FF5722; color: white; text-align: center; }
+
+.day {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1B5E20;
+    margin: 15px 0 6px 8px;
+}
+.class-item {
+    background: white;
+    padding: 10px 14px;
+    margin: 3px 0;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #424242;
+}
+
+.lec-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.lec-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+.lec-course {
+    font-size: 11px;
+    color: #757575;
+    margin-bottom: 10px;
+}
+.lec-actions {
+    display: flex;
+    gap: 8px;
+}
+.lec-actions button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+}
+
+.lecture-text {
+    font-size: 12px;
+    color: #424242;
+    line-height: 1.8;
+    margin: 3px 10px;
+}
+.lecture-text strong {
+    color: #1B5E20;
+}
+
+.stats-row {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+.stat-box {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1B5E20;
+}
+.stat-label {
+    font-size: 10px;
+    color: #9E9E9E;
+    font-weight: 600;
+}
+
+.bottom-nav {
+    text-align: center;
+    padding: 20px;
+    background: #FAFAFA;
+    border-top: 2px solid #E0E0E0;
+    position: relative;
+    z-index: 1;
+}
+.bottom-nav button {
+    background: #1B5E20;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 5px;
+}
+.bottom-nav button:hover {
+    background: #144018;
+}
+
+.footer {
+    text-align: center;
+    font-size: 11px;
+    padding: 15px;
+    color: #999;
+    position: relative;
+    z-index: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <span>🎓</span> CampusConnect
+</div>
+
+<div class="search">
+    <input type="text" placeholder="🔍 Search courses, topics..." oninput="searchApp(this.value)" id="searchInput">
+</div>
+
+<div class="nav" id="navBar">
+    <button onclick="showPage('home')" id="nav-home" class="active">🏠 Home</button>
+    <button onclick="showPage('courses')" id="nav-courses">📚 Courses</button>
+    <button onclick="showPage('timetable')" id="nav-timetable">🗓️ TT</button>
+    <button onclick="showPage('news')" id="nav-news">📢 News</button>
+    <button onclick="showPage('papers')" id="nav-papers">📝 Papers</button>
+    <button onclick="showPage('contact')" id="nav-contact">📞 Lec</button>
+    <button onclick="showPage('about')" id="nav-about">ℹ️ About</button>
+    <button onclick="showPage('me')" id="nav-me">👤 Me</button>
+</div>
+
+<div id="content" class="content"></div>
+
+<div class="bottom-nav">
+    <button onclick="showPage('about')">ℹ️ About App</button>
+    <button onclick="showPage('me')">👤 Contact Me</button>
+</div>
+
+<div class="footer">© 2026 Aliyu Salihu | Adamawa State Polytechnic, Yola</div>
+
+<script>
+
+/* ==================== DATA ==================== */
+
+const courseNames = [
+    "COM111 - Introduction to Computing",
+    "COM112 - Digital Electronics",
+    "COM113 - Introduction to Programming",
+    "COM114 - Statistics for Computing I",
+    "COM115 - Computer App Packages I",
+    "GNS101 - Use of English I",
+    "GNS102 - Citizenship Education I",
+    "MTH111 - Logic & Linear Algebra"
+];
+
+const topics = [
+    ["History of Computing","Computer Hardware","Input Devices","Output Devices","Software Types","Operating Systems","Number Systems","Computer Networks","Internet & WWW","Computer Security"],
+    ["Number Systems","Logic Gates","Boolean Algebra","Karnaugh Maps","Combinational Circuits","Flip-Flops","Registers","Counters","Microprocessors","Digital Systems"],
+    ["Programming Concepts","Algorithms","Flowcharts","Variables & Data Types","Control Structures","Loops","Functions","Arrays","Strings","Debugging"],
+    ["Data Collection","Mean, Median, Mode","Measures of Dispersion","Probability Basics","Discrete Distributions","Continuous Distributions","Sampling","Hypothesis Testing","Variance","Regression"],
+    ["MS Word Basics","Document Formatting","Tables & Graphics","MS Excel Basics","Formulas & Functions","Charts","PowerPoint Basics","Creating Slides","Presentations","Printing"],
+    ["Parts of Speech","Sentence Structure","Paragraph Writing","Essay Writing","Summary Writing","Comprehension","Vocabulary","Oral Communication","Writing Skills","Communication"],
+    ["Nigerian Constitution","Fundamental Rights","Citizenship","Federalism","Arms of Government","Political Participation","National Ethics","Leadership","Law & Society","Contemporary Issues"],
+    ["Propositional Logic","Truth Tables","Tautologies","Sets & Operations","Matrices","Determinants","Linear Equations","Vectors","Functions","Algebra"]
+];
+
+const lecturers = [
+    {name: "Mr. Peter", course: "COM111", phone: "2348039258802"},
+    {name: "Fahad Ali", course: "COM112", phone: "2349071345108"},
+    {name: "Jannah", course: "COM113", phone: "2348036255569"},
+    {name: "Hanaa", course: "COM115", phone: "2348036415451"},
+    {name: "Lucy", course: "GNS101", phone: "2349043224155"},
+    {name: "Ahmad", course: "GNS102", phone: "2349034802034"},
+    {name: "Math Dept", course: "MTH111", phone: "2348066694876"},
+    {name: "H.O.D. Afifa James", course: "HOD", phone: "2347036540870"},
+    {name: "Dean of Science", course: "Dean", phone: "2348022275024"},
+    {name: "Class Rep", course: "ND1 CS", phone: "2347078094444"}
+];
+
+const schedule = [
+    {day:"MONDAY", classes:["8:00-10:00 | COM111 | Hall A","10:00-12:00 | GNS101 | LT1","2:00-4:00 | COM115 | Computer Lab"]},
+    {day:"TUESDAY", classes:["8:00-10:00 | MTH111 | Hall B","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM113 | Programming Lab"]},
+    {day:"WEDNESDAY", classes:["8:00-10:00 | COM114 | Hall C","10:00-12:00 | GNS102 | LT2","2:00-4:00 | COM111 | Hall A"]},
+    {day:"THURSDAY", classes:["8:00-10:00 | COM113 | Programming Lab","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM115 | Computer Lab"]},
+    {day:"FRIDAY", classes:["8:00-10:00 | GNS101 | LT1","10:00-12:00 | MTH111 | Hall B","12:00-2:00 | COM114 | Hall C"]}
+];
+
+/* ==================== SEARCH ==================== */
+
+function searchApp(q) {
+    q = q.toLowerCase().trim();
+    const content = document.getElementById("content");
+
+    if (q === "") {
+        showPage("home");
+        return;
+    }
+
+    let html = `<div class="card"><b>🔍 Search Results for "${q}"</b></div>`;
+    let found = false;
+
+    courseNames.forEach((course, i) => {
+        let courseMatch = false;
+        if (course.toLowerCase().includes(q)) {
+            html += `<button class="btn btn-white" onclick="showSyllabus(${i})">📘 ${course}</button>`;
+            courseMatch = true;
+            found = true;
+        }
+        topics[i].forEach((topic, k) => {
+            if (topic.toLowerCase().includes(q)) {
+                if (!courseMatch) {
+                    html += `<div class="card"><b>${course}</b></div>`;
+                    courseMatch = true;
+                }
+                html += `<button class="btn btn-light" onclick="showLecture(${i},${k})">→ ${topic}</button>`;
+                found = true;
+            }
+        });
+    });
+
+    if (!found) {
+        html += `<div class="card"><p>No results found.</p></div>`;
+    }
+
+    content.innerHTML = html;
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+}
+
+/* ==================== ROUTER ==================== */
+
+function highlightNav(id) {
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    const el = document.getElementById('nav-' + id);
+    if (el) el.classList.add('active');
+}
+
+function showPage(page, data) {
+    const content = document.getElementById("content");
+    document.getElementById("searchInput").value = "";
+    window.scrollTo(0, 0);
+
+    switch(page) {
+
+        case 'home':
+            highlightNav('home');
+            content.innerHTML = `
+                <div class="card" style="text-align:center;">
+                    <h3 style="color:#1B5E20;">Welcome, Aliyu Salihu! 👋</h3>
+                    <p style="color:#757575;font-size:13px;">ND1 Computer Science<br>Adamawa State Polytechnic, Yola</p>
+                    <div style="font-size:36px;margin:10px 0;">💻📚🎓</div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Courses</div></div>
+                    <div class="stat-box"><div class="stat-num">80</div><div class="stat-label">Topics</div></div>
+                    <div class="stat-box"><div class="stat-num">10</div><div class="stat-label">Lecturers</div></div>
+                </div>
+                <button class="btn btn-green" onclick="showPage('courses')">📚  View My Courses</button>
+                <button class="btn btn-green" onclick="showPage('timetable')">🗓️  Weekly Timetable</button>
+                <button class="btn btn-green" onclick="showPage('contact')">📞  Contact Lecturers</button>
+            `;
+            break;
+
+        case 'courses':
+            highlightNav('courses');
+            let cHtml = `<div class="card"><b>📚 ND1 Courses</b><p style="font-size:11px;color:#FF6600;">Tap a course to view topics</p></div>`;
+            courseNames.forEach((name, i) => {
+                cHtml += `<button class="btn btn-white" onclick="showSyllabus(${i})">📘 ${name}</button>`;
+            });
+            content.innerHTML = cHtml;
+            break;
+
+        case 'syllabus':
+            highlightNav('courses');
+            const idx = data;
+            let sHtml = `<div class="card"><b>📖 ${courseNames[idx]}</b><p style="font-size:11px;color:#FF6600;">Tap any topic for full lecture</p></div>`;
+            topics[idx].forEach((topic, k) => {
+                sHtml += `<button class="btn btn-light" onclick="showLecture(${idx},${k})">${k+1}. ${topic}</button>`;
+            });
+            sHtml += `<button class="btn btn-orange" onclick="showPage('courses')">← Back to Courses</button>`;
+            content.innerHTML = sHtml;
+            break;
+
+        case 'lecture':
+            highlightNav('courses');
+            const cIdx = data[0];
+            const tIdx = data[1];
+            const cName = courseNames[cIdx];
+            const tName = topics[cIdx][tIdx];
+            content.innerHTML = `
+                <div class="card">
+                    <h3 style="color:#1B5E20;">📖 ${tName}</h3>
+                    <p style="font-size:11px;color:#757575;">${cName}</p>
+                </div>
+                <div style="padding:5px;">
+                    <p class="lecture-text"><strong>🎯 Learning Objectives</strong></p>
+                    <p class="lecture-text">✓ Understand all key concepts</p>
+                    <p class="lecture-text">✓ Explain terms clearly</p>
+                    <p class="lecture-text"><strong>📝 Core Content</strong></p>
+                    <p class="lecture-text">This topic covers essential concepts in ${cName}.</p>
+                    <p class="lecture-text"><strong>📌 Exam Tips</strong></p>
+                    <p class="lecture-text">- Read questions carefully</p>
+                    <p class="lecture-text">- Define key terms</p>
+                    <p class="lecture-text"><strong>✅ Summary</strong></p>
+                    <p class="lecture-text">Master this topic for exam success.</p>
+                    <p class="lecture-text"><strong>📌 Prepared by: Aliyu Salihu</strong></p>
+                </div>
+                <button class="btn btn-orange" onclick="showSyllabus(${cIdx})">← Back to Topics</button>
+            `;
+            break;
+
+        case 'timetable':
+            highlightNav('timetable');
+            let tHtml = `<div class="card"><b>🗓️ Weekly Timetable</b></div>`;
+            schedule.forEach(day => {
+                tHtml += `<div class="day">▌ ${day.day}</div>`;
+                day.classes.forEach(cls => {
+                    tHtml += `<div class="class-item">${cls}</div>`;
+                });
+            });
+            content.innerHTML = tHtml;
+            break;
+
+        case 'news':
+            highlightNav('news');
+            content.innerHTML = `
+                <div class="card"><b>📢 Campus News</b></div>
+                <div class="card">📌 ND1 Exams start soon</div>
+                <div class="card">📌 COM113 Project: Dec 5</div>
+                <div class="card">📌 Lab closes at 6pm</div>
+                <div class="card">📌 New HOD appointed</div>
+            `;
+            break;
+
+        case 'papers':
+            highlightNav('papers');
+            content.innerHTML = `
+                <div class="card"><b>📝 Past Questions</b></div>
+                <button class="btn btn-white" onclick="window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')">📄 COM111 - 2023 📥</button>
+                <button class="btn btn-white" onclick="window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')">📄 COM113 - 2023 📥</button>
+                <button class="btn btn-white" onclick="window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')">📄 MTH111 - 2022 📥</button>
+                <button class="btn btn-white" onclick="window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')">📄 GNS101 - 2022 📥</button>
+            `;
+            break;
+
+        case 'contact':
+            highlightNav('contact');
+            let lHtml = `<div class="card"><b>📞 Contact Lecturers</b></div>`;
+            lecturers.forEach(lec => {
+                lHtml += `
+                    <div class="lec-card">
+                        <div class="lec-name">👨‍🏫 ${lec.name}</div>
+                        <div class="lec-course">📘 ${lec.course}</div>
+                        <div class="lec-actions">
+                            <button style="background:#25D366;" onclick="window.open('https://wa.me/${lec.phone}')">💬 WhatsApp</button>
+                            <button style="background:#1B5E20;" onclick="window.open('tel:${lec.phone}')">📞 Call</button>
+                        </div>
+                    </div>
+                `;
+            });
+            content.innerHTML = lHtml;
+            break;
+
+        case 'about':
+            highlightNav('about');
+            content.innerHTML = `
+                <div class="card">
+                    <h3 style="color:#1B5E20;">ℹ️ About CampusConnect</h3>
+                    <p style="font-size:11px;">Version 1.0</p>
+                </div>
+                <div class="card">
+                    <b style="color:#1B5E20;">✨ Features</b>
+                    <p style="font-size:12px;">✅ 8 ND1 Courses</p>
+                    <p style="font-size:12px;">✅ 80 Lecture Topics</p>
+                    <p style="font-size:12px;">✅ Weekly Timetable</p>
+                    <p style="font-size:12px;">✅ Past Questions PDF</p>
+                </div>
+            `;
+            break;
+
+        case 'me':
+            highlightNav('me');
+            content.innerHTML = `
+                <div class="card" style="text-align:center;">
+                    <h2 style="color:#1B5E20;">Aliyu Salihu</h2>
+                    <p>ND1 Computer Science</p>
+                    <p style="font-size:11px;">Adamawa State Poly, Yola</p>
+                    <hr>
+                    <p>📋 SST/NDCOM/S/2025/186</p>
+                    <p>📱 07046183743</p>
+                </div>
+                <button class="btn btn-green" onclick="window.open('tel:07046183743')">📞 Call Me</button>
+                <button class="btn" style="background:#25D366;color:white;" onclick="window.open('https://wa.me/2347046183743')">💬 WhatsApp Me</button>
+            `;
+            break;
+    }
+}
+
+function showSyllabus(index) {
+    showPage('syllabus', index);
+}
+
+function showLecture(cIdx, tIdx) {
+    showPage('lecture', [cIdx, tIdx]);
+}
+
+/* ==================== INIT ==================== */
+showPage('home');
+
+</script>
+
+</body>
+  </html>
