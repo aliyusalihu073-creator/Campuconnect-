@@ -9,14 +9,14 @@ body{font-family:Arial,sans-serif;background:#f5f5f5;max-width:500px;margin:0 au
 .top{background:#1B5E20;color:white;padding:15px;text-align:center;font-size:20px;font-weight:bold}
 .box{padding:15px}
 .card{background:white;padding:15px;border-radius:10px;margin:10px 0;border-left:4px solid #1B5E20}
-.card h3{color:#1B5E20;margin:0 0 5px 0}
+.card h3{color:#1B5E20;margin:0 0 5px 0;font-size:16px}
 .card .date{color:#999;font-size:11px;margin:0 0 8px 0}
 .card .body{font-size:13px;color:#444;line-height:1.5;margin-bottom:8px}
 .card .cat{background:#e8f5e9;color:#1B5E20;padding:3px 10px;border-radius:12px;font-size:10px;display:inline-block;margin-bottom:8px}
 .card .author{font-size:10px;color:#999;font-style:italic;margin-top:8px}
 .card img{width:100%;border-radius:8px;margin-top:8px}
 .card iframe{width:100%;height:200px;border-radius:8px;margin-top:8px}
-.card video{width:100%;border-radius:8px;margin-top:8px}
+.card video{width:100%;border-radius:8px;margin-top:8px;max-height:300px}
 .card audio{width:100%;margin-top:8px}
 .btn{display:block;width:100%;padding:14px;margin:8px 0;background:#1B5E20;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;text-align:center}
 .back{text-align:center;padding:20px}
@@ -39,30 +39,34 @@ body{font-family:Arial,sans-serif;background:#f5f5f5;max-width:500px;margin:0 au
 var SID = "13RLLmcXk6BAZBWAxgiHcy_BwOAhhpPxwLQb1W12uyLg";
 var URL = "https://docs.google.com/spreadsheets/d/" + SID + "/gviz/tq?tqx=out:csv&sheet=Sheet1";
 
-function getEmbed(url, type){
-    if(!url || url.length < 5) return "";
-    url = url.trim();
-    
-    if(type === "video" || url.indexOf("youtube") >= 0 || url.indexOf("youtu.be") >= 0){
-        var vid = "";
-        if(url.indexOf("youtu.be") >= 0){
-            vid = url.split("/").pop().split("?")[0];
-        } else if(url.indexOf("youtube.com") >= 0){
-            vid = url.split("v=")[1];
-            if(vid && vid.indexOf("&") >= 0) vid = vid.split("&")[0];
-        }
-        if(vid) return '<iframe src="https://www.youtube.com/embed/' + vid + '" frameborder="0" allowfullscreen></iframe>';
+function cleanStr(s){
+    if(!s) return "";
+    s = s.replace(/^"/,"").replace(/"$/,"").trim();
+    return s;
+}
+
+function isVideoFile(url){
+    return url.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i);
+}
+
+function isAudioFile(url){
+    return url.match(/\.(mp3|wav|m4a|ogg|flac)$/i);
+}
+
+function isYouTube(url){
+    return url.indexOf("youtube.com") >= 0 || url.indexOf("youtu.be") >= 0;
+}
+
+function getYouTubeID(url){
+    if(url.indexOf("youtu.be") >= 0){
+        return url.split("/").pop().split("?")[0];
     }
-    
-    if(url.match(/\.(mp4|webm|ogg)$/i)){
-        return '<video controls src="' + url + '"></video>';
+    if(url.indexOf("youtube.com") >= 0){
+        var v = url.split("v=")[1];
+        if(v && v.indexOf("&") >= 0) v = v.split("&")[0];
+        return v;
     }
-    
-    if(url.match(/\.(mp3|wav|m4a|ogg)$/i) || type === "audio"){
-        return '<audio controls src="' + url + '"></audio>';
-    }
-    
-    return '<a href="' + url + '" target="_blank" style="color:#1B5E20;">📎 Open Media</a>';
+    return "";
 }
 
 fetch(URL)
@@ -75,44 +79,73 @@ fetch(URL)
         if(lines[i].trim() === "") continue;
         var cols = lines[i].split(",");
         if(cols.length >= 9){
-            articles.push({
-                title: cols[0].replace(/"/g,"").trim(),
-                date: cols[1].replace(/"/g,"").trim(),
-                body: cols[2].replace(/"/g,"").trim(),
-                image: cols[3].replace(/"/g,"").trim(),
-                video: cols[4].replace(/"/g,"").trim(),
-                audio: cols[5].replace(/"/g,"").trim(),
-                cat: cols[6].replace(/"/g,"").trim(),
-                author: cols[7].replace(/"/g,"").trim(),
-                status: cols[8].replace(/"/g,"").trim()
-            });
-        }
-    }
-    
-    // Show only Published
-    var published = [];
-    for(var a = 0; a < articles.length; a++){
-        if(articles[a].status.toLowerCase() !== "draft"){
-            published.push(articles[a]);
+            var article = {
+                title: cleanStr(cols[0]),
+                date: cleanStr(cols[1]),
+                body: cleanStr(cols[2]),
+                image: cleanStr(cols[3]),
+                video: cleanStr(cols[4]),
+                audio: cleanStr(cols[5]),
+                cat: cleanStr(cols[6]),
+                author: cleanStr(cols[7]),
+                status: cleanStr(cols[8])
+            };
+            if(article.status.toLowerCase() !== "draft"){
+                articles.push(article);
+            }
         }
     }
     
     var html = '<button class="btn" onclick="location.reload()">🔄 Refresh News</button>';
     
-    if(published.length === 0){
+    if(articles.length === 0){
         html += '<div class="card"><p style="text-align:center;color:#999;">No published announcements yet.</p></div>';
     } else {
-        for(var p = 0; p < published.length; p++){
-            var a = published[p];
+        for(var a = 0; a < articles.length; a++){
+            var art = articles[a];
             html += '<div class="card">';
-            if(a.cat) html += '<span class="cat">' + a.cat + '</span>';
-            if(a.title) html += '<h3>' + a.title + '</h3>';
-            html += '<div class="date">📅 ' + a.date + '</div>';
-            if(a.body) html += '<div class="body">' + a.body + '</div>';
-            if(a.image && a.image.length > 10) html += '<img src="' + a.image + '" onerror="this.style.display=\'none\'">';
-            if(a.video && a.video.length > 5) html += getEmbed(a.video, "video");
-            if(a.audio && a.audio.length > 5) html += getEmbed(a.audio, "audio");
-            if(a.author) html += '<div class="author">✍️ Posted by: ' + a.author + '</div>';
+            
+            // Category
+            if(art.cat) html += '<span class="cat">' + art.cat + '</span>';
+            
+            // Title
+            if(art.title) html += '<h3>' + art.title + '</h3>';
+            
+            // Date
+            html += '<div class="date">📅 ' + art.date + '</div>';
+            
+            // Body
+            if(art.body) html += '<div class="body">' + art.body + '</div>';
+            
+            // Image
+            if(art.image && art.image.length > 10){
+                html += '<img src="' + art.image + '" onerror="this.style.display=\'none\'">';
+            }
+            
+            // Video
+            if(art.video && art.video.length > 5){
+                if(isYouTube(art.video)){
+                    var ytid = getYouTubeID(art.video);
+                    if(ytid) html += '<iframe src="https://www.youtube.com/embed/' + ytid + '" frameborder="0" allowfullscreen></iframe>';
+                } else if(isVideoFile(art.video)){
+                    html += '<video controls src="' + art.video + '"></video>';
+                } else {
+                    html += '<a href="' + art.video + '" target="_blank" style="color:#1B5E20;">🎥 Watch Video</a>';
+                }
+            }
+            
+            // Audio
+            if(art.audio && art.audio.length > 5){
+                if(isAudioFile(art.audio)){
+                    html += '<audio controls src="' + art.audio + '"></audio>';
+                } else {
+                    html += '<a href="' + art.audio + '" target="_blank" style="color:#1B5E20;">🎵 Listen to Audio</a>';
+                }
+            }
+            
+            // Author
+            if(art.author) html += '<div class="author">✍️ ' + art.author + '</div>';
+            
             html += '</div>';
         }
     }
@@ -120,7 +153,7 @@ fetch(URL)
     document.getElementById("newsBox").innerHTML = html;
 })
 .catch(function(){
-    document.getElementById("newsBox").innerHTML = '<div class="card"><p style="text-align:center;color:red;">Error loading news. Check your internet.</p></div>';
+    document.getElementById("newsBox").innerHTML = '<div class="card"><p style="text-align:center;color:red;">Error loading. Check internet.</p></div>';
 });
 </script>
 </body>
