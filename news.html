@@ -14,10 +14,13 @@ body{background:#F5F5F5;max-width:480px;margin:0 auto;min-height:100vh}
 .news-card{background:white;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid #1B5E20}
 .news-title{font-size:15px;font-weight:700;color:#1B5E20;margin-bottom:4px}
 .news-date{font-size:10px;color:#9E9E9E;margin-bottom:8px}
-.news-body{font-size:12px;color:#424242;line-height:1.6}
+.news-body{font-size:12px;color:#424242;line-height:1.6;margin-bottom:8px}
 .news-cat{display:inline-block;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:600;background:#E8F5E9;color:#1B5E20;margin-bottom:6px}
-.news-card img{width:100%;border-radius:8px;max-height:200px;margin:5px 0}
+.news-author{font-size:10px;color:#9E9E9E;font-style:italic;margin-top:6px}
+.news-card img{width:100%;border-radius:8px;max-height:200px;margin:5px 0;object-fit:cover}
+.news-card iframe{width:100%;height:200px;border-radius:8px;margin:5px 0}
 .news-card video{width:100%;border-radius:8px;max-height:250px;margin:5px 0}
+.news-card audio{width:100%;margin:5px 0}
 .footer{text-align:center;padding:20px;color:#999;font-size:11px}
 </style>
 </head>
@@ -33,9 +36,32 @@ body{background:#F5F5F5;max-width:480px;margin:0 auto;min-height:100vh}
 
 <script>
 var SID = "13RLLmcXk6BAZBWAxgiHcy_BwOAhhpPxwLQb1W12uyLg";
+
+function getVideoEmbed(url) {
+    if (!url || url.length < 5) return '';
+    url = url.trim();
+    if (url.indexOf('youtube.com') >= 0 || url.indexOf('youtu.be') >= 0) {
+        var vidId = '';
+        if (url.indexOf('youtu.be') >= 0) {
+            vidId = url.split('/').pop().split('?')[0];
+        } else {
+            vidId = url.split('v=')[1];
+            if (vidId && vidId.indexOf('&') >= 0) vidId = vidId.split('&')[0];
+        }
+        if (vidId) return '<iframe src="https://www.youtube.com/embed/' + vidId + '" frameborder="0" allowfullscreen></iframe>';
+    }
+    if (url.match(/\.(mp4|webm|ogg)$/i)) {
+        return '<video controls src="' + url + '"></video>';
+    }
+    if (url.match(/\.(mp3|wav|ogg|m4a)$/i)) {
+        return '<audio controls src="' + url + '"></audio>';
+    }
+    return '<a href="' + url + '" target="_blank" style="color:#1B5E20;">🎥🎵 Open Media</a>';
+}
+
 function loadNews(){
     var el = document.getElementById('newsContent');
-    fetch("https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet=Sheet1")
+    fetch("https://docs.google.com/spreadsheets/d/" + SID + "/gviz/tq?tqx=out:csv&sheet=Sheet1")
     .then(function(r){return r.text()})
     .then(function(csv){
         var lines = csv.split('\n');
@@ -45,38 +71,50 @@ function loadNews(){
             var cols = lines[i].split(',');
             if(cols.length >= 9){
                 articles.push({
-                articles.push({
-    title: cols[0].replace(/"/g,'').trim(),
-    date: cols[1].replace(/"/g,'').trim(),
-    body: cols[2].replace(/"/g,'').trim(),
-    image: cols[3].replace(/"/g,'').trim(),
-    video: cols[4].replace(/"/g,'').trim(),
-    audio: cols[5].replace(/"/g,'').trim(),
-    cat: cols[6].replace(/"/g,'').trim(),
-    author: cols[7].replace(/"/g,'').trim(),
-    status: cols[8].replace(/"/g,'').trim()
-});
+                    title: cols[0].replace(/"/g,'').trim(),
+                    date: cols[1].replace(/"/g,'').trim(),
+                    body: cols[2].replace(/"/g,'').trim(),
+                    image: cols[3].replace(/"/g,'').trim(),
+                    video: cols[4].replace(/"/g,'').trim(),
+                    audio: cols[5].replace(/"/g,'').trim(),
+                    cat: cols[6].replace(/"/g,'').trim(),
+                    author: cols[7].replace(/"/g,'').trim(),
+                    status: cols[8].replace(/"/g,'').trim()
+                });
             }
         }
-        if(articles.length === 0){
-            el.innerHTML = '<div class="card"><p style="text-align:center;color:#9E9E9E;">No announcements yet.<br><br>Add them in Google Sheets!</p></div>';
+        
+        // Filter only published
+        var published = articles.filter(function(a){ return a.status.toLowerCase() !== 'draft'; });
+        
+        if(published.length === 0){
+            el.innerHTML = '<div class="card"><p style="text-align:center;color:#9E9E9E;">No published announcements yet.</p></div>';
             return;
         }
+        
         var h = '<button class="btn" onclick="location.reload()">🔄 Refresh News</button>';
-        articles.forEach(function(a){
+        published.forEach(function(a){
             h += '<div class="news-card">';
-            h += '<span class="news-cat">' + (a.cat || 'General') + '</span>';
-            h += '<div class="news-title">' + a.title + '</div>';
+            if (a.cat) h += '<span class="news-cat">' + a.cat + '</span>';
+            if (a.title) h += '<div class="news-title">' + a.title + '</div>';
             h += '<div class="news-date">📅 ' + a.date + '</div>';
-            h += '<div class="news-body">' + a.body + '</div>';
-            if(a.image && a.image.length > 5) h += '<img src="' + a.image + '" onerror="this.style.display=\'none\'">';
-            if(a.video && a.video.length > 5) h += '<video controls src="' + a.video + '"></video>';
+            if (a.body) h += '<div class="news-body">' + a.body + '</div>';
+            if (a.image && a.image.length > 5) {
+                h += '<img src="' + a.image + '" onerror="this.style.display=\'none\'">';
+            }
+            if (a.video && a.video.length > 5) {
+                h += getVideoEmbed(a.video);
+            }
+            if (a.audio && a.audio.length > 5) {
+                h += getVideoEmbed(a.audio);
+            }
+            if (a.author) h += '<div class="news-author">Posted by: ' + a.author + '</div>';
             h += '</div>';
         });
         el.innerHTML = h;
     })
     .catch(function(){
-        el.innerHTML = '<div class="card"><p style="text-align:center;color:#FF5722;">Failed to load news. Check your internet connection.</p></div>';
+        el.innerHTML = '<div class="card"><p style="text-align:center;color:#FF5722;">Failed to load news. Check your connection.</p></div>';
     });
 }
 loadNews();
