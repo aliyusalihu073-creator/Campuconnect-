@@ -492,12 +492,10 @@ function showPage(page, data) {
             break;
 
         case 'about':
-            highlightNav('about');
-            content.innerHTML = `
-                <div class="card">
-                    <h3 style="color:#1B5E20;">ℹ️ About CampusConnect</h3>
-                    <p style="font-size:11px;">Version 1.0</p>
-                </div>
+            else if(page === 'about'){
+    highlightNav('about');
+    content.innerHTML = '<div class="card"><h3 style="color:#1B5E20;">ℹ️ About CampusConnect</h3><p style="font-size:11px;">Version 1.0</p></div><div class="card"><b style="color:#1B5E20;">✨ Features</b><p style="font-size:12px;">✅ 8 ND1 Courses with Full Syllabus</p><p style="font-size:12px;">✅ 80 Lecture Topics with Notes</p><p style="font-size:12px;">✅ Weekly Timetable (Mon-Fri)</p><p style="font-size:12px;">✅ Past Questions PDF Download</p><p style="font-size:12px;">✅ Contact Lecturers (WhatsApp/Call)</p><p style="font-size:12px;">✅ Google Sheets Powered News Feed</p><p style="font-size:12px;">✅ Student Chat Board</p></div><div class="card"><b style="color:#1B5E20;">🏫 Built For</b><p style="font-size:12px;">Adamawa State Polytechnic, Yola</p><p style="font-size:12px;">Department of Computer Science</p><p style="font-size:12px;">ND1 - 2025/2026 Session</p></div><div class="card"><b style="color:#1B5E20;">👨‍💻 Developer</b><p style="font-size:12px;">Aliyu Salihu</p><p style="font-size:12px;">SST/NDCOM/S/2025/186</p><p style="font-size:12px;">ND1 Computer Science</p></div>';
+            }
                 <div class="card">
                     <b style="color:#1B5E20;">✨ Features</b>
                     <p style="font-size:12px;">✅ 8 ND1 Courses</p>
