@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Media Hub - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff}
+.container{max-width:600px;margin:0 auto;padding:0}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:18px 20px;text-align:center;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;color:white;font-weight:bold}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.nav{display:flex;background:#16213e;position:sticky;top:65px;z-index:99;padding:8px}
+.nav button{flex:1;padding:12px;border:none;background:transparent;color:#ccc;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;transition:0.3s}
+.nav button.active,.nav button:hover{background:#1B5E20;color:white}
+.section{padding:15px;display:none}
+.section.active{display:block}
+.section-title{font-size:18px;font-weight:700;margin:15px 0;text-align:center;color:#4caf50}
+.video-grid{display:flex;flex-direction:column;gap:20px}
+.video-card{background:#1a1a2e;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.video-wrap{position:relative;padding-bottom:56.25%;background:#000}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.video-info{padding:14px}
+.video-info h3{font-size:14px;color:#fff;margin-bottom:4px}
+.video-info p{font-size:11px;color:#999}
+.image-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.image-card{background:#1a1a2e;border-radius:12px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,0.3);cursor:pointer}
+.image-card img{width:100%;height:180px;object-fit:cover;display:block}
+.image-card .img-info{padding:10px}
+.image-card .img-info h4{font-size:12px;color:#fff}
+.image-card .img-info p{font-size:10px;color:#999}
+.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:999;justify-content:center;align-items:center}
+.lightbox.active{display:flex}
+.lightbox img{max-width:95%;max-height:90%;border-radius:8px}
+.lightbox .close{position:absolute;top:20px;right:20px;font-size:30px;color:white;cursor:pointer;background:rgba(255,255,255,0.1);width:40px;height:40px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:none}
+.news-grid{display:flex;flex-direction:column;gap:12px}
+.news-card{background:#1a1a2e;border-radius:12px;padding:16px;border-left:4px solid #1B5E20;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.news-card h3{font-size:14px;color:#4caf50;margin-bottom:6px}
+.news-card .news-date{font-size:10px;color:#777;margin-bottom:6px}
+.news-card p{font-size:12px;color:#ccc;line-height:1.6}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:9px;font-weight:600;margin-bottom:6px}
+.badge-video{background:#1B5E20;color:white}
+.badge-image{background:#0f3460;color:#4fc3f7}
+.badge-news{background:#1a5c2a;color:#00ff88}
+.footer{text-align:center;padding:25px;color:#555;font-size:11px;border-top:1px solid #1a1a2e;margin-top:20px}
+.footer a{color:#4caf50;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🎬 Media Hub</h1>
+        <a href="index.html">← Home</a>
+    </div>
+
+    <div class="nav">
+        <button class="active" onclick="switchTab('videos')">🎥 Videos</button>
+        <button onclick="switchTab('images')">🖼️ Images</button>
+        <button onclick="switchTab('news')">📰 News</button>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="section active" id="videos">
+        <div class="section-title">🎥 Featured Videos</div>
+        <div class="video-grid">
+            <div class="video-card">
+                <div class="video-wrap">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <span class="badge badge-video">Educational</span>
+                    <h3>Introduction to Computer Science</h3>
+                    <p>Learn the fundamentals of computing and technology</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-wrap">
+                    <iframe src="https://www.youtube.com/embed/6avJHaC3C2U" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <span class="badge badge-video">Documentary</span>
+                    <h3>How Computers Work - Full Documentary</h3>
+                    <p>Understanding the inner workings of modern computers</p>
+                </div>
+            </div>
+            <div class="video-card">
+                <div class="video-wrap">
+                    <iframe src="https://player.vimeo.com/video/1194795704" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <span class="badge badge-video">Campus</span>
+                    <h3>CampusConnect Special Feature</h3>
+                    <p>Exclusive content from Adamawa State Polytechnic</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGES -->
+    <div class="section" id="images">
+        <div class="section-title">🖼️ Image Gallery</div>
+        <div class="image-grid">
+            <div class="image-card" onclick="openLightbox('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600')">
+                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600" alt="Coding">
+                <div class="img-info">
+                    <span class="badge badge-image">Tech</span>
+                    <h4>Programming Setup</h4>
+                    <p>Modern coding workspace</p>
+                </div>
+            </div>
+            <div class="image-card" onclick="openLightbox('https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=600')">
+                <img src="https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=600" alt="Digital">
+                <div class="img-info">
+                    <span class="badge badge-image">Digital</span>
+                    <h4>Digital Technology</h4>
+                    <p>Binary code visualization</p>
+                </div>
+            </div>
+            <div class="image-card" onclick="openLightbox('https://images.unsplash.com/photo-1518770660439-4636190af475?w=600')">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600" alt="Tech">
+                <div class="img-info">
+                    <span class="badge badge-image">Hardware</span>
+                    <h4>Computer Hardware</h4>
+                    <p>Circuit board close-up</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEWS -->
+    <div class="section" id="news">
+        <div class="section-title">📰 Latest News</div>
+        <div class="news-grid">
+            <div class="news-card">
+                <span class="badge badge-news">Academic</span>
+                <h3>First Semester Exams Scheduled</h3>
+                <div class="news-date">📅 May 25, 2026</div>
+                <p>The management has released the first semester examination timetable. All students are advised to check the portal and prepare accordingly.</p>
+            </div>
+            <div class="news-card">
+                <span class="badge badge-news">Technology</span>
+                <h3>New Computer Lab Equipment Arrives</h3>
+                <div class="news-date">📅 May 22, 2026</div>
+                <p>50 new desktop computers have been installed in the main lab. Students can now access the lab from 8am to 6pm daily.</p>
+            </div>
+            <div class="news-card">
+                <span class="badge badge-news">Events</span>
+                <h3>Student Tech Exhibition Coming Soon</h3>
+                <div class="news-date">📅 May 20, 2026</div>
+                <p>The annual tech exhibition will showcase student projects including websites, apps, and robotics. Registration is now open.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 Advanced Media Hub | <a href="index.html">CampusConnect Network</a></p>
+        <p>Built by Aliyu Salihu | ND1 Computer Science</p>
+        <p>Adamawa State Polytechnic, Yola</p>
+    </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="close" onclick="closeLightbox()">✕</button>
+    <img src="" alt="Full View" id="lightboxImg">
+</div>
+
+<script>
+function switchTab(tab){
+    document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('active')});
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+    document.getElementById(tab).classList.add('active');
+    event.target.classList.add('active');
+}
+function openLightbox(src){
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('active');
+}
+</script>
+</body>
+  </html>
