@@ -11,25 +11,21 @@ body{background:#0a0a0a;color:#fff}
 .header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:18px 20px;text-align:center;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
 .header h1{font-size:20px;color:white;font-weight:bold}
 .header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
-.nav{display:flex;background:#16213e;position:sticky;top:65px;z-index:99;padding:8px}
-.nav button{flex:1;padding:12px;border:none;background:transparent;color:#ccc;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;transition:0.3s}
-.nav button.active,.nav button:hover{background:#1B5E20;color:white}
-.section{padding:15px;display:none}
-.section.active{display:block}
-.section-title{font-size:18px;font-weight:700;margin:15px 0;text-align:center;color:#4caf50}
-.video-grid{display:flex;flex-direction:column;gap:20px}
+.content{padding:15px}
+.section-title{font-size:18px;font-weight:700;margin:20px 0 15px;text-align:center;color:#4caf50}
+.video-grid{display:flex;flex-direction:column;gap:15px}
 .video-card{background:#1a1a2e;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
 .video-wrap{position:relative;padding-bottom:56.25%;background:#000}
 .video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
 .video-info{padding:14px}
 .video-info h3{font-size:14px;color:#fff;margin-bottom:4px}
 .video-info p{font-size:11px;color:#999}
-.image-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.image-grid{display:flex;flex-direction:column;gap:15px}
 .image-card{background:#1a1a2e;border-radius:12px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,0.3);cursor:pointer}
-.image-card img{width:100%;height:180px;object-fit:cover;display:block}
-.image-card .img-info{padding:10px}
-.image-card .img-info h4{font-size:12px;color:#fff}
-.image-card .img-info p{font-size:10px;color:#999}
+.image-card img{width:100%;height:auto;object-fit:contain;display:block}
+.image-card .img-info{padding:14px}
+.image-card .img-info h4{font-size:14px;color:#fff}
+.image-card .img-info p{font-size:11px;color:#999}
 .lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:999;justify-content:center;align-items:center}
 .lightbox.active{display:flex}
 .lightbox img{max-width:95%;max-height:90%;border-radius:8px}
@@ -55,50 +51,49 @@ body{background:#0a0a0a;color:#fff}
         <a href="index.html">← Home</a>
     </div>
 
-    <div class="nav">
-        <button class="active" onclick="switchTab('videos')">🎥 Videos</button>
-        <button onclick="switchTab('images')">🖼️ Images</button>
-        <button onclick="switchTab('news')">📰 News</button>
-    </div>
+    <div class="content">
 
-    <!-- VIDEOS -->
-    <div class="section active" id="videos">
+        <!-- ========== VIDEOS SECTION ========== -->
         <div class="section-title">🎥 Featured Videos</div>
-        <div class="video-card">
-    <div class="video-wrap">
-        <iframe src="https://www.youtube.com/embed/0YTl9GI_COc" allowfullscreen></iframe>
-    </div>
-    <div class="video-info">
-        <span class="badge badge-video">Campus</span>
-        <h3>ADAMAWA STATE POLYTECHNIC YOLA</h3>
-        <p>THIS VIDEO SHOW YOU SOME PART OF ADAMAWA STATE POLYTECHNIC YOLA MAIN CAMPUS AND SOME OF THE DEPERTEMENT THAT WE OFFER AND ALSO ENTERPRENEUSHIP ENTER FOR SOFT SKILLS TRAINING</p>
-    </div>
-</div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/NBM27e4.jpeg')">
-    <img src="https://i.imgur.com/NBM27e4.jpeg" alt="My Campus Photo">
-    <div class="img-info">
-        <span class="badge badge-image">Campus</span>
-        <h4>ADAMAWA STATE POLYTECHNIC YOLA<br> ACADAMIC LIBRARY</h4>
-        <p>Photo from Adamawa State Polytechnic</p>
-    </div>
-</div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/4YOMJav.jpeg')">
-    <img src="https://i.imgur.com/4YOMJav.jpeg" alt="My Campus Photo 2">
-    <div class="img-info">
-        <span class="badge badge-image">Campus</span>
-        <h4>ADAMAWA STATE POLYTECHNIC YOLA<br>SCHOOL OF SCIENCE AND TECHNOLOGY</h4>
-        <p>DEPARTEMENT THAT WE HAVE IN SST:<br>1. COMPUTER SCIENCE<br>2 SCIENCE AND LIBORATORY TECHNOLOGY<br>3. PHAMACEUTICAL TECHNOLOGY<br>4. ENVIROMENTAL SCIENCE<br>5. STATISTIC</p>
-    </div>
-</div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/L3rSxTt.jpeg')">
-    <img src="https://i.imgur.com/L3rSxTt.jpeg" alt="My Campus Photo 3">
-    <div class="img-info">
-        <span class="badge badge-image">Campus</span>
-        <h4>My Campus Photo 3</h4>
-        <p>Another great photo from Adamawa State Polytechnic</p>
-    </div>
-</div>
         <div class="video-grid">
+
+            <!-- Video 1 -->
+            <div class="video-card">
+                <div class="video-wrap">
+                    <iframe src="https://www.youtube.com/embed/0YTl9GI_COc" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <span class="badge badge-video">Campus</span>
+                    <h3>ADAMAWA STATE POLYTECHNIC YOLA</h3>
+                    <p>THIS VIDEO SHOW YOU SOME PART OF ADAMAWA STATE POLYTECHNIC YOLA MAIN CAMPUS AND SOME OF THE DEPARTEMENT THAT WE OFFER AND ALSO ENTERPRENEUSHIP ENTER FOR SOFT SKILLS TRAINING</p>
+                </div>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="video-card">
+                <div class="video-wrap">
+                    <iframe src="https://www.youtube.com/embed/TCTj-AP-E58" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <span class="badge badge-video">Campus</span>
+                    <h3>My Campus Video</h3>
+                    <p>Exclusive content from Adamawa State Polytechnic</p>
+                </div>
+            </div>
+
+            <!-- Video 3 -->
+            <div class="video-card">
+                <div class="video-wrap">
+                    <iframe src="https://www.youtube.com/embed/hZsHPTQWan4" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <span class="badge badge-video">Campus</span>
+                    <h3>ADAMAWA STATE POLYTECHNIC YOLA MATRICULATION</h3>
+                    <p>We are all welcome you to our matriculation ceremony</p>
+                </div>
+            </div>
+
+            <!-- Video 4 -->
             <div class="video-card">
                 <div class="video-wrap">
                     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
@@ -109,6 +104,8 @@ body{background:#0a0a0a;color:#fff}
                     <p>Learn the fundamentals of computing and technology</p>
                 </div>
             </div>
+
+            <!-- Video 5 -->
             <div class="video-card">
                 <div class="video-wrap">
                     <iframe src="https://www.youtube.com/embed/6avJHaC3C2U" allowfullscreen></iframe>
@@ -119,6 +116,8 @@ body{background:#0a0a0a;color:#fff}
                     <p>Understanding the inner workings of modern computers</p>
                 </div>
             </div>
+
+            <!-- Video 6 -->
             <div class="video-card">
                 <div class="video-wrap">
                     <iframe src="https://player.vimeo.com/video/1194795704" allow="autoplay; fullscreen" allowfullscreen></iframe>
@@ -129,61 +128,116 @@ body{background:#0a0a0a;color:#fff}
                     <p>Exclusive content from Adamawa State Polytechnic</p>
                 </div>
             </div>
+
         </div>
-    </div>
-<div class="video-card">
-    <div class="video-wrap">
-        <iframe src="https://www.youtube.com/embed/TCTj-AP-E58" allowfullscreen></iframe>
-    </div>
-    <div class="video-info">
-        <span class="badge badge-video">Campus</span>
-        <h3>My Campus Video</h3>
-        <p>Exclusive content from Adamawa State Polytechnic</p>
-    </div>
-</div>
-<div class="video-card">
-    <div class="video-wrap">
-        <iframe src="https://www.youtube.com/embed/hZsHPTQWan4" allowfullscreen></iframe>
-    </div>
-    <div class="video-info">
-        <span class="badge badge-video">Campus</span>
-        <h3>ADAMAWA STATE POLYTECHNIC YOLA MATRICULATION</h3>
-        <p>we are all welcome you to our mariculation ceremony </p>
-    </div>
-</div>
-    <!-- IMAGES -->
-    <div class="section" id="images">
+
+        <!-- ========== IMAGES SECTION ========== -->
         <div class="section-title">🖼️ Image Gallery</div>
         <div class="image-grid">
-            <div class="image-card" onclick="openLightbox('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600')">
-                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600" alt="Coding">
-                <div class="img-info">
-                    <span class="badge badge-image">Tech</span>
-                    <h4>Programming Setup</h4>
-                    <p>Modern coding workspace</p>
-                </div>
-            </div>
-            <div class="image-card" onclick="openLightbox('https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=600')">
-                <img src="https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=600" alt="Digital">
-                <div class="img-info">
-                    <span class="badge badge-image">Digital</span>
-                    <h4>Digital Technology</h4>
-                    <p>Binary code visualization</p>
-                </div>
-            </div>
-            <div class="image-card" onclick="openLightbox('https://images.unsplash.com/photo-1518770660439-4636190af475?w=600')">
-                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600" alt="Tech">
-                <div class="img-info">
-                    <span class="badge badge-image">Hardware</span>
-                    <h4>Computer Hardware</h4>
-                    <p>Circuit board close-up</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- NEWS -->
-    <div class="section" id="news">
+            <!-- Image 1 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/NBM27e4.jpeg')">
+                <img src="https://i.imgur.com/NBM27e4.jpeg" alt="Library">
+                <div class="img-info">
+                    <span class="badge badge-image">Campus</span>
+                    <h4>ADAMAWA STATE POLYTECHNIC YOLA<br>ACADEMIC LIBRARY</h4>
+                    <p>Photo from Adamawa State Polytechnic</p>
+                </div>
+            </div>
+
+            <!-- Image 2 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/4YOMJav.jpeg')">
+                <img src="https://i.imgur.com/4YOMJav.jpeg" alt="SST">
+                <div class="img-info">
+                    <span class="badge badge-image">Campus</span>
+                    <h4>SCHOOL OF SCIENCE AND TECHNOLOGY</h4>
+                    <p>Departments: Computer Science, Science & Laboratory Technology, Pharmaceutical Technology, Environmental Science, Statistics</p>
+                </div>
+            </div>
+
+            <!-- Image 3 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/7K3Mwjk.jpeg')">
+                <img src="https://i.imgur.com/7K3Mwjk.jpeg" alt="Matriculation 1">
+                <div class="img-info">
+                    <span class="badge badge-image">Matriculation</span>
+                    <h4>Matriculation Ceremony</h4>
+                    <p>Adamawa State Polytechnic, Yola</p>
+                </div>
+            </div>
+
+            <!-- Image 4 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/s9dh8oi.jpeg')">
+                <img src="https://i.imgur.com/s9dh8oi.jpeg" alt="Matriculation 2">
+                <div class="img-info">
+                    <span class="badge badge-image">Matriculation</span>
+                    <h4>Matriculation Day</h4>
+                    <p>Celebrating with classmates</p>
+                </div>
+            </div>
+
+            <!-- Image 5 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/ENX5yjl.jpeg')">
+                <img src="https://i.imgur.com/ENX5yjl.jpeg" alt="Matriculation 3">
+                <div class="img-info">
+                    <span class="badge badge-image">Matriculation</span>
+                    <h4>Matriculation Memories</h4>
+                    <p>ND1 Computer Science - 2025/2026</p>
+                </div>
+            </div>
+
+            <!-- Image 6 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/rhTJfjY.jpeg')">
+                <img src="https://i.imgur.com/rhTJfjY.jpeg" alt="Matriculation 4">
+                <div class="img-info">
+                    <span class="badge badge-image">Matriculation</span>
+                    <h4>Matriculation Ceremony</h4>
+                    <p>Proud moment at ASP, Yola</p>
+                </div>
+            </div>
+
+            <!-- Image 7 - Aliyu -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/DFc04md.jpeg')">
+                <img src="https://i.imgur.com/DFc04md.jpeg" alt="Aliyu Salihu">
+                <div class="img-info">
+                    <span class="badge badge-image">Portrait</span>
+                    <h4>Aliyu Salihu</h4>
+                    <p>ND1 Computer Science Student</p>
+                </div>
+            </div>
+
+            <!-- Image 8 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/9ZIJPho.jpeg')">
+                <img src="https://i.imgur.com/9ZIJPho.jpeg" alt="Matriculation 5">
+                <div class="img-info">
+                    <span class="badge badge-image">Matriculation</span>
+                    <h4>Matriculation Day</h4>
+                    <p>Adamawa State Polytechnic, Yola</p>
+                </div>
+            </div>
+
+            <!-- Image 9 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/sHSdRjs.jpeg')">
+                <img src="https://i.imgur.com/sHSdRjs.jpeg" alt="Campus Photo">
+                <div class="img-info">
+                    <span class="badge badge-image">Campus</span>
+                    <h4>Campus Photo</h4>
+                    <p>Adamawa State Polytechnic, Yola</p>
+                </div>
+            </div>
+
+            <!-- Image 10 -->
+            <div class="image-card" onclick="openLightbox('https://i.imgur.com/L3rSxTt.jpeg')">
+                <img src="https://i.imgur.com/L3rSxTt.jpeg" alt="Campus Photo">
+                <div class="img-info">
+                    <span class="badge badge-image">Campus</span>
+                    <h4>Campus Photo</h4>
+                    <p>Adamawa State Polytechnic, Yola</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========== NEWS SECTION ========== -->
         <div class="section-title">📰 Latest News</div>
         <div class="news-grid">
             <div class="news-card">
@@ -205,6 +259,7 @@ body{background:#0a0a0a;color:#fff}
                 <p>The annual tech exhibition will showcase student projects including websites, apps, and robotics. Registration is now open.</p>
             </div>
         </div>
+
     </div>
 
     <div class="footer">
@@ -220,12 +275,6 @@ body{background:#0a0a0a;color:#fff}
 </div>
 
 <script>
-function switchTab(tab){
-    document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('active')});
-    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
-    document.getElementById(tab).classList.add('active');
-    event.target.classList.add('active');
-}
 function openLightbox(src){
     document.getElementById('lightboxImg').src = src;
     document.getElementById('lightbox').classList.add('active');
