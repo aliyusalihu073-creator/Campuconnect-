@@ -7,21 +7,35 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
-.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .header h1{font-size:18px;color:white}
 .header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
 .content{padding:15px}
-.card{background:#1a1a2e;padding:20px;border-radius:12px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
-.card h2{color:#4caf50;margin-bottom:15px;font-size:16px}
-.card input,.card textarea,.card select{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:2px solid #333;background:#0a0a0a;color:white;font-size:13px;outline:none}
-.card input:focus,.card textarea:focus{border-color:#1B5E20}
-.card textarea{min-height:80px;resize:vertical}
-.btn{display:block;width:100%;padding:14px;margin:8px 0;background:#1B5E20;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center}
-.btn-blue{background:#0f3460}
-.btn-red{background:#cc0000}
-.success{color:#4caf50;text-align:center;margin:10px 0;font-size:12px}
+.card{background:#1a1a2e;padding:20px;border-radius:12px;margin-bottom:15px;box-shadow:0 4px 16px rgba(0,0,0,0.3);border:1px solid #2a2a3e}
+.card h2{color:#4caf50;margin-bottom:15px;font-size:16px;display:flex;align-items:center;gap:8px}
+.card input,.card textarea,.card select{width:100%;padding:14px;margin:8px 0;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none;transition:0.3s}
+.card input:focus,.card textarea:focus,.card select:focus{border-color:#4caf50;box-shadow:0 0 8px rgba(76,175,80,0.2)}
+.card textarea{min-height:100px;resize:vertical}
+.btn{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:0.3s}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:white}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(27,94,32,0.4)}
+.btn-blue{background:linear-gradient(135deg,#0f3460,#1a5276);color:white}
+.btn-blue:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(15,52,96,0.4)}
+.btn-purple{background:linear-gradient(135deg,#4a148c,#7b1fa2);color:white}
+.btn-purple:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(74,20,140,0.4)}
+.progress-bar{width:100%;height:10px;background:#333;border-radius:5px;margin:10px 0;overflow:hidden;display:none}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#4caf50,#8bc34a);width:0%;transition:0.3s;border-radius:5px}
+.preview-box{background:#0d0d1a;padding:15px;border-radius:10px;margin:10px 0;border:1px solid #333;display:none}
+.preview-box img{width:100%;border-radius:8px;max-height:200px;object-fit:cover}
+.preview-box video{width:100%;border-radius:8px;max-height:200px}
+.success{color:#4caf50;text-align:center;margin:10px 0;font-size:12px;font-weight:600}
+.error{color:#f44336;text-align:center;margin:10px 0;font-size:12px}
 .footer{text-align:center;padding:20px;color:#555;font-size:11px}
 .footer a{color:#4caf50;text-decoration:none}
+.badge{display:inline-block;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:600;margin:2px}
+.badge-sheets{background:#0f9d58;color:white}
+.badge-firestore{background:#f4b400;color:#000}
+.badge-storage{background:#4285f4;color:white}
 </style>
 </head>
 <body>
@@ -29,56 +43,61 @@ body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100v
 <div class="header"><h1>🔧 Admin Panel</h1><a href="index.html">← Home</a></div>
 <div class="content">
 
-<!-- QUICK MEDIA POST -->
+<!-- MEDIA POST -->
 <div class="card">
-<h2>📸 Quick Media Post (Auto-News)</h2>
-<p style="font-size:11px;color:#999;margin-bottom:10px;">Upload an image or video — it automatically becomes a news post on the Home page!</p>
-<input type="text" id="mediaTitle" placeholder="Title for this media post">
+<h2>📸 Media Post <span class="badge badge-storage">Storage</span></h2>
+<p style="font-size:11px;color:#999;margin-bottom:10px;">Upload images or videos directly from your phone. Supports large files with progress tracking.</p>
+<input type="text" id="mediaTitle" placeholder="Title for this post">
 <select id="mediaCategory">
 <option value="">Select Category</option>
-<option value="Academic">Academic</option>
-<option value="Sports">Sports</option>
-<option value="Events">Events</option>
-<option value="Campus">Campus</option>
+<option value="Academic">📚 Academic</option>
+<option value="Sports">⚽ Sports</option>
+<option value="Events">🎉 Events</option>
+<option value="Campus">🏫 Campus</option>
+<option value="Urgent">🔴 Urgent</option>
 </select>
-<input type="file" id="mediaFile" accept="image/*,video/*">
-<button class="btn btn-blue" onclick="quickMediaPost()">📤 Post Media as News</button>
+<input type="file" id="mediaFile" accept="image/*,video/*" onchange="previewMedia()">
+<div class="preview-box" id="previewBox"></div>
+<div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+<button class="btn btn-green" onclick="quickMediaPost()">📤 Post to Website</button>
 <p class="success" id="mediaMsg"></p>
 </div>
 
-<!-- TEXT NEWS POST -->
+<!-- TEXT NEWS -->
 <div class="card">
-<h2>📰 Text News Post</h2>
+<h2>📰 Text News <span class="badge badge-firestore">Firestore</span></h2>
+<p style="font-size:11px;color:#999;margin-bottom:10px;">Post text-based news announcements.</p>
 <input type="text" id="newsTitle" placeholder="News Title">
 <input type="date" id="newsDate">
-<textarea id="newsContent" placeholder="News Content (supports 1000+ characters)"></textarea>
+<textarea id="newsContent" placeholder="News Content (supports 1000+ characters)..."></textarea>
 <input type="text" id="newsImage" placeholder="Image URL (optional)">
 <input type="text" id="newsVideo" placeholder="Video URL (optional)">
 <select id="newsCategory">
 <option value="">Select Category</option>
-<option value="Academic">Academic</option>
-<option value="Sports">Sports</option>
-<option value="Events">Events</option>
-<option value="Urgent">Urgent</option>
+<option value="Academic">📚 Academic</option>
+<option value="Sports">⚽ Sports</option>
+<option value="Events">🎉 Events</option>
+<option value="Urgent">🔴 Urgent</option>
 </select>
-<button class="btn" onclick="uploadNews()">📤 Post Text News</button>
+<button class="btn btn-purple" onclick="uploadNews()">📤 Post News</button>
 <p class="success" id="newsMsg"></p>
 </div>
 
 <!-- QUICK LINKS -->
 <div class="card">
-<h2>🔗 Quick Links</h2>
-<button class="btn" onclick="window.open('https://docs.google.com/spreadsheets/d/13RLLmcXk6BAZBWAxgiHcy_BwOAhhpPxwLQb1W12uyLg/edit','_blank')">📊 Open Google Sheets</button>
-<button class="btn btn-blue" onclick="window.open('https://console.firebase.google.com/project/campuconnect-bd52f/firestore/data','_blank')">☁️ Open Firestore</button>
+<h2>🔗 Quick Access</h2>
+<button class="btn btn-blue" onclick="window.open('https://docs.google.com/spreadsheets/d/13RLLmcXk6BAZBWAxgiHcy_BwOAhhpPxwLQb1W12uyLg/edit','_blank')">📊 Google Sheets <span class="badge badge-sheets">Sheets</span></button>
+<button class="btn btn-blue" onclick="window.open('https://console.firebase.google.com/project/campuconnect-bd52f/firestore/data','_blank')">☁️ Firestore DB <span class="badge badge-firestore">Firestore</span></button>
+<button class="btn btn-blue" onclick="window.open('https://console.firebase.google.com/project/campuconnect-bd52f/storage','_blank')">📁 Storage <span class="badge badge-storage">Storage</span></button>
 </div>
 
 </div>
-<div class="footer"><a href="index.html">← Back to CampusConnect</a></div>
+<div class="footer"><a href="index.html">← Back to CampusConnect</a> | Built by Aliyu Salihu</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
@@ -93,7 +112,21 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// QUICK MEDIA POST — Uploads file AND creates news automatically
+// PREVIEW MEDIA BEFORE UPLOAD
+window.previewMedia = function() {
+  var file = document.getElementById('mediaFile').files[0];
+  var preview = document.getElementById('previewBox');
+  if(!file){ preview.style.display='none'; return; }
+  preview.style.display='block';
+  var url = URL.createObjectURL(file);
+  if(file.type.startsWith('image/')){
+    preview.innerHTML = '<img src="'+url+'" alt="Preview"><p style="font-size:10px;color:#999;text-align:center;">📷 Image ready to upload ('+(file.size/(1024*1024)).toFixed(1)+'MB)</p>';
+  } else if(file.type.startsWith('video/')){
+    preview.innerHTML = '<video controls src="'+url+'"></video><p style="font-size:10px;color:#999;text-align:center;">🎥 Video ready to upload ('+(file.size/(1024*1024)).toFixed(1)+'MB)</p>';
+  }
+};
+
+// QUICK MEDIA POST
 window.quickMediaPost = async function() {
   var title = document.getElementById('mediaTitle').value.trim();
   var cat = document.getElementById('mediaCategory').value;
@@ -104,29 +137,53 @@ window.quickMediaPost = async function() {
   if(!file){ alert('Select a file to upload'); return; }
   
   var isVideo = file.type.startsWith('video/');
-  document.getElementById('mediaMsg').innerHTML = 'Uploading... Please wait...';
+  var fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+  
+  document.getElementById('mediaMsg').className = 'success';
+  document.getElementById('mediaMsg').innerHTML = '⏳ Uploading ' + fileSizeMB + 'MB... Please wait...';
+  document.getElementById('progressBar').style.display = 'block';
+  document.getElementById('progressFill').style.width = '0%';
   
   try {
     var sRef = storageRef(storage, 'media/' + Date.now() + '_' + file.name);
-    var snapshot = await uploadBytes(sRef, file);
-    var url = await getDownloadURL(snapshot.ref);
+    var uploadTask = uploadBytesResumable(sRef, file);
     
-    // Auto-create news post with the media
-    await addDoc(collection(db, 'news'), {
-      title: title,
-      date: new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}),
-      content: isVideo ? '🎥 Video post' : '📸 Image post',
-      imageUrl: isVideo ? '' : url,
-      videoUrl: isVideo ? url : '',
-      category: cat,
-      createdAt: new Date()
-    });
-    
-    document.getElementById('mediaMsg').innerHTML = '✅ Media posted as News! Check your Home page!';
-    document.getElementById('mediaTitle').value = '';
-    document.getElementById('mediaFile').value = '';
+    uploadTask.on('state_changed', 
+      function(snapshot) {
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        document.getElementById('progressFill').style.width = progress + '%';
+        document.getElementById('mediaMsg').innerHTML = '⏳ Uploading... ' + Math.round(progress) + '%';
+      },
+      function(error) {
+        document.getElementById('mediaMsg').className = 'error';
+        document.getElementById('mediaMsg').innerHTML = '❌ Upload failed: ' + error.message;
+        document.getElementById('progressBar').style.display = 'none';
+      },
+      async function() {
+        var url = await getDownloadURL(uploadTask.snapshot.ref);
+        document.getElementById('mediaMsg').innerHTML = '✅ Uploaded! Posting to website...';
+        
+        await addDoc(collection(db, 'news'), {
+          title: title,
+          date: new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}),
+          content: isVideo ? '🎥 ' + title : '📸 ' + title,
+          imageUrl: isVideo ? '' : url,
+          videoUrl: isVideo ? url : '',
+          category: cat,
+          createdAt: new Date()
+        });
+        
+        document.getElementById('mediaMsg').innerHTML = '🎉 SUCCESS! Posted to Home page! Refresh to see it.';
+        document.getElementById('progressBar').style.display = 'none';
+        document.getElementById('previewBox').style.display = 'none';
+        document.getElementById('mediaTitle').value = '';
+        document.getElementById('mediaFile').value = '';
+      }
+    );
   } catch(err) {
+    document.getElementById('mediaMsg').className = 'error';
     document.getElementById('mediaMsg').innerHTML = '❌ Error: ' + err.message;
+    document.getElementById('progressBar').style.display = 'none';
   }
 };
 
@@ -146,15 +203,17 @@ window.uploadNews = async function() {
       title: t, date: d, content: c, imageUrl: img, videoUrl: vid,
       category: cat, createdAt: new Date()
     });
-    document.getElementById('newsMsg').innerHTML = '✅ News posted! Check your Home page!';
+    document.getElementById('newsMsg').className = 'success';
+    document.getElementById('newsMsg').innerHTML = '🎉 News posted! Check Home page!';
     document.getElementById('newsTitle').value = '';
     document.getElementById('newsContent').value = '';
     document.getElementById('newsImage').value = '';
     document.getElementById('newsVideo').value = '';
   } catch(err) {
+    document.getElementById('newsMsg').className = 'error';
     document.getElementById('newsMsg').innerHTML = '❌ Error: ' + err.message;
   }
 };
 </script>
 </body>
-</html>
+  </html>
