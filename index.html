@@ -128,8 +128,8 @@ body.dark .user-bar{background:#2d2d44}
 <button class="close-btn" onclick="closeLightboxFull()">✕</button>
 <div id="lightboxContent"></div>
 <button class="dl-btn" id="dlBtn" onclick="downloadMedia()">📥 Download</button>
-</div>
-<script type="module">
+  </div>
+  <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -297,19 +297,51 @@ var schedule=[{day:"MONDAY",cls:["8:00-10:00 | COM111 | Hall A","10:00-12:00 | G
 
 function getVidEmb(u){if(!u||u.length<5)return'';u=u.trim();if(u.indexOf('youtube.com')>=0||u.indexOf('youtu.be')>=0){var v='';if(u.indexOf('youtu.be')>=0)v=u.split('/').pop().split('?')[0];else{v=u.split('v=')[1];if(v&&v.indexOf('&')>=0)v=v.split('&')[0];}if(v)return'<iframe src="https://www.youtube.com/embed/'+v+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}if(u.indexOf('vimeo.com')>=0){var vi=u.split('/').pop().split('?')[0];if(vi)return'<iframe src="https://player.vimeo.com/video/'+vi+'" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}return'<video controls playsinline src="'+u+'" style="width:100%;border-radius:8px;max-height:250px;cursor:pointer" onclick="openLightboxFull(\''+u+'\',\'video\')"></video>';}
 
+// UPDATED: Fetch from BOTH Google Sheets AND Firestore
 function loadNews(cb){
+  var allNews = [];
+  var fetched = 0;
+  
+  // Fetch from Google Sheets
   fetch("https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet=Sheet1&v="+Date.now())
   .then(function(r){return r.text()})
   .then(function(csv){
-    var ls=csv.split('\n');var a=[];
+    var ls=csv.split('\n');
     for(var i=1;i<ls.length;i++){
       if(ls[i].trim()==='')continue;
       var co=ls[i].split(',');
-      if(co.length>=6)a.push({t:co[0].replace(/"/g,'').trim(),d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim()});
+      if(co.length>=6) allNews.push({t:co[0].replace(/"/g,'').trim(),d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim(),source:'sheets'});
     }
-    a.reverse(); // NEWEST FIRST
-    cb(a);
-  }).catch(function(){cb([])});
+    fetched++;
+    if(fetched >= 2) finishNews();
+  }).catch(function(){ fetched++; if(fetched >= 2) finishNews(); });
+  
+  // Fetch from Firestore
+  fetch("https://firestore.googleapis.com/v1/projects/campuconnect-bd52f/databases/(default)/documents/news")
+  .then(function(r){return r.json()})
+  .then(function(data){
+    if(data.documents){
+      data.documents.forEach(function(doc){
+        var f = doc.fields;
+        allNews.push({
+          t: f.title ? f.title.stringValue : '',
+          d: f.date ? f.date.stringValue : '',
+          b: f.content ? f.content.stringValue : '',
+          img: f.imageUrl ? f.imageUrl.stringValue : '',
+          vid: f.videoUrl ? f.videoUrl.stringValue : '',
+          cat: f.category ? f.category.stringValue : '',
+          source: 'firestore'
+        });
+      });
+    }
+    fetched++;
+    if(fetched >= 2) finishNews();
+  }).catch(function(){ fetched++; if(fetched >= 2) finishNews(); });
+  
+  function finishNews(){
+    allNews.sort(function(a,b){ return new Date(b.d) - new Date(a.d); });
+    cb(allNews);
+  }
 }
 
 function showNews(id){
