@@ -1,12 +1,15 @@
 self.addEventListener('install', function(e) {
   e.waitUntil(
-    caches.open('campusconnect-v1').then(function(cache) {
+    caches.open('campusconnect-v2').then(function(cache) {
       return cache.addAll([
         '/Campuconnect-/',
         '/Campuconnect-/index.html',
-        '/Campuconnect-/newsfeed.html',
         '/Campuconnect-/chat.html',
-        '/Campuconnect-/media.html'
+        '/Campuconnect-/media-hub.html',
+        '/Campuconnect-/courses.html',
+        '/Campuconnect-/results.html',
+        '/Campuconnect-/newsfeed.html',
+        '/Campuconnect-/manifest.json'
       ]);
     })
   );
