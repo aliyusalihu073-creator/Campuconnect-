@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advanced Media Hub - CampusConnect</title>
+<title>Media Hub - CampusConnect</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{background:#0a0a0a;color:#fff}
-.container{max-width:600px;margin:0 auto;padding:0}
-.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:18px 20px;text-align:center;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
-.header h1{font-size:20px;color:white;font-weight:bold}
+body{background:#0a0a0a;color:#fff;max-width:600px;margin:0 auto}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header h1{font-size:20px;color:white}
 .header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
 .content{padding:15px}
 .section-title{font-size:18px;font-weight:700;margin:20px 0 15px;text-align:center;color:#4caf50}
@@ -29,62 +28,74 @@ body{background:#0a0a0a;color:#fff}
 .image-card .img-info{padding:14px}
 .image-card .img-info h4{font-size:14px;color:#fff}
 .image-card .img-info p{font-size:11px;color:#999}
-.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:999;justify-content:center;align-items:center}
-.lightbox.active{display:flex}
-.lightbox img{max-width:95%;max-height:90%;border-radius:8px}
-.lightbox .close{position:absolute;top:20px;right:20px;font-size:30px;color:white;cursor:pointer;background:rgba(255,255,255,0.1);width:40px;height:40px;border-radius:50%;display:flex;justify-content:center;align-items:center;border:none}
-.news-grid{display:flex;flex-direction:column;gap:12px}
-.news-card{background:#1a1a2e;border-radius:12px;padding:16px;border-left:4px solid #1B5E20;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
-.news-card h3{font-size:14px;color:#4caf50;margin-bottom:6px}
-.news-card .news-date{font-size:10px;color:#777;margin-bottom:6px}
-.news-card p{font-size:12px;color:#ccc;line-height:1.6}
+.lightbox-full{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;flex-direction:column;align-items:center;justify-content:center}
+.lightbox-full.active{display:flex}
+.lightbox-full img{max-width:100%;max-height:80vh;object-fit:contain}
+.lightbox-full iframe{width:100%;height:70vh;max-width:100%}
+.lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:28px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none}
+.lightbox-full .dl-btn{background:#1B5E20;color:white;padding:10px 20px;border-radius:20px;margin-top:10px;border:none;font-size:14px;cursor:pointer}
 .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:9px;font-weight:600;margin-bottom:6px}
 .badge-video{background:#1B5E20;color:white}
 .badge-image{background:#0f3460;color:#4fc3f7}
-.badge-news{background:#1a5c2a;color:#00ff88}
 .footer{text-align:center;padding:25px;color:#555;font-size:11px;border-top:1px solid #1a1a2e;margin-top:20px}
 .footer a{color:#4caf50;text-decoration:none}
 </style>
 </head>
 <body>
-<div class="container">
+
 <div class="header"><h1>🎬 Media Hub</h1><a href="index.html">← Home</a></div>
 <div class="content">
+
 <div class="section-title">🎥 Featured Videos</div>
 <div class="video-grid">
-<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/0YTl9GI_COc" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Campus</span><h3>ADAMAWA STATE POLYTECHNIC YOLA</h3><p>THIS VIDEO SHOW YOU SOME PART OF ADAMAWA STATE POLYTECHNIC YOLA MAIN CAMPUS AND SOME OF THE DEPARTEMENT THAT WE OFFER AND ALSO ENTERPRENEUSHIP ENTER FOR SOFT SKILLS TRAINING</p></div></div>
+<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/0YTl9GI_COc" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Campus</span><h3>ADAMAWA STATE POLYTECHNIC YOLA</h3><p>Tour of the main campus and departments</p></div></div>
 <div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/TCTj-AP-E58" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Campus</span><h3>My Campus Video</h3><p>Exclusive content from Adamawa State Polytechnic</p></div></div>
-<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/hZsHPTQWan4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Campus</span><h3>ADAMAWA STATE POLYTECHNIC YOLA MATRICULATION</h3><p>We are all welcome you to our matriculation ceremony</p></div></div>
-<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Educational</span><h3>Introduction to Computer Science</h3><p>Learn the fundamentals of computing and technology</p></div></div>
-<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/6avJHaC3C2U" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Documentary</span><h3>How Computers Work - Full Documentary</h3><p>Understanding the inner workings of modern computers</p></div></div>
-<div class="video-card"><div class="video-wrap"><iframe src="https://player.vimeo.com/video/1194795704" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Campus</span><h3>CampusConnect Special Feature</h3><p>Exclusive content from Adamawa State Polytechnic</p></div></div>
+<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/hZsHPTQWan4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Campus</span><h3>Matriculation Ceremony</h3><p>Welcome to our matriculation ceremony</p></div></div>
+<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Educational</span><h3>Introduction to Computer Science</h3><p>Learn the fundamentals</p></div></div>
+<div class="video-card"><div class="video-wrap"><iframe src="https://www.youtube.com/embed/6avJHaC3C2U" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Documentary</span><h3>How Computers Work</h3><p>Understanding modern computers</p></div></div>
+<div class="video-card"><div class="video-wrap"><iframe src="https://player.vimeo.com/video/1194795704" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><div class="video-info"><span class="badge badge-video">Campus</span><h3>CampusConnect Special</h3><p>Exclusive feature</p></div></div>
 </div>
+
 <div class="section-title">🖼️ Image Gallery</div>
 <div class="image-grid">
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/NBM27e4.jpeg')"><img src="https://i.imgur.com/NBM27e4.jpeg" alt="Library"><div class="img-info"><span class="badge badge-image">Campus</span><h4>ADAMAWA STATE POLYTECHNIC YOLA<br>ACADEMIC LIBRARY</h4><p>Photo from Adamawa State Polytechnic</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/4YOMJav.jpeg')"><img src="https://i.imgur.com/4YOMJav.jpeg" alt="SST"><div class="img-info"><span class="badge badge-image">Campus</span><h4>SCHOOL OF SCIENCE AND TECHNOLOGY</h4><p>Departments: Computer Science, Science & Laboratory Technology, Pharmaceutical Technology, Environmental Science, Statistics</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/7K3Mwjk.jpeg')"><img src="https://i.imgur.com/7K3Mwjk.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Ceremony</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/s9dh8oi.jpeg')"><img src="https://i.imgur.com/s9dh8oi.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Day</h4><p>Celebrating with classmates</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/ENX5yjl.jpeg')"><img src="https://i.imgur.com/ENX5yjl.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Memories</h4><p>ND1 Computer Science - 2025/2026</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/rhTJfjY.jpeg')"><img src="https://i.imgur.com/rhTJfjY.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Ceremony</h4><p>Proud moment at ASP, Yola</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/DFc04md.jpeg')"><img src="https://i.imgur.com/DFc04md.jpeg" alt="Aliyu Salihu"><div class="img-info"><span class="badge badge-image">Portrait</span><h4>Aliyu Salihu</h4><p>ND1 Computer Science Student</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/9ZIJPho.jpeg')"><img src="https://i.imgur.com/9ZIJPho.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Day</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/sHSdRjs.jpeg')"><img src="https://i.imgur.com/sHSdRjs.jpeg" alt="Campus"><div class="img-info"><span class="badge badge-image">Campus</span><h4>Campus Photo</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
-<div class="image-card" onclick="openLightbox('https://i.imgur.com/L3rSxTt.jpeg')"><img src="https://i.imgur.com/L3rSxTt.jpeg" alt="Campus"><div class="img-info"><span class="badge badge-image">Campus</span><h4>Campus Photo</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/NBM27e4.jpeg','image')"><img src="https://i.imgur.com/NBM27e4.jpeg" alt="Library"><div class="img-info"><span class="badge badge-image">Campus</span><h4>Academic Library</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/4YOMJav.jpeg','image')"><img src="https://i.imgur.com/4YOMJav.jpeg" alt="SST"><div class="img-info"><span class="badge badge-image">Campus</span><h4>School of Science & Technology</h4><p>Departments offered at SST</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/7K3Mwjk.jpeg','image')"><img src="https://i.imgur.com/7K3Mwjk.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Ceremony</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/s9dh8oi.jpeg','image')"><img src="https://i.imgur.com/s9dh8oi.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Day</h4><p>Celebrating with classmates</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/ENX5yjl.jpeg','image')"><img src="https://i.imgur.com/ENX5yjl.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Memories</h4><p>ND1 Computer Science 2025/2026</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/rhTJfjY.jpeg','image')"><img src="https://i.imgur.com/rhTJfjY.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Ceremony</h4><p>Proud moment at ASP, Yola</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/DFc04md.jpeg','image')"><img src="https://i.imgur.com/DFc04md.jpeg" alt="Aliyu Salihu"><div class="img-info"><span class="badge badge-image">Portrait</span><h4>Aliyu Salihu</h4><p>ND1 Computer Science Student</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/9ZIJPho.jpeg','image')"><img src="https://i.imgur.com/9ZIJPho.jpeg" alt="Matriculation"><div class="img-info"><span class="badge badge-image">Matriculation</span><h4>Matriculation Day</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/sHSdRjs.jpeg','image')"><img src="https://i.imgur.com/sHSdRjs.jpeg" alt="Campus"><div class="img-info"><span class="badge badge-image">Campus</span><h4>Campus Photo</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
+<div class="image-card" onclick="openLightboxFull('https://i.imgur.com/L3rSxTt.jpeg','image')"><img src="https://i.imgur.com/L3rSxTt.jpeg" alt="Campus"><div class="img-info"><span class="badge badge-image">Campus</span><h4>Campus Photo</h4><p>Adamawa State Polytechnic, Yola</p></div></div>
 </div>
-<div class="section-title">📰 Latest News</div>
-<div class="news-grid">
-<div class="news-card"><span class="badge badge-news">Academic</span><h3>First Semester Exams Scheduled</h3><div class="news-date">📅 May 25, 2026</div><p>The management has released the first semester examination timetable. All students are advised to check the portal and prepare accordingly.</p></div>
-<div class="news-card"><span class="badge badge-news">Technology</span><h3>New Computer Lab Equipment Arrives</h3><div class="news-date">📅 May 22, 2026</div><p>50 new desktop computers have been installed in the main lab. Students can now access the lab from 8am to 6pm daily.</p></div>
-<div class="news-card"><span class="badge badge-news">Events</span><h3>Student Tech Exhibition Coming Soon</h3><div class="news-date">📅 May 20, 2026</div><p>The annual tech exhibition will showcase student projects including websites, apps, and robotics. Registration is now open.</p></div>
+
 </div>
+<div class="footer"><p>© 2026 Media Hub | <a href="index.html">CampusConnect Network</a></p><p>Built by Aliyu Salihu | ND1 Computer Science</p></div>
+
+<div class="lightbox-full" id="lightboxFull" onclick="closeLightboxFull()">
+<button class="close-btn" onclick="closeLightboxFull()">✕</button>
+<div id="lightboxContent"></div>
+<button class="dl-btn" id="dlBtn" onclick="downloadMedia()">📥 Download</button>
 </div>
-<div class="footer"><p>© 2026 Advanced Media Hub | <a href="index.html">CampusConnect Network</a></p><p>Built by Aliyu Salihu | ND1 Computer Science</p><p>Adamawa State Polytechnic, Yola</p></div>
-</div>
-<div class="lightbox" id="lightbox" onclick="closeLightbox()"><button class="close" onclick="closeLightbox()">✕</button><img src="" alt="Full View" id="lightboxImg"></div>
+
 <script>
-function openLightbox(src){document.getElementById('lightboxImg').src=src;document.getElementById('lightbox').classList.add('active');}
-function closeLightbox(){document.getElementById('lightbox').classList.remove('active');}
+var currentLightboxURL = '';
+function openLightboxFull(url, type) {
+  currentLightboxURL = url;
+  var box = document.getElementById('lightboxFull');
+  var content = document.getElementById('lightboxContent');
+  if (type === 'image') content.innerHTML = '<img src="' + url + '">';
+  else content.innerHTML = '<iframe src="' + url + '" allowfullscreen></iframe>';
+  box.classList.add('active');
+}
+function closeLightboxFull() {
+  document.getElementById('lightboxFull').classList.remove('active');
+  currentLightboxURL = '';
+}
+function downloadMedia() {
+  if (currentLightboxURL) window.open(currentLightboxURL, '_blank');
+}
 </script>
 </body>
-</html>
+                                                                                                 </html>
