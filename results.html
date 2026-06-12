@@ -45,26 +45,23 @@ body{background:#F5F5F5;max-width:500px;margin:0 auto;min-height:100vh}
 </div>
 <div class="footer"><a href="index.html">← Back to CampusConnect</a></div>
 
-<script>
-var sampleResults = {
-  "SST/NDCOM/S/2025/186": {
-    name: "Aliyu Salihu",
-    level: "ND1",
-    department: "Computer Science",
-    First: [
-      {course:"COM111", grade:"A", point:4},
-      {course:"COM112", grade:"B", point:3},
-      {course:"COM113", grade:"A", point:4},
-      {course:"COM114", grade:"B", point:3},
-      {course:"COM115", grade:"A", point:4},
-      {course:"GNS101", grade:"B", point:3},
-      {course:"GNS102", grade:"C", point:2},
-      {course:"MTH111", grade:"A", point:4}
-    ]
-  }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
 };
 
-function checkResult(){
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.checkResult = async function() {
   var reg = document.getElementById('regNo').value.trim();
   var sem = document.getElementById('semester').value;
   var display = document.getElementById('resultDisplay');
@@ -72,27 +69,41 @@ function checkResult(){
   if(!reg){ alert('Enter registration number'); return; }
   if(!sem){ alert('Select semester'); return; }
   
-  if(sampleResults[reg]){
-    var data = sampleResults[reg];
-    var results = data[sem];
-    var totalPoints = 0;
-    var h = '<div class="card"><h2>📋 Result for ' + data.name + '</h2>';
-    h += '<p style="color:#999;font-size:12px;">Level: ' + data.level + ' | Dept: ' + data.department + '</p>';
-    h += '<p style="color:#999;font-size:12px;">Semester: ' + sem + ' Semester</p>';
-    h += '<table class="result-table"><tr><th>Course</th><th>Grade</th><th>Point</th></tr>';
-    for(var i=0; i<results.length; i++){
-      var cls = 'grade-' + results[i].grade.toLowerCase();
-      h += '<tr><td>' + results[i].course + '</td><td class="' + cls + '">' + results[i].grade + '</td><td>' + results[i].point + '</td></tr>';
-      totalPoints += results[i].point;
+  display.innerHTML = '<div class="card"><p>Searching database...</p></div>';
+  
+  try {
+    var q = query(collection(db, 'results'), where('regNo', '==', reg), where('semester', '==', sem));
+    var snapshot = await getDocs(q);
+    
+    if(snapshot.empty){
+      display.innerHTML = '<div class="card"><p style="color:#f44336;">❌ No result found. Check your registration number and semester.</p></div>';
+      return;
     }
-    var gpa = (totalPoints / results.length).toFixed(2);
-    h += '<tr style="font-weight:700;background:#E8F5E9;"><td colspan="2">GPA</td><td>' + gpa + '</td></tr></table>';
-    h += '</div>';
-    display.innerHTML = h;
-  } else {
-    display.innerHTML = '<div class="card"><p style="color:#f44336;">❌ No result found for this registration number.</p></div>';
+    
+    snapshot.forEach(function(doc) {
+      var data = doc.data();
+      var results = data.courses || [];
+      var totalPoints = 0;
+      var h = '<div class="card"><h2>📋 Result for ' + data.name + '</h2>';
+      h += '<p style="color:#999;font-size:12px;">Level: ' + (data.level || 'N/A') + ' | Dept: ' + (data.department || 'N/A') + '</p>';
+      h += '<p style="color:#999;font-size:12px;">Semester: ' + sem + ' Semester</p>';
+      h += '<table class="result-table"><tr><th>Course</th><th>Grade</th><th>Point</th></tr>';
+      
+      for(var i=0; i<results.length; i++){
+        var cls = 'grade-' + results[i].grade.toLowerCase();
+        h += '<tr><td>' + results[i].course + '</td><td class="' + cls + '">' + results[i].grade + '</td><td>' + results[i].point + '</td></tr>';
+        totalPoints += Number(results[i].point) || 0;
+      }
+      
+      var gpa = results.length > 0 ? (totalPoints / results.length).toFixed(2) : '0.00';
+      h += '<tr style="font-weight:700;background:#E8F5E9;"><td colspan="2">GPA</td><td>' + gpa + '</td></tr></table>';
+      h += '</div>';
+      display.innerHTML = h;
+    });
+  } catch(err) {
+    display.innerHTML = '<div class="card"><p style="color:#f44336;">Error: ' + err.message + '</p></div>';
   }
-}
+};
 </script>
 </body>
 </html>
