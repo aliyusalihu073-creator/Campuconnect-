@@ -29,9 +29,26 @@ body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100v
 <div class="header"><h1>🔧 Admin Panel</h1><a href="index.html">← Home</a></div>
 <div class="content">
 
-<!-- NEWS UPLOAD -->
+<!-- QUICK MEDIA POST -->
 <div class="card">
-<h2>📰 Upload News</h2>
+<h2>📸 Quick Media Post (Auto-News)</h2>
+<p style="font-size:11px;color:#999;margin-bottom:10px;">Upload an image or video — it automatically becomes a news post on the Home page!</p>
+<input type="text" id="mediaTitle" placeholder="Title for this media post">
+<select id="mediaCategory">
+<option value="">Select Category</option>
+<option value="Academic">Academic</option>
+<option value="Sports">Sports</option>
+<option value="Events">Events</option>
+<option value="Campus">Campus</option>
+</select>
+<input type="file" id="mediaFile" accept="image/*,video/*">
+<button class="btn btn-blue" onclick="quickMediaPost()">📤 Post Media as News</button>
+<p class="success" id="mediaMsg"></p>
+</div>
+
+<!-- TEXT NEWS POST -->
+<div class="card">
+<h2>📰 Text News Post</h2>
 <input type="text" id="newsTitle" placeholder="News Title">
 <input type="date" id="newsDate">
 <textarea id="newsContent" placeholder="News Content (supports 1000+ characters)"></textarea>
@@ -44,17 +61,8 @@ body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100v
 <option value="Events">Events</option>
 <option value="Urgent">Urgent</option>
 </select>
-<button class="btn" onclick="uploadNews()">📤 Upload to Firebase</button>
+<button class="btn" onclick="uploadNews()">📤 Post Text News</button>
 <p class="success" id="newsMsg"></p>
-</div>
-
-<!-- FILE UPLOAD -->
-<div class="card">
-<h2>📁 Upload Image/Video</h2>
-<input type="file" id="mediaFile" accept="image/*,video/*">
-<button class="btn btn-blue" onclick="uploadMedia()">📤 Upload Media to Storage</button>
-<p class="success" id="mediaMsg"></p>
-<p style="font-size:10px;color:#999;" id="mediaUrl"></p>
 </div>
 
 <!-- QUICK LINKS -->
@@ -85,6 +93,44 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// QUICK MEDIA POST — Uploads file AND creates news automatically
+window.quickMediaPost = async function() {
+  var title = document.getElementById('mediaTitle').value.trim();
+  var cat = document.getElementById('mediaCategory').value;
+  var file = document.getElementById('mediaFile').files[0];
+  
+  if(!title){ alert('Enter a title'); return; }
+  if(!cat){ alert('Select a category'); return; }
+  if(!file){ alert('Select a file to upload'); return; }
+  
+  var isVideo = file.type.startsWith('video/');
+  document.getElementById('mediaMsg').innerHTML = 'Uploading... Please wait...';
+  
+  try {
+    var sRef = storageRef(storage, 'media/' + Date.now() + '_' + file.name);
+    var snapshot = await uploadBytes(sRef, file);
+    var url = await getDownloadURL(snapshot.ref);
+    
+    // Auto-create news post with the media
+    await addDoc(collection(db, 'news'), {
+      title: title,
+      date: new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}),
+      content: isVideo ? '🎥 Video post' : '📸 Image post',
+      imageUrl: isVideo ? '' : url,
+      videoUrl: isVideo ? url : '',
+      category: cat,
+      createdAt: new Date()
+    });
+    
+    document.getElementById('mediaMsg').innerHTML = '✅ Media posted as News! Check your Home page!';
+    document.getElementById('mediaTitle').value = '';
+    document.getElementById('mediaFile').value = '';
+  } catch(err) {
+    document.getElementById('mediaMsg').innerHTML = '❌ Error: ' + err.message;
+  }
+};
+
+// TEXT NEWS POST
 window.uploadNews = async function() {
   var t = document.getElementById('newsTitle').value.trim();
   var d = document.getElementById('newsDate').value;
@@ -100,28 +146,13 @@ window.uploadNews = async function() {
       title: t, date: d, content: c, imageUrl: img, videoUrl: vid,
       category: cat, createdAt: new Date()
     });
-    document.getElementById('newsMsg').innerHTML = '✅ News uploaded successfully!';
+    document.getElementById('newsMsg').innerHTML = '✅ News posted! Check your Home page!';
     document.getElementById('newsTitle').value = '';
     document.getElementById('newsContent').value = '';
     document.getElementById('newsImage').value = '';
     document.getElementById('newsVideo').value = '';
   } catch(err) {
     document.getElementById('newsMsg').innerHTML = '❌ Error: ' + err.message;
-  }
-};
-
-window.uploadMedia = async function() {
-  var file = document.getElementById('mediaFile').files[0];
-  if(!file){ alert('Select a file first'); return; }
-  
-  try {
-    var sRef = storageRef(storage, 'media/' + Date.now() + '_' + file.name);
-    var snapshot = await uploadBytes(sRef, file);
-    var url = await getDownloadURL(snapshot.ref);
-    document.getElementById('mediaMsg').innerHTML = '✅ Uploaded!';
-    document.getElementById('mediaUrl').innerHTML = 'URL: ' + url;
-  } catch(err) {
-    document.getElementById('mediaMsg').innerHTML = '❌ Error: ' + err.message;
   }
 };
 </script>
