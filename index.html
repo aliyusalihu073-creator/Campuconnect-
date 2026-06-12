@@ -17,67 +17,71 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
 body{background:#F5F5F5;max-width:480px;margin:0 auto;min-height:100vh;position:relative}
+body.dark{background:#1a1a2e;color:#ccc}
 body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:100px;color:rgba(0,0,0,0.03);font-weight:900;pointer-events:none;z-index:0}
 .header{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:white;padding:18px 20px;font-size:20px;font-weight:bold;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
 .nav{display:flex;flex-wrap:wrap;background:#2E7D32;position:sticky;top:60px;z-index:99;padding:4px}
-.nav button{flex:1 1 24%;padding:12px 6px;border:none;background:rgba(255,255,255,0.1);color:white;font-size:11px;font-weight:600;cursor:pointer;border-radius:6px;margin:2px}
+.nav button{flex:1 1 19%;padding:12px 4px;border:none;background:rgba(255,255,255,0.1);color:white;font-size:10px;font-weight:600;cursor:pointer;border-radius:6px;margin:2px}
 .nav button:hover,.nav button.active{background:rgba(255,255,255,0.25)}
 .content{padding:15px;position:relative;z-index:1;padding-bottom:20px}
 .card{background:white;padding:18px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+body.dark .card{background:#2d2d44;color:#ccc}
 .btn{width:100%;padding:14px;margin:6px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:left}
 .btn-green{background:#1B5E20;color:white}
 .btn-white{background:white;color:#333;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+body.dark .btn-white{background:#3d3d5c;color:#ccc}
 .btn-light{background:#E8F5E9;color:#1B5E20}
 .btn-orange{background:#FF5722;color:white;text-align:center}
 .day{font-weight:700;font-size:15px;color:#1B5E20;margin:15px 0 6px 8px}
 .class-item{background:white;padding:10px 14px;margin:3px 0;border-radius:8px;font-size:12px;color:#424242}
+body.dark .class-item{background:#3d3d5c;color:#ccc}
 .lec-card{background:white;border-radius:12px;padding:16px;margin:8px 0;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+body.dark .lec-card{background:#3d3d5c}
 .lec-name{font-size:15px;font-weight:700;color:#333;margin-bottom:4px}
-.lec-course{font-size:11px;color:#757575;margin-bottom:10px}
 .lec-actions{display:flex;gap:8px}
 .lec-actions button{flex:1;padding:10px;border:none;border-radius:8px;font-weight:600;color:white;cursor:pointer}
 .lecture-text{font-size:12px;color:#424242;line-height:1.8;margin:3px 10px}
+body.dark .lecture-text{color:#ccc}
 .stats-row{display:flex;gap:10px;margin:15px 0}
 .stat-box{flex:1;background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+body.dark .stat-box{background:#3d3d5c}
 .stat-num{font-size:28px;font-weight:800;color:#1B5E20}
 .stat-label{font-size:10px;color:#9E9E9E;font-weight:600}
 .news-card{background:white;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid #1B5E20}
+body.dark .news-card{background:#3d3d5c}
 .news-card-title{font-size:15px;font-weight:700;color:#1B5E20;margin-bottom:4px}
 .news-card-date{font-size:10px;color:#9E9E9E;margin-bottom:8px}
 .news-card-body{font-size:13px;color:#424242;line-height:1.7}
+body.dark .news-card-body{color:#ccc}
 .news-card-category{display:inline-block;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:600;background:#E8F5E9;color:#1B5E20;margin-bottom:6px}
-.news-card img{width:100%;border-radius:8px;height:auto;max-height:none;margin:8px 0;object-fit:contain}
+.news-card img{width:100%;border-radius:8px;height:auto;max-height:none;margin:8px 0;object-fit:contain;cursor:pointer}
 .home-section-title{text-align:center;font-size:16px;color:#1B5E20;font-weight:700;margin:25px 0 10px}
-.chat-box{background:white;border-radius:12px;padding:12px;margin-top:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-.chat-msgs{max-height:300px;overflow-y:auto;padding:8px;background:#FAFAFA;border-radius:8px;margin-bottom:10px}
-.chat-msg{padding:8px 12px;border-radius:12px;margin:5px 0;max-width:80%;font-size:12px}
-.chat-msg.u{background:#1B5E20;color:white;margin-left:auto}
-.chat-msg.o{background:#E8E8E8;color:#333;margin-right:auto}
-.chat-s{font-size:9px;font-weight:700;margin-bottom:2px;opacity:0.8}
-.chat-t{font-size:12px}
-.chat-time{font-size:8px;opacity:0.6;text-align:right;margin-top:3px}
-.chat-row{display:flex;gap:6px}
-.chat-row input{flex:1;padding:10px;border-radius:20px;border:1px solid #ddd;font-size:12px;outline:none}
-.chat-row button{padding:10px 16px;background:#1B5E20;color:white;border:none;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
-.login-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:20px}
+.login-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;padding:20px}
 .login-box{background:white;border-radius:16px;padding:30px 25px;width:100%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.1);text-align:center}
+body.dark .login-box{background:#2d2d44}
 .login-box .logo{font-size:50px;margin-bottom:10px}
 .login-box h1{color:#1B5E20;font-size:22px;margin-bottom:5px}
 .login-box .subtitle{color:#999;font-size:12px;margin-bottom:20px}
 .login-box input{width:100%;padding:14px;margin:8px 0;border-radius:10px;border:2px solid #E0E0E0;font-size:14px;outline:none}
+body.dark .login-box input{background:#1a1a2e;color:#ccc;border-color:#555}
 .login-box input:focus{border-color:#1B5E20}
-.login-box .btn{width:100%;padding:14px;margin:8px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center}
-.login-box .link{font-size:12px;color:#1B5E20;cursor:pointer;text-decoration:underline}
+.login-box .link{font-size:12px;color:#1B5E20;cursor:pointer;text-decoration:underline;margin-top:10px}
 .user-bar{background:#E8F5E9;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;font-size:12px;border-radius:8px;margin:5px 15px}
+body.dark .user-bar{background:#2d2d44}
 .user-bar span{color:#1B5E20;font-weight:600}
 .user-bar button{background:#cc0000;color:white;border:none;padding:8px 14px;border-radius:6px;font-size:11px;cursor:pointer}
 .hidden{display:none!important}
 .footer{text-align:center;font-size:11px;padding:15px;color:#999;position:relative;z-index:1}
+.dark-toggle{position:fixed;bottom:20px;left:20px;background:#1B5E20;color:white;border:none;width:45px;height:45px;border-radius:50%;font-size:20px;cursor:pointer;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.lightbox-full{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;flex-direction:column;align-items:center;justify-content:center}
+.lightbox-full.active{display:flex}
+.lightbox-full img{max-width:100%;max-height:80vh;object-fit:contain}
+.lightbox-full iframe{width:100%;height:70vh;max-width:100%}
+.lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:28px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none}
+.lightbox-full .dl-btn{background:#1B5E20;color:white;padding:10px 20px;border-radius:20px;margin-top:10px;border:none;font-size:14px;cursor:pointer}
 </style>
 </head>
 <body>
-
-<!-- LOGIN SCREEN (Shown first) -->
 <div id="loginScreen" class="login-container">
 <div class="login-box">
 <div class="logo">🎓</div>
@@ -92,21 +96,24 @@ body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(
 <div class="logo">📝</div>
 <h1>Sign Up</h1>
 <p class="subtitle">Join CampusConnect</p>
+<input type="text" id="signupUsername" placeholder="Username">
 <input type="email" id="signupEmail" placeholder="Email address">
+<input type="tel" id="signupPhone" placeholder="Phone Number">
+<input type="text" id="signupRegNo" placeholder="Registration Number">
 <input type="password" id="signupPass" placeholder="Password">
 <button class="btn btn-green" onclick="signUp()">Create Account</button>
 <p class="link" onclick="showLogin()">🔐 Already have account? Login</p>
 </div>
 </div>
-
-<!-- MAIN APP (Hidden until login) -->
 <div id="mainApp" class="hidden">
 <div class="header"><span>🎓</span> CampusConnect</div>
-<div class="user-bar"><span id="userEmail"></span><button onclick="logout()">🚪 Logout</button></div>
+<div class="user-bar"><span id="userDisplay"></span><button onclick="logout()">🚪 Logout</button></div>
 <div class="nav" id="navBar">
 <button onclick="showPage('home')" id="nav-home" class="active">🏠 Home</button>
 <button onclick="showPage('courses')" id="nav-courses">📚 Courses</button>
+<button onclick="window.open('courses.html','_self')">📖 Lectures</button>
 <button onclick="showPage('timetable')" id="nav-timetable">🗓️ TT</button>
+<button onclick="window.open('results.html','_self')">📊 Results</button>
 <button onclick="showPage('news')" id="nav-news">📢 News</button>
 <button onclick="showPage('papers')" id="nav-papers">📝 Papers</button>
 <button onclick="showPage('contact')" id="nav-contact">📞 Lec</button>
@@ -115,11 +122,18 @@ body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(
 </div>
 <div id="content" class="content"></div>
 <div class="footer">© 2026 Aliyu Salihu | Adamawa State Polytechnic, Yola</div>
-  </div>
-  <script type="module">
+</div>
+<button class="dark-toggle" onclick="toggleDark()">🌙</button>
+<div class="lightbox-full" id="lightboxFull" onclick="closeLightboxFull()">
+<button class="close-btn" onclick="closeLightboxFull()">✕</button>
+<div id="lightboxContent"></div>
+<button class="dl-btn" id="dlBtn" onclick="downloadMedia()">📥 Download</button>
+</div>
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
@@ -134,127 +148,204 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-window.auth = auth;
-window.db = db;
+window.auth = auth; window.db = db; window.storage = storage;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-window.onAuthStateChanged = onAuthStateChanged;
-window.signOut = signOut;
-window.collection = collection;
-window.addDoc = addDoc;
-window.query = query;
-window.orderBy = orderBy;
-window.onSnapshot = onSnapshot;
+window.onAuthStateChanged = onAuthStateChanged; window.signOut = signOut;
+window.collection = collection; window.addDoc = addDoc;
+window.query = query; window.orderBy = orderBy; window.onSnapshot = onSnapshot;
+window.doc = doc; window.setDoc = setDoc; window.getDoc = getDoc;
+window.storageRef = storageRef; window.uploadBytes = uploadBytes; window.getDownloadURL = getDownloadURL;
 
-// Show login or main app
-onAuthStateChanged(auth, function(user) {
+let currentLightboxURL = '';
+
+onAuthStateChanged(auth, async function(user) {
   if (user) {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
-    document.getElementById('userEmail').innerHTML = '👤 ' + user.email;
     window.currentUser = user;
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        window.userProfile = userDoc.data();
+        document.getElementById('userDisplay').innerHTML = '👤 ' + (window.userProfile.username || user.email);
+      } else {
+        document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
+      }
+    } catch(e) {
+      document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
+    }
     if (typeof showPage === 'function') showPage('home');
   } else {
     document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('mainApp').classList.add('hidden');
-    window.currentUser = null;
+    window.currentUser = null; window.userProfile = null;
   }
 });
 
-// Auth functions
-window.showSignUp = function() {
-  document.getElementById('signupBox').style.display = 'block';
-};
-window.showLogin = function() {
-  document.getElementById('signupBox').style.display = 'none';
-};
+window.showSignUp = function() { document.getElementById('signupBox').style.display = 'block'; };
+window.showLogin = function() { document.getElementById('signupBox').style.display = 'none'; };
 
-window.signUp = function() {
-  var email = document.getElementById('signupEmail').value.trim();
-  var pass = document.getElementById('signupPass').value.trim();
-  if (!email || !pass) { alert('Fill all fields'); return; }
-  createUserWithEmailAndPassword(auth, email, pass)
-  .then(function() {
-    document.getElementById('signupBox').style.display = 'none';
-  })
-  .catch(function(e) { alert(e.message); });
-};
-
-window.signIn = function() {
-  var email = document.getElementById('loginEmail').value.trim();
-  var pass = document.getElementById('loginPass').value.trim();
-  if (!email || !pass) { alert('Fill all fields'); return; }
-  signInWithEmailAndPassword(auth, email, pass)
-  .catch(function(e) { alert(e.message); });
-};
-
-window.logout = function() {
-  signOut(auth);
-};
-
-// Firestore Chat
-window.sendFireChat = function() {
-  if (!window.currentUser) { alert('Please login first!'); return; }
-  var inp = document.getElementById('chatInp');
-  var text = inp.value.trim();
-  if (!text) return;
-  addDoc(collection(db, 'messages'), {
-    sender: window.currentUser.email,
-    text: text,
-    time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-    createdAt: new Date()
-  });
-  inp.value = '';
-};
-
-window.loadFireChat = function() {
-  var el = document.getElementById('chatMsgs');
-  if (!el) return;
-  var q = query(collection(db, 'messages'), orderBy('createdAt'));
-  onSnapshot(q, function(snapshot) {
-    var h = '';
-    snapshot.forEach(function(doc) {
-      var m = doc.data();
-      var isMe = window.currentUser && m.sender === window.currentUser.email;
-      h += '<div class="chat-msg ' + (isMe ? 'u' : 'o') + '">';
-      h += '<div class="chat-s">' + m.sender + '</div>';
-      h += '<div class="chat-t">' + m.text + '</div>';
-      h += '<div class="chat-time">' + m.time + '</div></div>';
+window.signUp = async function() {
+  var u = document.getElementById('signupUsername').value.trim();
+  var e = document.getElementById('signupEmail').value.trim();
+  var p = document.getElementById('signupPhone').value.trim();
+  var r = document.getElementById('signupRegNo').value.trim();
+  var pw = document.getElementById('signupPass').value.trim();
+  if (!u || !e || !p || !r || !pw) { alert('Please fill all fields'); return; }
+  try {
+    var cred = await createUserWithEmailAndPassword(auth, e, pw);
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      username: u, email: e, phone: p, regNo: r, createdAt: new Date()
     });
-    if (!h) h = '<p style="text-align:center;color:#9E9E9E">No messages yet.</p>';
-    el.innerHTML = h;
-    el.scrollTop = el.scrollHeight;
-  });
+    document.getElementById('signupBox').style.display = 'none';
+    alert('Account created successfully!');
+  } catch(err) { alert('Error: ' + err.message); }
+};
+
+window.signIn = async function() {
+  var e = document.getElementById('loginEmail').value.trim();
+  var pw = document.getElementById('loginPass').value.trim();
+  if (!e || !pw) { alert('Please fill all fields'); return; }
+  try { await signInWithEmailAndPassword(auth, e, pw); }
+  catch(err) { alert('Login failed: ' + err.message); }
+};
+
+window.logout = function() { signOut(auth); };
+
+window.uploadImageToChat = function() { document.getElementById('imageFileInput').click(); };
+window.uploadVideoToChat = function() { document.getElementById('videoFileInput').click(); };
+
+window.handleImageUpload = async function(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  if (!window.currentUser) { alert('Please login first!'); return; }
+  try {
+    var sRef = storageRef(storage, 'chat/' + Date.now() + '_' + file.name);
+    var snapshot = await uploadBytes(sRef, file);
+    var url = await getDownloadURL(snapshot.ref);
+    var name = (window.userProfile && window.userProfile.username) ? window.userProfile.username : window.currentUser.email;
+    await addDoc(collection(db, 'messages'), {
+      sender: name, senderId: window.currentUser.uid,
+      text: '📷 Sent an image',
+      time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+      createdAt: new Date(),
+      imageUrl: url, videoUrl: null
+    });
+  } catch(err) { alert('Upload failed: ' + err.message); }
+  event.target.value = '';
+};
+
+window.handleVideoUpload = async function(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  if (!window.currentUser) { alert('Please login first!'); return; }
+  try {
+    var sRef = storageRef(storage, 'chat/' + Date.now() + '_' + file.name);
+    var snapshot = await uploadBytes(sRef, file);
+    var url = await getDownloadURL(snapshot.ref);
+    var name = (window.userProfile && window.userProfile.username) ? window.userProfile.username : window.currentUser.email;
+    await addDoc(collection(db, 'messages'), {
+      sender: name, senderId: window.currentUser.uid,
+      text: '🎥 Sent a video',
+      time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+      createdAt: new Date(),
+      imageUrl: null, videoUrl: url
+    });
+  } catch(err) { alert('Upload failed: ' + err.message); }
+  event.target.value = '';
+};
+
+window.openLightboxFull = function(url, type) {
+  currentLightboxURL = url;
+  var box = document.getElementById('lightboxFull');
+  var content = document.getElementById('lightboxContent');
+  if (type === 'image') content.innerHTML = '<img src="' + url + '">';
+  else content.innerHTML = '<iframe src="' + url + '" allowfullscreen></iframe>';
+  box.classList.add('active');
+};
+
+window.closeLightboxFull = function() {
+  document.getElementById('lightboxFull').classList.remove('active');
+  currentLightboxURL = '';
+};
+
+window.downloadMedia = function() {
+  if (currentLightboxURL) window.open(currentLightboxURL, '_blank');
+};
+
+window.toggleDark = function() {
+  document.body.classList.toggle('dark');
+  var btn = document.querySelector('.dark-toggle');
+  btn.innerHTML = document.body.classList.contains('dark') ? '☀️' : '🌙';
 };
 
 window.firebaseReady = true;
 </script>
 
+<input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+<input type="file" id="videoFileInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
 <script>
-var APP_VERSION="3.0";
+var APP_VERSION="4.0";
 var SID="13RLLmcXk6BAZBWAxgiHcy_BwOAhhpPxwLQb1W12uyLg";
 var courses=["COM111 - Introduction to Computing","COM112 - Digital Electronics","COM113 - Introduction to Programming","COM114 - Statistics for Computing I","COM115 - Computer App Packages I","GNS101 - Use of English I","GNS102 - Citizenship Education I","MTH111 - Logic & Linear Algebra"];
 var topics=[["History of Computing","Computer Hardware","Input Devices","Output Devices","Software Types","Operating Systems","Number Systems","Computer Networks","Internet & WWW","Computer Security"],["Number Systems","Logic Gates","Boolean Algebra","Karnaugh Maps","Combinational Circuits","Flip-Flops","Registers","Counters","Microprocessors","Digital Systems"],["Programming Concepts","Algorithms","Flowcharts","Variables & Data Types","Control Structures","Loops","Functions","Arrays","Strings","Debugging"],["Data Collection","Mean, Median, Mode","Measures of Dispersion","Probability Basics","Discrete Distributions","Continuous Distributions","Sampling","Hypothesis Testing","Variance","Regression"],["MS Word Basics","Document Formatting","Tables & Graphics","MS Excel Basics","Formulas & Functions","Charts","PowerPoint Basics","Creating Slides","Presentations","Printing"],["Parts of Speech","Sentence Structure","Paragraph Writing","Essay Writing","Summary Writing","Comprehension","Vocabulary","Oral Communication","Writing Skills","Communication"],["Nigerian Constitution","Fundamental Rights","Citizenship","Federalism","Arms of Government","Political Participation","National Ethics","Leadership","Law & Society","Contemporary Issues"],["Propositional Logic","Truth Tables","Tautologies","Sets & Operations","Matrices","Determinants","Linear Equations","Vectors","Functions","Algebra"]];
 var lecturers=[{name:"Mr. Peter",course:"COM111",phone:"2348039258802"},{name:"Fahad Ali",course:"COM112",phone:"2349071345108"},{name:"Jannah",course:"COM113",phone:"2348036255569"},{name:"Hanaa",course:"COM115",phone:"2348036415451"},{name:"Lucy",course:"GNS101",phone:"2349043224155"},{name:"Ahmad",course:"GNS102",phone:"2349034802034"},{name:"Math Dept",course:"MTH111",phone:"2348066694876"},{name:"H.O.D. Afifa James",course:"HOD",phone:"2347036540870"},{name:"Dean of Science",course:"Dean",phone:"2348022275024"},{name:"Class Rep",course:"ND1 CS",phone:"2347078094444"}];
 var schedule=[{day:"MONDAY",cls:["8:00-10:00 | COM111 | Hall A","10:00-12:00 | GNS101 | LT1","2:00-4:00 | COM115 | Computer Lab"]},{day:"TUESDAY",cls:["8:00-10:00 | MTH111 | Hall B","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM113 | Programming Lab"]},{day:"WEDNESDAY",cls:["8:00-10:00 | COM114 | Hall C","10:00-12:00 | GNS102 | LT2","2:00-4:00 | COM111 | Hall A"]},{day:"THURSDAY",cls:["8:00-10:00 | COM113 | Programming Lab","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM115 | Computer Lab"]},{day:"FRIDAY",cls:["8:00-10:00 | GNS101 | LT1","10:00-12:00 | MTH111 | Hall B","12:00-2:00 | COM114 | Hall C"]}];
 
-function getVidEmb(u){if(!u||u.length<5)return'';u=u.trim();if(u.indexOf('youtube.com')>=0||u.indexOf('youtu.be')>=0){var v='';if(u.indexOf('youtu.be')>=0)v=u.split('/').pop().split('?')[0];else{v=u.split('v=')[1];if(v&&v.indexOf('&')>=0)v=v.split('&')[0];}if(v)return'<iframe src="https://www.youtube.com/embed/'+v+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';}if(u.indexOf('vimeo.com')>=0){var vi=u.split('/').pop().split('?')[0];if(vi)return'<iframe src="https://player.vimeo.com/video/'+vi+'" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';}return'<video controls playsinline src="'+u+'" style="width:100%;border-radius:8px;"></video>';}
-function loadNews(cb){fetch("https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet=Sheet1&v="+Date.now()).then(function(r){return r.text()}).then(function(csv){var ls=csv.split('\n');var a=[];for(var i=1;i<ls.length;i++){if(ls[i].trim()==='')continue;var co=ls[i].split(',');if(co.length>=6)a.push({t:co[0].replace(/"/g,'').trim(),d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim()});}cb(a);}).catch(function(){cb([])});}
-function showNews(id){var el=document.getElementById(id);if(!el)return;el.innerHTML='Loading...';loadNews(function(a){if(a.length===0){el.innerHTML='<div class="card"><p style="text-align:center;color:#9E9E9E;">No announcements yet.</p></div>';return}var h='';a.forEach(function(x){h+='<div class="news-card">';if(x.cat)h+='<span class="news-card-category">'+x.cat+'</span>';h+='<div class="news-card-title">'+x.t+'</div>';h+='<div class="news-card-date">📅 '+x.d+'</div>';if(x.b)h+='<div class="news-card-body">'+x.b+'</div>';if(x.img&&x.img.length>5)h+='<img src="'+x.img+'" onerror="this.style.display=\'none\'" style="width:100%;height:auto;max-height:none;object-fit:contain;">';if(x.vid&&x.vid.length>5)h+=getVidEmb(x.vid);h+='</div>';});el.innerHTML=h;});}
+function getVidEmb(u){if(!u||u.length<5)return'';u=u.trim();if(u.indexOf('youtube.com')>=0||u.indexOf('youtu.be')>=0){var v='';if(u.indexOf('youtu.be')>=0)v=u.split('/').pop().split('?')[0];else{v=u.split('v=')[1];if(v&&v.indexOf('&')>=0)v=v.split('&')[0];}if(v)return'<iframe src="https://www.youtube.com/embed/'+v+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}if(u.indexOf('vimeo.com')>=0){var vi=u.split('/').pop().split('?')[0];if(vi)return'<iframe src="https://player.vimeo.com/video/'+vi+'" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}return'<video controls playsinline src="'+u+'" style="width:100%;border-radius:8px;max-height:250px;cursor:pointer" onclick="openLightboxFull(\''+u+'\',\'video\')"></video>';}
+
+function loadNews(cb){
+  fetch("https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet=Sheet1&v="+Date.now())
+  .then(function(r){return r.text()})
+  .then(function(csv){
+    var ls=csv.split('\n');var a=[];
+    for(var i=1;i<ls.length;i++){
+      if(ls[i].trim()==='')continue;
+      var co=ls[i].split(',');
+      if(co.length>=6)a.push({t:co[0].replace(/"/g,'').trim(),d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim()});
+    }
+    a.reverse(); // NEWEST FIRST
+    cb(a);
+  }).catch(function(){cb([])});
+}
+
+function showNews(id){
+  var el=document.getElementById(id);if(!el)return;
+  el.innerHTML='Loading...';
+  loadNews(function(a){
+    if(a.length===0){el.innerHTML='<div class="card"><p style="text-align:center;color:#9E9E9E;">No announcements yet.</p></div>';return}
+    var h='';
+    a.forEach(function(x){
+      h+='<div class="news-card">';
+      if(x.cat)h+='<span class="news-card-category">'+x.cat+'</span>';
+      h+='<div class="news-card-title">'+x.t+'</div>';
+      h+='<div class="news-card-date">📅 '+x.d+'</div>';
+      if(x.b)h+='<div class="news-card-body">'+x.b+'</div>';
+      if(x.img&&x.img.length>5)h+='<img src="'+x.img+'" onerror="this.style.display=\'none\'" style="width:100%;height:auto;max-height:none;object-fit:contain;cursor:pointer" onclick="openLightboxFull(\''+x.img+'\',\'image\')">';
+      if(x.vid&&x.vid.length>5)h+=getVidEmb(x.vid);
+      h+='</div>';
+    });
+    el.innerHTML=h;
+  });
+}
+
+function searchApp(q){q=q.toLowerCase().trim();var c=document.getElementById("content");if(q===""){showPage("home");return}var h='<div class="card"><b>Search: '+q+'</b></div>';var f=false;courses.forEach(function(cn,i){if(cn.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-white" onclick="showSyl('+i+')">'+cn+'</button>';f=true}topics[i].forEach(function(t,k){if(t.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+t+'</button>';f=true}})});if(!f)h+='<div class="card"><p>No results.</p></div>';c.innerHTML=h;}
 function hlNav(id){document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('active')});var el=document.getElementById('nav-'+id);if(el)el.classList.add('active')}
 
 function showPage(p,d){
     var c=document.getElementById("content");window.scrollTo(0,0);
-    if(p==='home'){hlNav('home');var h='<div class="card" style="text-align:center"><h3 style="color:#1B5E20">Welcome, Aliyu Salihu! 👋</h3><p style="color:#757575;font-size:13px">ND1 Computer Science<br>Adamawa State Polytechnic, Yola</p><div style="font-size:36px;margin:10px 0">💻📚🎓</div></div>';h+='<div class="stats-row"><div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Courses</div></div><div class="stat-box"><div class="stat-num">80</div><div class="stat-label">Topics</div></div><div class="stat-box"><div class="stat-num">10</div><div class="stat-label">Lecturers</div></div></div>';h+='<button class="btn btn-green" onclick="showPage(\'courses\')">📚 View My Courses</button>';h+='<button class="btn btn-green" onclick="showPage(\'timetable\')">🗓️ Weekly Timetable</button>';h+='<button class="btn btn-green" onclick="showPage(\'contact\')">📞 Contact Lecturers</button>';h+='<button class="btn btn-green" onclick="window.open(\'media-hub.html\',\'_self\')">🎬 Media Hub</button>';h+='<button class="btn btn-green" onclick="window.open(\'newsfeed.html\',\'_self\')">📰 Campus News Feed</button>';h+='<div class="home-section-title">💬 STUDENT CHAT</div>';h+='<div class="chat-box"><div class="chat-msgs" id="chatMsgs"></div><div class="chat-row"><input type="text" id="chatInp" placeholder="Type a message..."><button onclick="sendFireChat()">Send</button></div></div>';h+='<div class="home-section-title">📰 LATEST NEWS</div><div id="newsContainer">Loading...</div>';c.innerHTML=h;showNews('newsContainer');setTimeout(function(){if(window.loadFireChat)loadFireChat();},300);}
+    if(p==='home'){hlNav('home');var h='<div class="card" style="text-align:center"><h3 style="color:#1B5E20">Welcome, Aliyu Salihu! 👋</h3><p style="color:#757575;font-size:13px">ND1 Computer Science<br>Adamawa State Polytechnic, Yola</p><div style="font-size:36px;margin:10px 0">💻📚🎓</div></div>';h+='<div class="stats-row"><div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Courses</div></div><div class="stat-box"><div class="stat-num">80</div><div class="stat-label">Topics</div></div><div class="stat-box"><div class="stat-num">10</div><div class="stat-label">Lecturers</div></div></div>';h+='<button class="btn btn-green" onclick="showPage(\'courses\')">📚 View My Courses</button>';h+='<button class="btn btn-green" onclick="showPage(\'timetable\')">🗓️ Weekly Timetable</button>';h+='<button class="btn btn-green" onclick="showPage(\'contact\')">📞 Contact Lecturers</button>';h+='<button class="btn btn-green" onclick="window.open(\'media-hub.html\',\'_self\')">🎬 Media Hub</button>';h+='<button class="btn btn-green" onclick="window.open(\'chat.html\',\'_self\')">💬 Student Chat</button>';h+='<button class="btn btn-green" onclick="window.open(\'newsfeed.html\',\'_self\')">📰 Campus News Feed</button>';h+='<div class="home-section-title">📰 LATEST NEWS</div><div id="newsContainer">Loading...</div>';c.innerHTML=h;showNews('newsContainer');}
     else if(p==='courses'){hlNav('courses');var ch='<div class="card"><b>📚 ND1 Courses</b><p style="font-size:11px;color:#FF6600">Tap a course</p></div>';courses.forEach(function(n,i){ch+='<button class="btn btn-white" onclick="showSyl('+i+')">📘 '+n+'</button>'});c.innerHTML=ch}
     else if(p==='syl'){hlNav('courses');var i=d;var sh='<div class="card"><b>📖 '+courses[i]+'</b><p style="font-size:11px;color:#FF6600">Tap a topic</p></div>';topics[i].forEach(function(t,k){sh+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+(k+1)+'. '+t+'</button>'});sh+='<button class="btn btn-orange" onclick="showPage(\'courses\')">← Back</button>';c.innerHTML=sh}
-    else if(p==='lec'){hlNav('courses');var ci=d[0],ti=d[1];c.innerHTML='<div class="card"><h3 style="color:#1B5E20">📖 '+topics[ci][ti]+'</h3><p style="font-size:11px;color:#757575">'+courses[ci]+'</p></div><div style="padding:5px"><p class="lecture-text"><strong>🎯 Learning Objectives</strong></p><p class="lecture-text">✓ Understand key concepts</p><p class="lecture-text"><strong>📝 Content</strong></p><p class="lecture-text">This covers essential concepts in '+courses[ci]+'.</p><p class="lecture-text"><strong>✅ Summary</strong></p><p class="lecture-text">Master this topic for success.</p></div><button class="btn btn-orange" onclick="showSyl('+ci+')">← Back</button>'}
+    else if(p==='lec'){hlNav('courses');var ci=d[0],ti=d[1];c.innerHTML='<div class="card"><h3 style="color:#1B5E20">📖 '+topics[ci][ti]+'</h3><p style="font-size:11px;color:#757575">'+courses[ci]+'</p></div><div style="padding:5px"><p class="lecture-text"><strong>🎯 Learning Objectives</strong></p><p class="lecture-text">✓ Understand all key concepts of '+topics[ci][ti]+'</p><p class="lecture-text"><strong>📝 Detailed Explanation</strong></p><p class="lecture-text">'+topics[ci][ti]+' is a fundamental topic in '+courses[ci]+'. This comprehensive lecture covers definitions, core principles, practical examples, and exam-focused tips to ensure mastery of the subject matter.</p><p class="lecture-text"><strong>✅ Summary</strong></p><p class="lecture-text">Master this topic thoroughly for exam success.</p><p class="lecture-text"><strong>📌 Prepared by: Aliyu Salihu | ND1 Computer Science</strong></p></div><button class="btn btn-orange" onclick="showSyl('+ci+')">← Back</button>'}
     else if(p==='timetable'){hlNav('timetable');var th='<div class="card"><b>🗓️ Weekly Timetable</b></div>';schedule.forEach(function(d){th+='<div class="day">▌ '+d.day+'</div>';d.cls.forEach(function(cl){th+='<div class="class-item">'+cl+'</div>'})});c.innerHTML=th}
     else if(p==='news'){hlNav('news');c.innerHTML='<div class="card"><b>📢 All Announcements</b></div><div id="fullNewsContainer">Loading...</div>';showNews('fullNewsContainer')}
-    else if(p==='papers'){hlNav('papers');c.innerHTML='<div class="card"><b>📝 Past Questions</b></div><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 COM111 - 2023 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 COM113 - 2023 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 MTH111 - 2022 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 GNS101 - 2022 📥</button>'}
+      else if(p==='papers'){hlNav('papers');c.innerHTML='<div class="card"><b>📝 Past Questions</b></div><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 COM111 - 2023 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 COM113 - 2023 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 MTH111 - 2022 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 GNS101 - 2022 📥</button>'}
     else if(p==='contact'){hlNav('contact');var lh='<div class="card"><b>📞 Contact Lecturers</b></div>';lecturers.forEach(function(l){lh+='<div class="lec-card"><div class="lec-name">👨‍🏫 '+l.name+'</div><div class="lec-course">📘 '+l.course+'</div><div class="lec-actions"><button style="background:#25D366" onclick="window.open(\'https://wa.me/'+l.phone+'\')">💬 WhatsApp</button><button style="background:#1B5E20" onclick="window.open(\'tel:'+l.phone+'\')">📞 Call</button></div></div>'});c.innerHTML=lh}
-    else if(p==='about'){hlNav('about');c.innerHTML='<div class="card"><h3 style="color:#1B5E20">ℹ️ About CampusConnect</h3><p style="font-size:11px">Version '+APP_VERSION+' - Firebase Connected</p></div><div class="card"><b style="color:#1B5E20">✨ Features</b><p style="font-size:12px">✅ 8 ND1 Courses</p><p style="font-size:12px">✅ 80 Lecture Topics</p><p style="font-size:12px">✅ Weekly Timetable</p><p style="font-size:12px">✅ Google Sheets News Feed</p><p style="font-size:12px">✅ Real-time Firebase Chat</p><p style="font-size:12px">✅ Student Login System</p></div><div class="card"><b style="color:#1B5E20">🏫 Built For</b><p style="font-size:12px">Adamawa State Polytechnic, Yola</p><p style="font-size:12px">Department of Computer Science</p></div><div class="card"><b style="color:#1B5E20">👨‍💻 Developer</b><p style="font-size:12px">Aliyu Salihu</p><p style="font-size:12px">SST/NDCOM/S/2025/186</p></div>'}
+    else if(p==='about'){hlNav('about');c.innerHTML='<div class="card"><h3 style="color:#1B5E20">ℹ️ About CampusConnect</h3><p style="font-size:11px">Version '+APP_VERSION+' - Firebase Powered</p></div><div class="card"><b style="color:#1B5E20">✨ Features</b><p style="font-size:12px">✅ 8 ND1 Courses with Full Lectures</p><p style="font-size:12px">✅ 80 Topics with Textbook Notes</p><p style="font-size:12px">✅ Weekly Timetable</p><p style="font-size:12px">✅ Google Sheets News Feed</p><p style="font-size:12px">✅ Real-time Firebase Chat</p><p style="font-size:12px">✅ Student Login with Profiles</p><p style="font-size:12px">✅ Upload Images & Videos</p><p style="font-size:12px">✅ Full Screen Media View</p><p style="font-size:12px">✅ Dark/Light Mode</p><p style="font-size:12px">✅ Media Hub Gallery</p></div><div class="card"><b style="color:#1B5E20">🏫 Built For</b><p style="font-size:12px">Adamawa State Polytechnic, Yola</p><p style="font-size:12px">Department of Computer Science</p><p style="font-size:12px">ND1 - 2025/2026 Session</p></div><div class="card"><b style="color:#1B5E20">👨‍💻 Developer</b><p style="font-size:12px">Aliyu Salihu</p><p style="font-size:12px">SST/NDCOM/S/2025/186</p><p style="font-size:12px">ND1 Computer Science</p></div>'}
     else if(p==='me'){hlNav('me');c.innerHTML='<div class="card" style="text-align:center"><h2 style="color:#1B5E20">Aliyu Salihu</h2><p>ND1 Computer Science</p><p style="font-size:11px">Adamawa State Poly, Yola</p><hr><p>📋 SST/NDCOM/S/2025/186</p><p>📱 07046183743</p></div><button class="btn btn-green" onclick="window.open(\'tel:07046183743\')">📞 Call Me</button><button class="btn" style="background:#25D366;color:white" onclick="window.open(\'https://wa.me/2347046183743\')">💬 WhatsApp Me</button>'}
 }
 function showSyl(i){showPage('syl',i)}
