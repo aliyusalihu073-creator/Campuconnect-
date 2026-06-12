@@ -4,89 +4,177 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Chat - CampusConnect</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{background:#F5F5F5;max-width:480px;margin:0 auto;min-height:100vh}
-.header{background:#1B5E20;color:white;padding:18px 20px;font-size:20px;font-weight:bold;text-align:center}
-.chat-area{padding:15px}
-.chat-messages{max-height:450px;overflow-y:auto;padding:10px;background:white;border-radius:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-.msg{padding:10px 14px;border-radius:14px;margin:6px 0;max-width:80%;font-size:13px}
-.msg.user{background:#1B5E20;color:white;margin-left:auto;border-bottom-right-radius:4px}
-.msg.other{background:#E8E8E8;color:#333;margin-right:auto;border-bottom-left-radius:4px}
-.msg .sender{font-size:10px;font-weight:700;margin-bottom:3px;opacity:0.8}
-.msg .text{font-size:13px;line-height:1.4}
-.msg .time{font-size:8px;opacity:0.5;text-align:right;margin-top:4px}
-.input-row{display:flex;gap:8px}
-.input-row input{flex:1;padding:12px 15px;border-radius:25px;border:2px solid #E0E0E0;font-size:13px;outline:none}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:600px;margin:0 auto;min-height:100vh}
+body.dark{background:#1a1a2e}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header h1{font-size:18px;color:white}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.chat-container{padding:12px;display:flex;flex-direction:column;height:calc(100vh - 130px)}
+.chat-messages{flex:1;overflow-y:auto;padding:8px;background:#1a1a2e;border-radius:12px;margin-bottom:10px}
+.chat-msg{padding:10px 14px;border-radius:14px;margin:6px 0;max-width:85%;font-size:13px;word-wrap:break-word}
+.chat-msg.me{background:#1B5E20;color:white;margin-left:auto;border-bottom-right-radius:4px}
+.chat-msg.other{background:#333;color:#eee;margin-right:auto;border-bottom-left-radius:4px}
+.chat-sender{font-size:10px;font-weight:700;margin-bottom:3px;opacity:0.9}
+.chat-text{font-size:13px;line-height:1.5}
+.chat-time{font-size:9px;opacity:0.6;text-align:right;margin-top:4px}
+.chat-msg img{width:100%;border-radius:8px;margin:6px 0;cursor:pointer;max-height:250px;object-fit:cover}
+.chat-msg video{width:100%;border-radius:8px;margin:6px 0;max-height:250px}
+.upload-bar{display:flex;gap:6px;margin-bottom:8px}
+.upload-bar button{flex:1;padding:10px;background:#2d2d44;color:#4caf50;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.input-row{display:flex;gap:6px}
+.input-row input{flex:1;padding:12px 15px;border-radius:25px;border:2px solid #333;background:#1a1a2e;color:white;font-size:13px;outline:none}
 .input-row input:focus{border-color:#1B5E20}
 .input-row button{padding:12px 20px;background:#1B5E20;color:white;border:none;border-radius:25px;font-weight:600;cursor:pointer;white-space:nowrap}
-.clear-btn{display:block;width:100%;padding:10px;margin-top:10px;background:#FF5722;color:white;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer}
-.footer{text-align:center;padding:20px;color:#999;font-size:11px}
+.lightbox-full{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;flex-direction:column;align-items:center;justify-content:center}
+.lightbox-full.active{display:flex}
+.lightbox-full img{max-width:100%;max-height:80vh;object-fit:contain}
+.lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:28px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none}
+.lightbox-full .dl-btn{background:#1B5E20;color:white;padding:10px 20px;border-radius:20px;margin-top:10px;border:none;font-size:14px;cursor:pointer}
+.footer{text-align:center;padding:15px;color:#555;font-size:11px}
+.footer a{color:#4caf50;text-decoration:none}
 </style>
 </head>
 <body>
 
-<div class="header">💬 Student Chat</div>
-<div class="chat-area">
-    <div class="chat-messages" id="chatMsgs">
-        <p style="text-align:center;color:#9E9E9E;padding:20px;">No messages yet. Start the conversation!</p>
-    </div>
-    <div class="input-row">
-        <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter')sendMsg()">
-        <button onclick="sendMsg()">Send</button>
-    </div>
-    <button class="clear-btn" onclick="clearChat()">🗑️ Clear All Messages</button>
-</div>
-<div class="footer">
-    <a href="index.html" style="color:#1B5E20;text-decoration:none;font-weight:600;">← Back to CampusConnect</a>
+<div class="header">
+<h1>💬 Student Chat</h1>
+<a href="index.html">← Home</a>
 </div>
 
-<script>
-var messages = JSON.parse(localStorage.getItem('cc_chat_separate') || '[]');
+<div class="chat-container">
+<div class="upload-bar">
+<button onclick="uploadToChat('image')">📷 Upload Image</button>
+<button onclick="uploadToChat('video')">🎥 Upload Video</button>
+</div>
+<div class="chat-messages" id="chatMsgs"><p style="text-align:center;color:#777;padding:20px;">Loading messages...</p></div>
+<div class="input-row">
+<input type="text" id="chatInp" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendFireChat()">
+<button onclick="sendFireChat()">Send</button>
+</div>
+</div>
 
-function renderChat(){
-    var el = document.getElementById('chatMsgs');
-    if(!el) return;
-    if(messages.length === 0){
-        el.innerHTML = '<p style="text-align:center;color:#9E9E9E;padding:20px;">No messages yet. Start the conversation!</p>';
-        return;
-    }
+<div class="footer"><a href="index.html">← Back to CampusConnect</a></div>
+
+<div class="lightbox-full" id="lightboxFull" onclick="closeLightboxFull()">
+<button class="close-btn" onclick="closeLightboxFull()">✕</button>
+<div id="lightboxContent"></div>
+<button class="dl-btn" id="dlBtn" onclick="downloadMedia()">📥 Download</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148",
+  measurementId: "G-QBR7V54P0F"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+let currentLightboxURL = '';
+let currentUser = null;
+let userProfile = null;
+
+onAuthStateChanged(auth, async function(user) {
+  if (!user) { window.location.href = 'index.html'; return; }
+  currentUser = user;
+  try {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (userDoc.exists()) userProfile = userDoc.data();
+  } catch(e) {}
+  loadChat();
+});
+
+window.sendFireChat = async function() {
+  if (!currentUser) return;
+  var inp = document.getElementById('chatInp');
+  var text = inp.value.trim();
+  if (!text) return;
+  var name = (userProfile && userProfile.username) ? userProfile.username : currentUser.email;
+  await addDoc(collection(db, 'messages'), {
+    sender: name, senderId: currentUser.uid, text: text,
+    time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), createdAt: new Date()
+  });
+  inp.value = '';
+};
+
+window.loadChat = function() {
+  var el = document.getElementById('chatMsgs'); if (!el) return;
+  var q = query(collection(db, 'messages'), orderBy('createdAt'));
+  onSnapshot(q, function(snapshot) {
     var h = '';
-    messages.forEach(function(m){
-        h += '<div class="msg ' + (m.sender === 'You' ? 'user' : 'other') + '">';
-        h += '<div class="sender">' + m.sender + '</div>';
-        h += '<div class="text">' + m.text + '</div>';
-        h += '<div class="time">' + m.time + '</div>';
-        h += '</div>';
+    snapshot.forEach(function(doc) {
+      var m = doc.data();
+      var isMe = currentUser && m.senderId === currentUser.uid;
+      h += '<div class="chat-msg ' + (isMe ? 'me' : 'other') + '">';
+      h += '<div class="chat-sender">' + m.sender + '</div>';
+      h += '<div class="chat-text">' + m.text + '</div>';
+      if (m.imageUrl) h += '<img src="' + m.imageUrl + '" onclick="event.stopPropagation();openLightboxFull(\'' + m.imageUrl + '\',\'image\')">';
+      if (m.videoUrl) h += '<video controls src="' + m.videoUrl + '"></video>';
+      h += '<div class="chat-time">' + m.time + '</div></div>';
     });
-    el.innerHTML = h;
-    el.scrollTop = el.scrollHeight;
-}
+    if (!h) h = '<p style="text-align:center;color:#777;padding:20px;">No messages yet. Start the conversation!</p>';
+    el.innerHTML = h; el.scrollTop = el.scrollHeight;
+  });
+};
 
-function sendMsg(){
-    var inp = document.getElementById('chatInput');
-    if(!inp) return;
-    var text = inp.value.trim();
-    if(!text) return;
-    messages.push({
-        sender: 'Student',
-        text: text,
-        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-    });
-    localStorage.setItem('cc_chat_separate', JSON.stringify(messages));
-    inp.value = '';
-    renderChat();
-}
+window.uploadToChat = function(type) {
+  var inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = type === 'image' ? 'image/*' : 'video/*';
+  inp.onchange = async function(e) {
+    var file = e.target.files[0]; if (!file) return;
+    var storageRef = ref(storage, 'chat/' + Date.now() + '_' + file.name);
+    try {
+      var snapshot = await uploadBytes(storageRef, file);
+      var url = await getDownloadURL(snapshot.ref);
+      var name = (userProfile && userProfile.username) ? userProfile.username : currentUser.email;
+      await addDoc(collection(db, 'messages'), {
+        sender: name, senderId: currentUser.uid,
+        text: type === 'image' ? '📷 Sent an image' : '🎥 Sent a video',
+        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        createdAt: new Date(),
+        imageUrl: type === 'image' ? url : null,
+        videoUrl: type === 'video' ? url : null
+      });
+    } catch(err) { alert('Upload failed: ' + err.message); }
+  };
+  inp.click();
+};
 
-function clearChat(){
-    if(confirm('Delete all messages? This cannot be undone.')){
-        messages = [];
-        localStorage.removeItem('cc_chat_separate');
-        renderChat();
-    }
-}
+window.openLightboxFull = function(url, type) {
+  currentLightboxURL = url;
+  var box = document.getElementById('lightboxFull');
+  var content = document.getElementById('lightboxContent');
+  if (type === 'image') content.innerHTML = '<img src="' + url + '">';
+  else content.innerHTML = '<iframe src="' + url + '" allowfullscreen style="width:100%;height:70vh;"></iframe>';
+  box.classList.add('active');
+};
 
-renderChat();
+window.closeLightboxFull = function() {
+  document.getElementById('lightboxFull').classList.remove('active');
+  currentLightboxURL = '';
+};
+
+window.downloadMedia = function() {
+  if (currentLightboxURL) window.open(currentLightboxURL, '_blank');
+};
 </script>
 </body>
-  </html>
+</html>
