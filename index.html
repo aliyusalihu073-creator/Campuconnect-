@@ -16,124 +16,66 @@
 <link rel="apple-touch-icon" href="https://i.imgur.com/I3rKaBU.jpeg">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
-body{background:#F5F5F5;max-width:480px;margin:0 auto;min-height:100vh;position:relative;overflow-x:hidden}
-body.dark{background:#1a1a2e;color:#ccc}
-body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:100px;color:rgba(0,0,0,0.03);font-weight:900;pointer-events:none;z-index:0}
-
-/* ANIMATED HERO */
-.hero{background:linear-gradient(135deg,#1B5E20,#2E7D32,#4caf50);padding:30px 20px;text-align:center;color:white;animation:heroGlow 3s ease-in-out infinite;position:relative;overflow:hidden}
-@keyframes heroGlow{0%,100%{box-shadow:0 0 20px rgba(76,175,80,0.3)}50%{box-shadow:0 0 40px rgba(76,175,80,0.6)}}
-.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 60%);animation:rotate 10s linear infinite}
-@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.hero h1{font-size:24px;font-weight:800;position:relative;z-index:1;animation:slideDown 0.8s ease}
-@keyframes slideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
-.hero p{font-size:12px;margin:8px 0;position:relative;z-index:1;animation:slideUp 0.8s ease 0.2s both}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+body{background:#0d1117;max-width:480px;margin:0 auto;min-height:100vh;position:relative;color:#fff}
+body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:100px;color:rgba(255,255,255,0.02);font-weight:900;pointer-events:none;z-index:0}
+.hero{background:linear-gradient(135deg,#0d4a1a,#1a6b2e,#2d8a4e);padding:30px 20px;text-align:center;color:white;animation:heroGlow 3s ease-in-out infinite;position:relative;overflow:hidden}
+@keyframes heroGlow{0%,100%{box-shadow:0 0 20px rgba(45,138,78,0.3)}50%{box-shadow:0 0 40px rgba(45,138,78,0.6)}}
+.hero h1{font-size:22px;font-weight:800;position:relative;z-index:1;color:#fff}
+.hero p{font-size:12px;margin:6px 0;position:relative;z-index:1;color:#cfc}
 .hero .stats-hero{display:flex;gap:15px;justify-content:center;margin-top:15px;position:relative;z-index:1}
-.hero .stat-item{text-align:center;animation:pop 0.5s ease 0.5s both}
-@keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
-.hero .stat-num{font-size:32px;font-weight:900}
-.hero .stat-label{font-size:10px;opacity:0.9}
-
-.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:white;padding:14px 20px;font-size:18px;font-weight:bold;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;justify-content:space-between}
-.header .user-info{font-size:11px;display:flex;align-items:center;gap:8px}
-.nav{display:flex;flex-wrap:wrap;background:#2E7D32;position:sticky;top:52px;z-index:99;padding:4px}
+.hero .stat-item{text-align:center;background:rgba(255,255,255,0.15);padding:12px 18px;border-radius:10px}
+.hero .stat-num{font-size:30px;font-weight:900;color:#ffd700}
+.hero .stat-label{font-size:10px;color:#fff;opacity:0.9}
+.header{background:#0d4a1a;color:white;padding:14px 20px;font-size:18px;font-weight:bold;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;justify-content:space-between}
+.nav{display:flex;flex-wrap:wrap;background:#1a6b2e;position:sticky;top:52px;z-index:99;padding:4px}
 .nav button{flex:1 1 19%;padding:12px 4px;border:none;background:rgba(255,255,255,0.1);color:white;font-size:10px;font-weight:600;cursor:pointer;border-radius:6px;margin:2px;transition:0.3s}
-.nav button:hover,.nav button.active{background:rgba(255,255,255,0.25);transform:scale(1.05)}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,0.25)}
 .content{padding:15px;position:relative;z-index:1;padding-bottom:20px}
-.card{background:white;padding:18px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:0.3s;animation:fadeInCard 0.5s ease}
-@keyframes fadeInCard{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1)}
-body.dark .card{background:#2d2d44;color:#ccc}
-.btn{width:100%;padding:14px;margin:6px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:0.3s}
-.btn:hover{transform:translateY(-2px)}
-.btn-green{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:white}
-.btn-white{background:white;color:#333;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
-body.dark .btn-white{background:#3d3d5c;color:#ccc}
-.btn-light{background:#E8F5E9;color:#1B5E20}
+.card{background:#161b22;padding:18px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.3);color:#e0e0e0;border:1px solid #30363d}
+.card h3,.card h2,.card b{color:#4caf50!important}
+.btn{width:100%;padding:14px;margin:6px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:0.3s;color:white}
+.btn-green{background:linear-gradient(135deg,#0d4a1a,#1a6b2e)}
+.btn-white{background:#21262d;color:#e0e0e0;border:1px solid #30363d}
+.btn-light{background:#1a3a2a;color:#4caf50}
 .btn-orange{background:#FF5722;color:white;text-align:center}
-.day{font-weight:700;font-size:15px;color:#1B5E20;margin:15px 0 6px 8px}
-.class-item{background:white;padding:10px 14px;margin:3px 0;border-radius:8px;font-size:12px;color:#424242}
-body.dark .class-item{background:#3d3d5c;color:#ccc}
-.lec-card{background:white;border-radius:12px;padding:16px;margin:8px 0;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-body.dark .lec-card{background:#3d3d5c}
-.lec-name{font-size:15px;font-weight:700;color:#333;margin-bottom:4px}
+.day{font-weight:700;font-size:15px;color:#4caf50;margin:15px 0 6px 8px}
+.class-item{background:#21262d;padding:10px 14px;margin:3px 0;border-radius:8px;font-size:12px;color:#e0e0e0;border:1px solid #30363d}
+.lec-card{background:#21262d;border-radius:12px;padding:16px;margin:8px 0;box-shadow:0 1px 4px rgba(0,0,0,0.3);border:1px solid #30363d}
+.lec-name{font-size:15px;font-weight:700;color:#e0e0e0;margin-bottom:4px}
+.lec-course{font-size:11px;color:#999;margin-bottom:10px}
 .lec-actions{display:flex;gap:8px}
 .lec-actions button{flex:1;padding:10px;border:none;border-radius:8px;font-weight:600;color:white;cursor:pointer;transition:0.3s}
-.lec-actions button:hover{transform:scale(1.05)}
-.lecture-text{font-size:12px;color:#424242;line-height:1.8;margin:3px 10px}
-body.dark .lecture-text{color:#ccc}
+.lecture-text{font-size:12px;color:#ccc;line-height:1.8;margin:3px 10px}
+.lecture-text strong{color:#4caf50}
 .stats-row{display:flex;gap:10px;margin:15px 0}
-.stat-box{flex:1;background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:0.3s}
-.stat-box:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
-body.dark .stat-box{background:#3d3d5c}
-.stat-num{font-size:28px;font-weight:800;color:#1B5E20}
-.stat-label{font-size:10px;color:#9E9E9E;font-weight:600}
-.news-card{background:white;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid #1B5E20;transition:0.3s;animation:fadeInCard 0.5s ease}
-.news-card:hover{border-left-color:#4caf50}
-body.dark .news-card{background:#3d3d5c}
-.news-card-title{font-size:15px;font-weight:700;color:#1B5E20;margin-bottom:4px}
-.news-card-date{font-size:10px;color:#9E9E9E;margin-bottom:8px}
-.news-card-body{font-size:13px;color:#424242;line-height:1.7}
-body.dark .news-card-body{color:#ccc}
-.news-card-category{display:inline-block;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:600;background:#E8F5E9;color:#1B5E20;margin-bottom:6px}
+.stat-box{flex:1;background:#21262d;border-radius:12px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid #30363d}
+.stat-num{font-size:28px;font-weight:800;color:#ffd700}
+.stat-label{font-size:10px;color:#999;font-weight:600}
+.news-card{background:#21262d;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.3);border-left:4px solid #4caf50;color:#e0e0e0}
+.news-card-title{font-size:15px;font-weight:700;color:#4caf50;margin-bottom:4px}
+.news-card-date{font-size:10px;color:#999;margin-bottom:8px}
+.news-card-body{font-size:13px;color:#ccc;line-height:1.7}
+.news-card-category{display:inline-block;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:600;background:#1a3a2a;color:#4caf50;margin-bottom:6px}
 .news-card img{width:100%;border-radius:8px;height:auto;max-height:none;margin:8px 0;object-fit:contain;cursor:pointer}
-.home-section-title{text-align:center;font-size:16px;color:#1B5E20;font-weight:700;margin:25px 0 10px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
-.user-bar{background:#E8F5E9;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;font-size:12px;border-radius:8px;margin:5px 15px}
-body.dark .user-bar{background:#2d2d44}
-.user-bar span{color:#1B5E20;font-weight:600}
-.user-bar button{background:#cc0000;color:white;border:none;padding:8px 14px;border-radius:6px;font-size:11px;cursor:pointer;transition:0.3s}
-.user-bar button:hover{background:#ff0000;transform:scale(1.05)}
+.home-section-title{text-align:center;font-size:16px;color:#4caf50;font-weight:700;margin:25px 0 10px}
+.user-bar{background:#1a3a2a;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;font-size:12px;border-radius:8px;margin:5px 15px;color:#e0e0e0}
+.user-bar button{background:#cc0000;color:white;border:none;padding:8px 14px;border-radius:6px;font-size:11px;cursor:pointer}
 .hidden{display:none!important}
 .footer{text-align:center;font-size:11px;padding:15px;color:#999;position:relative;z-index:1}
-.dark-toggle{position:fixed;bottom:20px;left:20px;background:#1B5E20;color:white;border:none;width:45px;height:45px;border-radius:50%;font-size:20px;cursor:pointer;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:0.3s}
-.dark-toggle:hover{transform:scale(1.1)}
+.dark-toggle{position:fixed;bottom:20px;left:20px;background:#0d4a1a;color:white;border:none;width:45px;height:45px;border-radius:50%;font-size:20px;cursor:pointer;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
 .lightbox-full{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;flex-direction:column;align-items:center;justify-content:center}
-.lightbox-full.active{display:flex}
+.lightbox-full.active{display:flex!important}
 .lightbox-full img{max-width:100%;max-height:80vh;object-fit:contain}
 .lightbox-full iframe{width:100%;height:70vh;max-width:100%}
-.lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:28px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none}
-.lightbox-full .dl-btn{background:#1B5E20;color:white;padding:10px 20px;border-radius:20px;margin-top:10px;border:none;font-size:14px;cursor:pointer}
-.visitor-counter{position:fixed;bottom:20px;right:20px;background:#1B5E20;color:white;padding:8px 14px;border-radius:20px;font-size:10px;font-weight:600;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:30px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:45px;height:45px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;z-index:10000}
+.lightbox-full .dl-btn{background:#0d4a1a;color:white;padding:12px 24px;border-radius:25px;margin-top:12px;border:none;font-size:14px;cursor:pointer;z-index:10000}
+.visitor-counter{position:fixed;bottom:20px;right:20px;background:#0d4a1a;color:white;padding:8px 14px;border-radius:20px;font-size:10px;font-weight:600;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
 </style>
 </head>
 <body>
 
-<!-- AUTO LOGIN CHECK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
-  authDomain: "campuconnect-bd52f.firebaseapp.com",
-  projectId: "campuconnect-bd52f",
-  storageBucket: "campuconnect-bd52f.firebasestorage.app",
-  messagingSenderId: "762013163609",
-  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-onAuthStateChanged(auth, function(user) {
-  if (!user) {
-    window.location.href = 'login.html';
-  } else {
-    window.currentUser = user;
-    document.getElementById('mainApp').classList.remove('hidden');
-    if (typeof showPage === 'function') showPage('home');
-  }
-});
-</script>
-
-<!-- MAIN APP -->
 <div id="mainApp" class="hidden">
-<div class="header">
-<span>🎓 CampusConnect</span>
-<div class="user-info"><span id="userDisplay"></span><button onclick="logout()" style="background:#cc0000;color:white;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer">🚪</button></div>
-</div>
+<div class="header"><span>🎓 CampusConnect</span><div style="display:flex;align-items:center;gap:8px"><span id="userDisplay" style="font-size:11px"></span><button onclick="logout()" style="background:#cc0000;color:white;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer">🚪</button></div></div>
 <div class="nav" id="navBar">
 <button onclick="showPage('home')" id="nav-home" class="active">🏠 Home</button>
 <button onclick="showPage('courses')" id="nav-courses">📚 Courses</button>
@@ -143,15 +85,15 @@ onAuthStateChanged(auth, function(user) {
 <button onclick="showPage('news')" id="nav-news">📢 News</button>
 <button onclick="showPage('papers')" id="nav-papers">📝 Papers</button>
 <button onclick="showPage('contact')" id="nav-contact">📞 Lec</button>
-<button onclick="window.open('dashboard.html','_self')">📊 Dashboard</button>
-<button onclick="window.open('chat.html','_self')">💬 Chat</button>
+<button onclick="showPage('about')" id="nav-about">ℹ️ About</button>
+<button onclick="showPage('me')" id="nav-me">👤 Me</button>
 </div>
 <div id="content" class="content"></div>
 <div class="footer">© 2026 Aliyu Salihu | Adamawa State Polytechnic, Yola</div>
 </div>
 <button class="dark-toggle" onclick="toggleDark()">🌙</button>
 <div class="visitor-counter" id="visitorCount">👁️ Visitors: 0</div>
-<div class="lightbox-full" id="lightboxFull" onclick="closeLightboxFull()">
+<div class="lightbox-full" id="lightboxFull">
 <button class="close-btn" onclick="closeLightboxFull()">✕</button>
 <div id="lightboxContent"></div>
 <button class="dl-btn" id="dlBtn" onclick="downloadMedia()">📥 Download</button>
@@ -159,7 +101,7 @@ onAuthStateChanged(auth, function(user) {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, setDoc, increment, getCount } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -182,9 +124,31 @@ window.collection = collection; window.addDoc = addDoc;
 window.query = query; window.orderBy = orderBy; window.onSnapshot = onSnapshot;
 window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
 window.storageRef = storageRef; window.uploadBytesResumable = uploadBytesResumable;
-window.getDownloadURL = getDownloadURL; window.increment = increment;
+window.getDownloadURL = getDownloadURL;
 
 let currentLightboxURL = '';
+
+// AUTO LOGIN CHECK
+onAuthStateChanged(auth, async function(user) {
+  if (!user) {
+    window.location.href = 'login.html';
+  } else {
+    window.currentUser = user;
+    document.getElementById('mainApp').classList.remove('hidden');
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        window.userProfile = userDoc.data();
+        document.getElementById('userDisplay').innerHTML = '👤 ' + (window.userProfile.username || user.email);
+      } else {
+        document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
+      }
+    } catch(e) {
+      document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
+    }
+    if (typeof showPage === 'function') showPage('home');
+  }
+});
 
 // VISITOR COUNTER
 async function updateVisitorCount() {
@@ -204,71 +168,52 @@ async function updateVisitorCount() {
 }
 updateVisitorCount();
 
-// AUTH STATE
-onAuthStateChanged(auth, async function(user) {
-  if (user) {
-    window.currentUser = user;
-    try {
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (userDoc.exists()) {
-        window.userProfile = userDoc.data();
-        document.getElementById('userDisplay').innerHTML = '👤 ' + (window.userProfile.username || user.email);
-      } else {
-        document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
-      }
-    } catch(e) {
-      document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
-    }
-  } else {
-    window.currentUser = null; window.userProfile = null;
-  }
-});
+// LOGOUT
+window.logout = function() {
+  signOut(auth).then(function() {
+    window.location.href = 'login.html';
+  });
+};
 
-window.logout = function() { signOut(auth); };
-
-// UPLOAD FUNCTIONS
+// UPLOAD
 window.uploadImageToChat = function() { document.getElementById('imageFileInput').click(); };
 window.uploadVideoToChat = function() { document.getElementById('videoFileInput').click(); };
 
 window.handleImageUpload = async function(event) {
   var file = event.target.files[0];
-  if (!file) return;
-  if (!window.currentUser) { alert('Please login first!'); return; }
+  if (!file || !window.currentUser) return;
   try {
     var sRef = storageRef(storage, 'chat/' + Date.now() + '_' + file.name);
     var uploadTask = uploadBytesResumable(sRef, file);
-    uploadTask.on('state_changed', null, function(err){ alert('Upload failed'); }, async function() {
+    uploadTask.on('state_changed', null, function(err){}, async function() {
       var url = await getDownloadURL(uploadTask.snapshot.ref);
       var name = (window.userProfile && window.userProfile.username) ? window.userProfile.username : window.currentUser.email;
       await addDoc(collection(db, 'messages'), {
         sender: name, senderId: window.currentUser.uid,
-        text: '📷 Sent an image',
-        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        text: '📷 Sent an image', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
         createdAt: new Date(), imageUrl: url, videoUrl: null
       });
     });
-  } catch(err) { alert('Upload failed: ' + err.message); }
+  } catch(err) {}
   event.target.value = '';
 };
 
 window.handleVideoUpload = async function(event) {
   var file = event.target.files[0];
-  if (!file) return;
-  if (!window.currentUser) { alert('Please login first!'); return; }
+  if (!file || !window.currentUser) return;
   try {
     var sRef = storageRef(storage, 'chat/' + Date.now() + '_' + file.name);
     var uploadTask = uploadBytesResumable(sRef, file);
-    uploadTask.on('state_changed', null, function(err){ alert('Upload failed'); }, async function() {
+    uploadTask.on('state_changed', null, function(err){}, async function() {
       var url = await getDownloadURL(uploadTask.snapshot.ref);
       var name = (window.userProfile && window.userProfile.username) ? window.userProfile.username : window.currentUser.email;
       await addDoc(collection(db, 'messages'), {
         sender: name, senderId: window.currentUser.uid,
-        text: '🎥 Sent a video',
-        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        text: '🎥 Sent a video', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
         createdAt: new Date(), imageUrl: null, videoUrl: url
       });
     });
-  } catch(err) { alert('Upload failed: ' + err.message); }
+  } catch(err) {}
   event.target.value = '';
 };
 
@@ -277,13 +222,13 @@ window.openLightboxFull = function(url, type) {
   currentLightboxURL = url;
   var box = document.getElementById('lightboxFull');
   var content = document.getElementById('lightboxContent');
-  if (type === 'image') content.innerHTML = '<img src="' + url + '">';
-  else content.innerHTML = '<iframe src="' + url + '" allowfullscreen></iframe>';
-  box.classList.add('active');
+  box.style.display = 'flex';
+  if (type === 'image') content.innerHTML = '<img src="' + url + '" style="max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px;">';
+  else content.innerHTML = '<iframe src="' + url + '" allowfullscreen style="width:100%;height:70vh;border-radius:8px;"></iframe>';
 };
 
 window.closeLightboxFull = function() {
-  document.getElementById('lightboxFull').classList.remove('active');
+  document.getElementById('lightboxFull').style.display = 'none';
   currentLightboxURL = '';
 };
 
@@ -292,9 +237,9 @@ window.downloadMedia = function() {
 };
 
 window.toggleDark = function() {
-  document.body.classList.toggle('dark');
+  document.body.style.background = document.body.style.background === 'rgb(245,245,245)' ? '#0d1117' : '#F5F5F5';
   var btn = document.querySelector('.dark-toggle');
-  btn.innerHTML = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  btn.innerHTML = document.body.style.background === 'rgb(245,245,245)' ? '🌙' : '☀️';
 };
 </script>
 
@@ -310,43 +255,11 @@ var schedule=[{day:"MONDAY",cls:["8:00-10:00 | COM111 | Hall A","10:00-12:00 | G
 
 function getVidEmb(u){if(!u||u.length<5)return'';u=u.trim();if(u.indexOf('youtube.com')>=0||u.indexOf('youtu.be')>=0){var v='';if(u.indexOf('youtu.be')>=0)v=u.split('/').pop().split('?')[0];else{v=u.split('v=')[1];if(v&&v.indexOf('&')>=0)v=v.split('&')[0];}if(v)return'<iframe src="https://www.youtube.com/embed/'+v+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}if(u.indexOf('vimeo.com')>=0){var vi=u.split('/').pop().split('?')[0];if(vi)return'<iframe src="https://player.vimeo.com/video/'+vi+'" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}return'<video controls playsinline src="'+u+'" style="width:100%;border-radius:8px;max-height:250px;cursor:pointer" onclick="openLightboxFull(\''+u+'\',\'video\')"></video>';}
 
-// SMART SEARCH
-function smartSearch(q){
-  q = q.toLowerCase().trim();
-  if(!q) return;
-  var results = [];
-  courses.forEach(function(c,i){
-    if(c.toLowerCase().indexOf(q)>=0) results.push({type:'Course',name:c,action:'showSyl('+i+')'});
-    topics[i].forEach(function(t,k){
-      if(t.toLowerCase().indexOf(q)>=0) results.push({type:'Topic',name:t+' ('+c+')',action:'showLec('+i+','+k+')'});
-    });
-  });
-  lecturers.forEach(function(l){
-    if(l.name.toLowerCase().indexOf(q)>=0 || l.course.toLowerCase().indexOf(q)>=0) results.push({type:'Lecturer',name:l.name+' - '+l.course,action:''});
-  });
-  return results;
-}
-
-function searchApp(q){
-  q=q.toLowerCase().trim();
-  var c=document.getElementById("content");
-  if(q===""){showPage("home");return}
-  var results = smartSearch(q);
-  var h='<div class="card"><b>🔍 Search: '+q+'</b></div>';
-  if(results.length===0){h+='<div class="card"><p>No results found.</p></div>';c.innerHTML=h;return}
-  results.forEach(function(r){
-    if(r.action){
-      h+='<button class="btn btn-white" onclick="'+r.action+'">'+r.type+': '+r.name+'</button>';
-    } else {
-      h+='<div class="card"><p>'+r.type+': '+r.name+'</p></div>';
-    }
-  });
-  c.innerHTML=h;
-}
-
+// NEWS - NEWEST FIRST
 function loadNews(cb){
   var allNews = [];
   var fetched = 0;
+  
   fetch("https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet=Sheet1&v="+Date.now())
   .then(function(r){return r.text()})
   .then(function(csv){
@@ -354,7 +267,7 @@ function loadNews(cb){
     for(var i=1;i<ls.length;i++){
       if(ls[i].trim()==='')continue;
       var co=ls[i].split(',');
-      if(co.length>=6) allNews.push({t:co[0].replace(/"/g,'').trim(),d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim(),source:'sheets'});
+      if(co.length>=6) allNews.push({t:co[0].replace(/"/g,'').trim(),d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim(),source:'sheets',createdAt:new Date(co[1])});
     }
     fetched++;
     if(fetched >= 2) finishNews();
@@ -373,7 +286,8 @@ function loadNews(cb){
           img: f.imageUrl ? f.imageUrl.stringValue : '',
           vid: f.videoUrl ? f.videoUrl.stringValue : '',
           cat: f.category ? f.category.stringValue : '',
-          source: 'firestore'
+          source: 'firestore',
+          createdAt: f.createdAt ? new Date(f.createdAt.timestampValue) : new Date()
         });
       });
     }
@@ -382,7 +296,7 @@ function loadNews(cb){
   }).catch(function(){ fetched++; if(fetched >= 2) finishNews(); });
   
   function finishNews(){
-    allNews.sort(function(a,b){ return new Date(b.d) - new Date(a.d); });
+    allNews.sort(function(a,b){ return b.createdAt - a.createdAt; });
     cb(allNews);
   }
 }
@@ -391,7 +305,7 @@ function showNews(id){
   var el=document.getElementById(id);if(!el)return;
   el.innerHTML='Loading...';
   loadNews(function(a){
-    if(a.length===0){el.innerHTML='<div class="card"><p style="text-align:center;color:#9E9E9E;">No announcements yet.</p></div>';return}
+    if(a.length===0){el.innerHTML='<div class="card"><p style="text-align:center;color:#999;">No announcements yet.</p></div>';return}
     var h='';
     a.forEach(function(x){
       h+='<div class="news-card">';
@@ -407,6 +321,7 @@ function showNews(id){
   });
 }
 
+function searchApp(q){q=q.toLowerCase().trim();var c=document.getElementById("content");if(q===""){showPage("home");return}var h='<div class="card"><b>Search: '+q+'</b></div>';var f=false;courses.forEach(function(cn,i){if(cn.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-white" onclick="showSyl('+i+')">'+cn+'</button>';f=true}topics[i].forEach(function(t,k){if(t.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+t+'</button>';f=true}})});if(!f)h+='<div class="card"><p>No results.</p></div>';c.innerHTML=h;}
 function hlNav(id){document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('active')});var el=document.getElementById('nav-'+id);if(el)el.classList.add('active')}
 
 function showPage(p,d){
@@ -422,15 +337,15 @@ function showPage(p,d){
       h+='<div class="home-section-title">📰 LATEST NEWS</div><div id="newsContainer">Loading...</div>';
       c.innerHTML=h;showNews('newsContainer');
     }
-      else if(p==='courses'){hlNav('courses');var ch='<div class="card"><b>📚 ND1 Courses</b><p style="font-size:11px;color:#FF6600">Tap a course</p></div>';courses.forEach(function(n,i){ch+='<button class="btn btn-white" onclick="showSyl('+i+')">📘 '+n+'</button>'});c.innerHTML=ch}
-    else if(p==='syl'){hlNav('courses');var i=d;var sh='<div class="card"><b>📖 '+courses[i]+'</b><p style="font-size:11px;color:#FF6600">Tap a topic</p></div>';topics[i].forEach(function(t,k){sh+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+(k+1)+'. '+t+'</button>'});sh+='<button class="btn btn-orange" onclick="showPage(\'courses\')">← Back</button>';c.innerHTML=sh}
-    else if(p==='lec'){hlNav('courses');var ci=d[0],ti=d[1];c.innerHTML='<div class="card"><h3 style="color:#1B5E20">📖 '+topics[ci][ti]+'</h3><p style="font-size:11px;color:#757575">'+courses[ci]+'</p></div><div style="padding:5px"><p class="lecture-text"><strong>🎯 Learning Objectives</strong></p><p class="lecture-text">✓ Understand all key concepts of '+topics[ci][ti]+'</p><p class="lecture-text"><strong>📝 Detailed Explanation</strong></p><p class="lecture-text">'+topics[ci][ti]+' is a fundamental topic in '+courses[ci]+'. This comprehensive lecture covers definitions, core principles, practical examples, and exam-focused tips to ensure mastery of the subject matter.</p><p class="lecture-text"><strong>⭐ Rate this Topic:</strong></p><p class="lecture-text" id="ratingStars">⭐⭐⭐⭐⭐</p><p class="lecture-text"><strong>✅ Summary</strong></p><p class="lecture-text">Master this topic thoroughly for exam success.</p><p class="lecture-text"><strong>📌 Prepared by: Aliyu Salihu | ND1 Computer Science</strong></p></div><button class="btn btn-orange" onclick="showSyl('+ci+')">← Back</button>'}
+      else if(p==='courses'){hlNav('courses');var ch='<div class="card"><b>📚 ND1 Courses</b><p style="font-size:11px;color:#4caf50;">Tap a course</p></div>';courses.forEach(function(n,i){ch+='<button class="btn btn-white" onclick="showSyl('+i+')">📘 '+n+'</button>'});c.innerHTML=ch}
+    else if(p==='syl'){hlNav('courses');var i=d;var sh='<div class="card"><b>📖 '+courses[i]+'</b><p style="font-size:11px;color:#4caf50;">Tap a topic</p></div>';topics[i].forEach(function(t,k){sh+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+(k+1)+'. '+t+'</button>'});sh+='<button class="btn btn-orange" onclick="showPage(\'courses\')">← Back</button>';c.innerHTML=sh}
+    else if(p==='lec'){hlNav('courses');var ci=d[0],ti=d[1];c.innerHTML='<div class="card"><h3 style="color:#4caf50;">📖 '+topics[ci][ti]+'</h3><p style="font-size:11px;color:#999;">'+courses[ci]+'</p></div><div style="padding:5px"><p class="lecture-text"><strong>🎯 Learning Objectives</strong></p><p class="lecture-text">✓ Understand all key concepts of '+topics[ci][ti]+'</p><p class="lecture-text"><strong>📝 Detailed Explanation</strong></p><p class="lecture-text">'+topics[ci][ti]+' is a fundamental topic in '+courses[ci]+'. This comprehensive lecture covers definitions, core principles, practical examples, and exam-focused tips to ensure mastery of the subject matter.</p><p class="lecture-text"><strong>⭐ Rating:</strong> ⭐⭐⭐⭐⭐</p><p class="lecture-text"><strong>✅ Summary</strong></p><p class="lecture-text">Master this topic thoroughly for exam success.</p><p class="lecture-text"><strong>📌 Prepared by: Aliyu Salihu | ND1 Computer Science</strong></p></div><button class="btn btn-orange" onclick="showSyl('+ci+')">← Back</button>'}
     else if(p==='timetable'){hlNav('timetable');var th='<div class="card"><b>🗓️ Weekly Timetable</b></div>';schedule.forEach(function(d){th+='<div class="day">▌ '+d.day+'</div>';d.cls.forEach(function(cl){th+='<div class="class-item">'+cl+'</div>'})});c.innerHTML=th}
     else if(p==='news'){hlNav('news');c.innerHTML='<div class="card"><b>📢 All Announcements</b></div><div id="fullNewsContainer">Loading...</div>';showNews('fullNewsContainer')}
     else if(p==='papers'){hlNav('papers');c.innerHTML='<div class="card"><b>📝 Past Questions</b></div><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 COM111 - 2023 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 COM113 - 2023 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 MTH111 - 2022 📥</button><button class="btn btn-white" onclick="window.open(\'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf\')">📄 GNS101 - 2022 📥</button>'}
-    else if(p==='contact'){hlNav('contact');var lh='<div class="card"><b>📞 Contact Lecturers</b></div>';lecturers.forEach(function(l){lh+='<div class="lec-card"><div class="lec-name">👨‍🏫 '+l.name+'</div><div class="lec-course">📘 '+l.course+'</div><div class="lec-actions"><button style="background:#25D366" onclick="window.open(\'https://wa.me/'+l.phone+'\')">💬 WhatsApp</button><button style="background:#1B5E20" onclick="window.open(\'tel:'+l.phone+'\')">📞 Call</button></div></div>'});c.innerHTML=lh}
-    else if(p==='about'){hlNav('about');c.innerHTML='<div class="card"><h3 style="color:#1B5E20">ℹ️ About CampusConnect</h3><p style="font-size:11px">Version '+APP_VERSION+' - Ultimate Edition</p></div><div class="card"><b style="color:#1B5E20">✨ Features</b><p style="font-size:12px">✅ 8 ND1 Courses with Full Lectures</p><p style="font-size:12px">✅ 80 Topics with Textbook Notes</p><p style="font-size:12px">✅ Weekly Timetable</p><p style="font-size:12px">✅ Google Sheets + Firestore News</p><p style="font-size:12px">✅ Real-time Firebase Chat</p><p style="font-size:12px">✅ Student Login with Strong Password</p><p style="font-size:12px">✅ Upload Images & Videos</p><p style="font-size:12px">✅ Full Screen Media View</p><p style="font-size:12px">✅ Dark/Light Mode</p><p style="font-size:12px">✅ AI Study Assistant</p><p style="font-size:12px">✅ Smart Search</p><p style="font-size:12px">✅ Visitor Counter</p><p style="font-size:12px">✅ Animated Landing Page</p></div><div class="card"><b style="color:#1B5E20">🏫 Built For</b><p style="font-size:12px">Adamawa State Polytechnic, Yola</p><p style="font-size:12px">Department of Computer Science</p><p style="font-size:12px">ND1 - 2025/2026 Session</p></div><div class="card"><b style="color:#1B5E20">👨‍💻 Developer</b><p style="font-size:12px">Aliyu Salihu</p><p style="font-size:12px">SST/NDCOM/S/2025/186</p><p style="font-size:12px">ND1 Computer Science</p></div>'}
-    else if(p==='me'){hlNav('me');c.innerHTML='<div class="card" style="text-align:center"><h2 style="color:#1B5E20">Aliyu Salihu</h2><p>ND1 Computer Science</p><p style="font-size:11px">Adamawa State Poly, Yola</p><hr><p>📋 SST/NDCOM/S/2025/186</p><p>📱 07046183743</p></div><button class="btn btn-green" onclick="window.open(\'tel:07046183743\')">📞 Call Me</button><button class="btn" style="background:#25D366;color:white" onclick="window.open(\'https://wa.me/2347046183743\')">💬 WhatsApp Me</button>'}
+    else if(p==='contact'){hlNav('contact');var lh='<div class="card"><b>📞 Contact Lecturers</b></div>';lecturers.forEach(function(l){lh+='<div class="lec-card"><div class="lec-name">👨‍🏫 '+l.name+'</div><div class="lec-course">📘 '+l.course+'</div><div class="lec-actions"><button style="background:#25D366" onclick="window.open(\'https://wa.me/'+l.phone+'\')">💬 WhatsApp</button><button style="background:#0d4a1a" onclick="window.open(\'tel:'+l.phone+'\')">📞 Call</button></div></div>'});c.innerHTML=lh}
+    else if(p==='about'){hlNav('about');c.innerHTML='<div class="card"><h3 style="color:#4caf50;">ℹ️ About CampusConnect</h3><p style="font-size:11px;color:#999;">Version '+APP_VERSION+' - Ultimate Edition</p></div><div class="card"><b style="color:#4caf50;">✨ Features</b><p style="font-size:12px;color:#ccc;">✅ 8 ND1 Courses with Full Lectures</p><p style="font-size:12px;color:#ccc;">✅ 80 Topics with Textbook Notes</p><p style="font-size:12px;color:#ccc;">✅ Weekly Timetable</p><p style="font-size:12px;color:#ccc;">✅ Google Sheets + Firestore News</p><p style="font-size:12px;color:#ccc;">✅ Real-time Firebase Chat</p><p style="font-size:12px;color:#ccc;">✅ Student Login with Strong Password</p><p style="font-size:12px;color:#ccc;">✅ Upload Images & Videos</p><p style="font-size:12px;color:#ccc;">✅ Full Screen Media View</p><p style="font-size:12px;color:#ccc;">✅ Visitor Counter</p><p style="font-size:12px;color:#ccc;">✅ Animated Landing Page</p><p style="font-size:12px;color:#ccc;">✅ Smart Search</p><p style="font-size:12px;color:#ccc;">✅ Student Dashboard & Leaderboard</p></div><div class="card"><b style="color:#4caf50;">🏫 Built For</b><p style="font-size:12px;color:#ccc;">Adamawa State Polytechnic, Yola</p><p style="font-size:12px;color:#ccc;">Department of Computer Science</p><p style="font-size:12px;color:#ccc;">ND1 - 2025/2026 Session</p></div><div class="card"><b style="color:#4caf50;">👨‍💻 Developer</b><p style="font-size:12px;color:#ccc;">Aliyu Salihu</p><p style="font-size:12px;color:#ccc;">SST/NDCOM/S/2025/186</p><p style="font-size:12px;color:#ccc;">ND1 Computer Science</p></div>'}
+    else if(p==='me'){hlNav('me');c.innerHTML='<div class="card" style="text-align:center"><h2 style="color:#4caf50;">Aliyu Salihu</h2><p style="color:#ccc;">ND1 Computer Science</p><p style="font-size:11px;color:#999;">Adamawa State Poly, Yola</p><hr style="border-color:#30363d;"><p style="color:#ccc;">📋 SST/NDCOM/S/2025/186</p><p style="color:#ccc;">📱 07046183743</p></div><button class="btn btn-green" onclick="window.open(\'tel:07046183743\')">📞 Call Me</button><button class="btn" style="background:#25D366;color:white" onclick="window.open(\'https://wa.me/2347046183743\')">💬 WhatsApp Me</button>'}
 }
 function showSyl(i){showPage('syl',i)}
 function showLec(i,k){showPage('lec',[i,k])}
