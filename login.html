@@ -21,19 +21,20 @@ h1{color:#4caf50;font-size:24px;margin-bottom:5px}
 .input-group label{color:#aaa;font-size:11px;font-weight:600;display:block;margin-bottom:4px}
 .input-group input{width:100%;padding:14px 16px;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:14px;outline:none;transition:0.3s}
 .input-group input:focus{border-color:#4caf50;box-shadow:0 0 12px rgba(76,175,80,0.2)}
-.btn{width:100%;padding:15px;margin:15px 0;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#1B5E20,#4caf50);color:white;transition:0.3s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,94,32,0.4)}
+.btn{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:0.3s;color:white}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#4caf50)}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,94,32,0.4)}
+.btn-google{background:white;color:#333;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-google:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,0.2)}
+.btn-google img{width:20px;height:20px}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:#999;font-size:11px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#333}
 .link{color:#4caf50;font-size:12px;cursor:pointer;text-decoration:none;margin:5px 0;display:inline-block}
 .link:hover{text-decoration:underline}
 .checkbox-row{display:flex;align-items:center;gap:8px;margin:10px 0;color:#aaa;font-size:12px}
 .checkbox-row input{accent-color:#4caf50}
 .error{color:#f44336;font-size:11px;text-align:center;margin:5px 0;display:none}
 .success{color:#4caf50;font-size:11px;text-align:center;margin:5px 0;display:none}
-.password-strength{height:4px;background:#333;border-radius:2px;margin-top:5px;overflow:hidden}
-.strength-bar{height:100%;width:0%;transition:0.3s;border-radius:2px}
-.strength-weak{background:#f44336}
-.strength-medium{background:#ff9800}
-.strength-strong{background:#4caf50}
 </style>
 </head>
 <body>
@@ -43,6 +44,14 @@ h1{color:#4caf50;font-size:24px;margin-bottom:5px}
 <div class="logo">🎓</div>
 <h1>CampusConnect</h1>
 <p class="subtitle">Adamawa State Polytechnic, Yola</p>
+
+<!-- Google Sign-In Button -->
+<button class="btn btn-google" onclick="signInWithGoogle()">
+<img src="https://www.google.com/favicon.ico" alt="G"> Sign in with Google
+</button>
+
+<div class="divider">OR LOGIN WITH EMAIL</div>
+
 <div class="input-group">
 <label>📧 Email Address</label>
 <input type="email" id="loginEmail" placeholder="Enter your email">
@@ -52,10 +61,11 @@ h1{color:#4caf50;font-size:24px;margin-bottom:5px}
 <input type="password" id="loginPass" placeholder="Enter your password">
 </div>
 <div class="checkbox-row">
-<input type="checkbox" id="rememberMe"><label for="rememberMe">Remember me (stay logged in)</label>
+<input type="checkbox" id="rememberMe"><label for="rememberMe">Remember me</label>
 </div>
 <p class="error" id="loginError"></p>
-<button class="btn" onclick="signIn()">🔐 Login</button>
+<p class="success" id="loginSuccess"></p>
+<button class="btn btn-green" onclick="signIn()">🔐 Login</button>
 <p style="margin-top:10px;"><a href="register.html" class="link">📝 Create New Account</a></p>
 <p><a href="index.html" class="link">← Back to Home</a></p>
 </div>
@@ -63,7 +73,7 @@ h1{color:#4caf50;font-size:24px;margin-bottom:5px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, GoogleAuthProvider, signInWithPopup, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
@@ -76,11 +86,17 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 // Check if already logged in
 onAuthStateChanged(auth, function(user) {
   if (user) {
-    window.location.href = 'index.html';
+    if (user.emailVerified) {
+      window.location.href = 'index.html';
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('loginError').innerHTML = '⚠️ Please verify your email first. Check your inbox.';
+    }
   }
 });
 
@@ -90,21 +106,16 @@ if (localStorage.getItem('rememberMe') === 'true') {
   setPersistence(auth, browserLocalPersistence);
 }
 
+// Email Sign In
 window.signIn = async function() {
   var e = document.getElementById('loginEmail').value.trim();
   var p = document.getElementById('loginPass').value.trim();
   var err = document.getElementById('loginError');
-  
   err.style.display = 'none';
   
-  if (!e || !p) {
-    err.innerHTML = 'Please fill all fields';
-    err.style.display = 'block';
-    return;
-  }
+  if (!e || !p) { err.innerHTML = 'Please fill all fields'; err.style.display = 'block'; return; }
   
   try {
-    // Remember Me
     if (document.getElementById('rememberMe').checked) {
       localStorage.setItem('rememberMe', 'true');
       await setPersistence(auth, browserLocalPersistence);
@@ -112,11 +123,33 @@ window.signIn = async function() {
       localStorage.removeItem('rememberMe');
     }
     
-    await signInWithEmailAndPassword(auth, e, p);
+    var cred = await signInWithEmailAndPassword(auth, e, p);
+    
+    if (!cred.user.emailVerified) {
+      await sendEmailVerification(cred.user);
+      err.innerHTML = '⚠️ Email not verified. A new verification link has been sent to your email.';
+      err.style.display = 'block';
+      await auth.signOut();
+      return;
+    }
+    
     window.location.href = 'index.html';
   } catch(error) {
     err.innerHTML = '❌ ' + error.message;
     err.style.display = 'block';
+  }
+};
+
+// Google Sign In
+window.signInWithGoogle = async function() {
+  try {
+    var result = await signInWithPopup(auth, provider);
+    if (result.user) {
+      window.location.href = 'index.html';
+    }
+  } catch(error) {
+    document.getElementById('loginError').innerHTML = '❌ ' + error.message;
+    document.getElementById('loginError').style.display = 'block';
   }
 };
 </script>
