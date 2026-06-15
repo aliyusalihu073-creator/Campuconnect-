@@ -20,8 +20,14 @@ h1{color:#4caf50;font-size:22px;margin-bottom:5px}
 .input-group label{color:#aaa;font-size:11px;font-weight:600;display:block;margin-bottom:3px}
 .input-group input{width:100%;padding:13px 16px;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none;transition:0.3s}
 .input-group input:focus{border-color:#4caf50;box-shadow:0 0 12px rgba(76,175,80,0.2)}
-.btn{width:100%;padding:15px;margin:15px 0;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#1B5E20,#4caf50);color:white;transition:0.3s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,94,32,0.4)}
+.btn{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:0.3s;color:white}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#4caf50)}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,94,32,0.4)}
+.btn-google{background:white;color:#333;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-google:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,0.2)}
+.btn-google img{width:20px;height:20px}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:#999;font-size:11px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#333}
 .link{color:#4caf50;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block}
 .link:hover{text-decoration:underline}
 .password-strength{height:5px;background:#333;border-radius:3px;margin-top:5px;overflow:hidden}
@@ -41,6 +47,14 @@ h1{color:#4caf50;font-size:22px;margin-bottom:5px}
 <div class="logo">📝</div>
 <h1>Create Account</h1>
 <p class="subtitle">Join CampusConnect - Adamawa State Polytechnic, Yola</p>
+
+<!-- Google Sign-Up -->
+<button class="btn btn-google" onclick="signUpWithGoogle()">
+<img src="https://www.google.com/favicon.ico" alt="G"> Sign up with Google
+</button>
+
+<div class="divider">OR REGISTER WITH EMAIL</div>
+
 <div class="input-group">
 <label>👤 Username</label>
 <input type="text" id="regUser" placeholder="Choose a username">
@@ -65,12 +79,12 @@ h1{color:#4caf50;font-size:22px;margin-bottom:5px}
 <span class="unmet" id="req1">❌ Minimum 8 characters</span>
 <span class="unmet" id="req2">❌ At least 1 uppercase letter</span>
 <span class="unmet" id="req3">❌ At least 1 number</span>
-<span class="unmet" id="req4">❌ At least 1 special character (!@#$%)</span>
+<span class="unmet" id="req4">❌ At least 1 special character</span>
 </div>
 </div>
 <p class="error" id="regError"></p>
 <p class="success" id="regSuccess"></p>
-<button class="btn" onclick="signUp()">📝 Create Account</button>
+<button class="btn btn-green" onclick="signUp()">📝 Create Account</button>
 <p style="margin-top:10px;"><a href="login.html" class="link">🔐 Already have an account? Login</a></p>
 <p><a href="index.html" class="link">← Back to Home</a></p>
 </div>
@@ -78,7 +92,7 @@ h1{color:#4caf50;font-size:22px;margin-bottom:5px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -93,36 +107,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
 window.checkPasswordStrength = function() {
   var pass = document.getElementById('regPass').value;
   var bar = document.getElementById('strengthBar');
-  var score = 0;
-  
-  // Check requirements
-  var r1 = pass.length >= 8;
-  var r2 = /[A-Z]/.test(pass);
-  var r3 = /[0-9]/.test(pass);
-  var r4 = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
-  
-  if(r1) score++;
-  if(r2) score++;
-  if(r3) score++;
-  if(r4) score++;
-  
-  bar.style.width = (score * 25) + '%';
-  if(score <= 1) bar.className = 'strength-bar strength-weak';
-  else if(score <= 3) bar.className = 'strength-bar strength-medium';
-  else bar.className = 'strength-bar strength-strong';
-  
-  document.getElementById('req1').className = r1 ? 'met' : 'unmet';
-  document.getElementById('req1').innerHTML = (r1 ? '✅' : '❌') + ' Minimum 8 characters';
-  document.getElementById('req2').className = r2 ? 'met' : 'unmet';
-  document.getElementById('req2').innerHTML = (r2 ? '✅' : '❌') + ' At least 1 uppercase letter';
-  document.getElementById('req3').className = r3 ? 'met' : 'unmet';
-  document.getElementById('req3').innerHTML = (r3 ? '✅' : '❌') + ' At least 1 number';
-  document.getElementById('req4').className = r4 ? 'met' : 'unmet';
-  document.getElementById('req4').innerHTML = (r4 ? '✅' : '❌') + ' At least 1 special character';
+  var r1 = pass.length >= 8, r2 = /[A-Z]/.test(pass), r3 = /[0-9]/.test(pass), r4 = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
+  var score = (r1?1:0)+(r2?1:0)+(r3?1:0)+(r4?1:0);
+  bar.style.width = (score*25)+'%';
+  if(score<=1) bar.className='strength-bar strength-weak';
+  else if(score<=3) bar.className='strength-bar strength-medium';
+  else bar.className='strength-bar strength-strong';
+  document.getElementById('req1').className=r1?'met':'unmet'; document.getElementById('req1').innerHTML=(r1?'✅':'❌')+' Minimum 8 characters';
+  document.getElementById('req2').className=r2?'met':'unmet'; document.getElementById('req2').innerHTML=(r2?'✅':'❌')+' At least 1 uppercase';
+  document.getElementById('req3').className=r3?'met':'unmet'; document.getElementById('req3').innerHTML=(r3?'✅':'❌')+' At least 1 number';
+  document.getElementById('req4').className=r4?'met':'unmet'; document.getElementById('req4').innerHTML=(r4?'✅':'❌')+' At least 1 special character';
 };
 
 window.signUp = async function() {
@@ -133,21 +132,11 @@ window.signUp = async function() {
   var pw = document.getElementById('regPass').value;
   var err = document.getElementById('regError');
   var suc = document.getElementById('regSuccess');
+  err.style.display = 'none'; suc.style.display = 'none';
   
-  err.style.display = 'none';
-  suc.style.display = 'none';
-  
-  if (!u || !e || !p || !r || !pw) {
-    err.innerHTML = 'Please fill all fields';
-    err.style.display = 'block';
-    return;
-  }
-  
-  // Strong password check
+  if (!u || !e || !p || !r || !pw) { err.innerHTML = 'Please fill all fields'; err.style.display = 'block'; return; }
   if (pw.length < 8 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw) || !/[!@#$%^&*(),.?":{}|<>]/.test(pw)) {
-    err.innerHTML = 'Password does not meet all requirements';
-    err.style.display = 'block';
-    return;
+    err.innerHTML = 'Password does not meet requirements'; err.style.display = 'block'; return;
   }
   
   try {
@@ -155,14 +144,34 @@ window.signUp = async function() {
     await setDoc(doc(db, 'users', cred.user.uid), {
       username: u, email: e, phone: p, regNo: r, createdAt: new Date()
     });
-    suc.innerHTML = '✅ Account created! Redirecting to login...';
+    await sendEmailVerification(cred.user);
+    suc.innerHTML = '✅ Account created! Verification email sent to ' + e + '. Please check your inbox.';
     suc.style.display = 'block';
-    setTimeout(function(){ window.location.href = 'login.html'; }, 2000);
+    setTimeout(function(){ window.location.href = 'login.html'; }, 3000);
   } catch(error) {
     err.innerHTML = '❌ ' + error.message;
     err.style.display = 'block';
   }
 };
+
+window.signUpWithGoogle = async function() {
+  try {
+    var result = await signInWithPopup(auth, provider);
+    if (result.user) {
+      await setDoc(doc(db, 'users', result.user.uid), {
+        username: result.user.displayName || 'Student',
+        email: result.user.email,
+        phone: '',
+        regNo: '',
+        createdAt: new Date()
+      }, { merge: true });
+      window.location.href = 'index.html';
+    }
+  } catch(error) {
+    document.getElementById('regError').innerHTML = '❌ ' + error.message;
+    document.getElementById('regError').style.display = 'block';
+  }
+};
 </script>
 </body>
-  </html>
+</html>
