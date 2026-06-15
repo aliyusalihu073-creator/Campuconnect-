@@ -53,6 +53,7 @@ body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(
 .stat-label{font-size:10px;color:#999;font-weight:600}
 .news-card{background:#21262d;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.3);border-left:4px solid #4caf50;color:#e0e0e0}
 .news-card-title{font-size:15px;font-weight:700;color:#4caf50;margin-bottom:4px}
+.news-card-author{font-size:10px;color:#999;margin-bottom:4px}
 .news-card-date{font-size:10px;color:#999;margin-bottom:8px}
 .news-card-body{font-size:13px;color:#ccc;line-height:1.7}
 .news-card-category{display:inline-block;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:600;background:#1a3a2a;color:#4caf50;margin-bottom:6px}
@@ -70,6 +71,8 @@ body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(
 .lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:30px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:45px;height:45px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;z-index:10000}
 .lightbox-full .dl-btn{background:#0d4a1a;color:white;padding:12px 24px;border-radius:25px;margin-top:12px;border:none;font-size:14px;cursor:pointer;z-index:10000}
 .visitor-counter{position:fixed;bottom:20px;right:20px;background:#0d4a1a;color:white;padding:8px 14px;border-radius:20px;font-size:10px;font-weight:600;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+.toast{position:fixed;top:20px;right:20px;background:#4caf50;color:white;padding:12px 20px;border-radius:8px;font-size:12px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
 </style>
 </head>
 <body>
@@ -101,7 +104,7 @@ body::after{content:"ASPLY";position:fixed;top:50%;left:50%;transform:translate(
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, setDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -123,10 +126,20 @@ window.signOut = signOut; window.onAuthStateChanged = onAuthStateChanged;
 window.collection = collection; window.addDoc = addDoc;
 window.query = query; window.orderBy = orderBy; window.onSnapshot = onSnapshot;
 window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
+window.where = where; window.getDocs = getDocs;
 window.storageRef = storageRef; window.uploadBytesResumable = uploadBytesResumable;
 window.getDownloadURL = getDownloadURL;
 
 let currentLightboxURL = '';
+
+// TOAST NOTIFICATION
+function showToast(msg) {
+  var toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = msg;
+  document.body.appendChild(toast);
+  setTimeout(function() { toast.remove(); }, 3000);
+}
 
 // AUTO LOGIN CHECK
 onAuthStateChanged(auth, async function(user) {
@@ -191,8 +204,9 @@ window.handleImageUpload = async function(event) {
       await addDoc(collection(db, 'messages'), {
         sender: name, senderId: window.currentUser.uid,
         text: '📷 Sent an image', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-        createdAt: new Date(), imageUrl: url, videoUrl: null
+        createdAt: new Date(), type: 'image', imageUrl: url, videoUrl: null
       });
+      showToast('✅ Image sent!');
     });
   } catch(err) {}
   event.target.value = '';
@@ -210,8 +224,9 @@ window.handleVideoUpload = async function(event) {
       await addDoc(collection(db, 'messages'), {
         sender: name, senderId: window.currentUser.uid,
         text: '🎥 Sent a video', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-        createdAt: new Date(), imageUrl: null, videoUrl: url
+        createdAt: new Date(), type: 'video', imageUrl: null, videoUrl: url
       });
+      showToast('✅ Video sent!');
     });
   } catch(err) {}
   event.target.value = '';
@@ -237,15 +252,13 @@ window.downloadMedia = function() {
 };
 
 window.toggleDark = function() {
-  document.body.style.background = document.body.style.background === 'rgb(245,245,245)' ? '#0d1117' : '#F5F5F5';
-  var btn = document.querySelector('.dark-toggle');
-  btn.innerHTML = document.body.style.background === 'rgb(245,245,245)' ? '🌙' : '☀️';
+  document.body.style.background = document.body.style.background === 'rgb(13,17,23)' ? '#F5F5F5' : '#0d1117';
 };
 </script>
 
 <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
 <input type="file" id="videoFileInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
-<script>
+  <script>
 var APP_VERSION="5.0";
 var SID="13RLLmcXk6BAZBWAxgiHcy_BwOAhhpPxwLQb1W12uyLg";
 var courses=["COM111 - Introduction to Computing","COM112 - Digital Electronics","COM113 - Introduction to Programming","COM114 - Statistics for Computing I","COM115 - Computer App Packages I","GNS101 - Use of English I","GNS102 - Citizenship Education I","MTH111 - Logic & Linear Algebra"];
@@ -253,13 +266,44 @@ var topics=[["History of Computing","Computer Hardware","Input Devices","Output 
 var lecturers=[{name:"Mr. Peter",course:"COM111",phone:"2348039258802"},{name:"Fahad Ali",course:"COM112",phone:"2349071345108"},{name:"Jannah",course:"COM113",phone:"2348036255569"},{name:"Hanaa",course:"COM115",phone:"2348036415451"},{name:"Lucy",course:"GNS101",phone:"2349043224155"},{name:"Ahmad",course:"GNS102",phone:"2349034802034"},{name:"Math Dept",course:"MTH111",phone:"2348066694876"},{name:"H.O.D. Afifa James",course:"HOD",phone:"2347036540870"},{name:"Dean of Science",course:"Dean",phone:"2348022275024"},{name:"Class Rep",course:"ND1 CS",phone:"2347078094444"}];
 var schedule=[{day:"MONDAY",cls:["8:00-10:00 | COM111 | Hall A","10:00-12:00 | GNS101 | LT1","2:00-4:00 | COM115 | Computer Lab"]},{day:"TUESDAY",cls:["8:00-10:00 | MTH111 | Hall B","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM113 | Programming Lab"]},{day:"WEDNESDAY",cls:["8:00-10:00 | COM114 | Hall C","10:00-12:00 | GNS102 | LT2","2:00-4:00 | COM111 | Hall A"]},{day:"THURSDAY",cls:["8:00-10:00 | COM113 | Programming Lab","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM115 | Computer Lab"]},{day:"FRIDAY",cls:["8:00-10:00 | GNS101 | LT1","10:00-12:00 | MTH111 | Hall B","12:00-2:00 | COM114 | Hall C"]}];
 
-function getVidEmb(u){if(!u||u.length<5)return'';u=u.trim();if(u.indexOf('youtube.com')>=0||u.indexOf('youtu.be')>=0){var v='';if(u.indexOf('youtu.be')>=0)v=u.split('/').pop().split('?')[0];else{v=u.split('v=')[1];if(v&&v.indexOf('&')>=0)v=v.split('&')[0];}if(v)return'<iframe src="https://www.youtube.com/embed/'+v+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}if(u.indexOf('vimeo.com')>=0){var vi=u.split('/').pop().split('?')[0];if(vi)return'<iframe src="https://player.vimeo.com/video/'+vi+'" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';}return'<video controls playsinline src="'+u+'" style="width:100%;border-radius:8px;max-height:250px;cursor:pointer" onclick="openLightboxFull(\''+u+'\',\'video\')"></video>';}
+// MEDIA DETECTION - Accept ANY link
+function detectMediaType(url) {
+  if (!url || url.length < 5) return 'none';
+  url = url.trim().toLowerCase();
+  if (url.match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)/)) return 'image';
+  if (url.match(/\.(mp4|webm|ogg|mov|avi|mkv|3gp)/)) return 'video';
+  if (url.match(/\.(mp3|wav|m4a|ogg|flac)/)) return 'audio';
+  if (url.match(/\.(pdf|doc|docx|txt|ppt|pptx)/)) return 'document';
+  if (url.indexOf('youtube.com') >= 0 || url.indexOf('youtu.be') >= 0) return 'youtube';
+  if (url.indexOf('vimeo.com') >= 0) return 'vimeo';
+  if (url.indexOf('tiktok.com') >= 0) return 'tiktok';
+  if (url.indexOf('facebook.com') >= 0 || url.indexOf('fb.com') >= 0) return 'facebook';
+  if (url.indexOf('imgur.com') >= 0) return 'image';
+  return 'link';
+}
 
-// NEWS - NEWEST FIRST
+function getMediaEmbed(url) {
+  var type = detectMediaType(url);
+  if (type === 'youtube') {
+    var v = url.indexOf('youtu.be') >= 0 ? url.split('/').pop().split('?')[0] : url.split('v=')[1]?.split('&')[0];
+    if (v) return '<iframe src="https://www.youtube.com/embed/' + v + '" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';
+  }
+  if (type === 'vimeo') {
+    var vi = url.split('/').pop().split('?')[0];
+    if (vi) return '<iframe src="https://player.vimeo.com/video/' + vi + '" allowfullscreen style="width:100%;border-radius:8px;height:220px;"></iframe>';
+  }
+  if (type === 'video') return '<video controls src="' + url + '" style="width:100%;border-radius:8px;max-height:250px;cursor:pointer" onclick="openLightboxFull(\'' + url + '\',\'video\')"></video>';
+  if (type === 'image') return '<img src="' + url + '" style="width:100%;border-radius:8px;max-height:none;object-fit:contain;cursor:pointer" onclick="openLightboxFull(\'' + url + '\',\'image\')">';
+  if (type === 'audio') return '<audio controls src="' + url + '" style="width:100%;margin:5px 0;"></audio>';
+  if (type === 'document') return '<a href="' + url + '" target="_blank" style="color:#4fc3f7;">📄 Download Document</a>';
+  if (type === 'tiktok' || type === 'facebook') return '<a href="' + url + '" target="_blank" style="color:#4fc3f7;">📱 View on ' + type + '</a>';
+  return '<a href="' + url + '" target="_blank" style="color:#4caf50;">🔗 Open Link</a>';
+}
+
+// NEWS - NEWEST FIRST with Author
 function loadNews(cb){
   var allNews = [];
   var fetched = 0;
-  
   fetch("https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet=Sheet1&v="+Date.now())
   .then(function(r){return r.text()})
   .then(function(csv){
@@ -267,7 +311,7 @@ function loadNews(cb){
     for(var i=1;i<ls.length;i++){
       if(ls[i].trim()==='')continue;
       var co=ls[i].split(',');
-      if(co.length>=6) allNews.push({t:co[0].replace(/"/g,'').trim(),d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim(),source:'sheets',createdAt:new Date(co[1])});
+      if(co.length>=6) allNews.push({t:co[0].replace(/"/g,'').trim(),author:'Sheets',d:co[1].replace(/"/g,'').trim(),b:co[2].replace(/"/g,'').trim(),img:co[3].replace(/"/g,'').trim(),vid:co[4].replace(/"/g,'').trim(),cat:co[5].replace(/"/g,'').trim(),source:'sheets',createdAt:new Date(co[1])});
     }
     fetched++;
     if(fetched >= 2) finishNews();
@@ -281,6 +325,7 @@ function loadNews(cb){
         var f = doc.fields;
         allNews.push({
           t: f.title ? f.title.stringValue : '',
+          author: f.author ? f.author.stringValue : 'Admin',
           d: f.date ? f.date.stringValue : '',
           b: f.content ? f.content.stringValue : '',
           img: f.imageUrl ? f.imageUrl.stringValue : '',
@@ -311,17 +356,18 @@ function showNews(id){
       h+='<div class="news-card">';
       if(x.cat)h+='<span class="news-card-category">'+x.cat+'</span>';
       h+='<div class="news-card-title">'+x.t+'</div>';
+      if(x.author)h+='<div class="news-card-author">✍️ Posted by: '+x.author+'</div>';
       h+='<div class="news-card-date">📅 '+x.d+'</div>';
       if(x.b)h+='<div class="news-card-body">'+x.b+'</div>';
-      if(x.img&&x.img.length>5)h+='<img src="'+x.img+'" onerror="this.style.display=\'none\'" style="width:100%;height:auto;max-height:none;object-fit:contain;cursor:pointer" onclick="openLightboxFull(\''+x.img+'\',\'image\')">';
-      if(x.vid&&x.vid.length>5)h+=getVidEmb(x.vid);
+      if(x.img&&x.img.length>5)h+=getMediaEmbed(x.img);
+      if(x.vid&&x.vid.length>5)h+=getMediaEmbed(x.vid);
       h+='</div>';
     });
     el.innerHTML=h;
   });
 }
 
-function searchApp(q){q=q.toLowerCase().trim();var c=document.getElementById("content");if(q===""){showPage("home");return}var h='<div class="card"><b>Search: '+q+'</b></div>';var f=false;courses.forEach(function(cn,i){if(cn.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-white" onclick="showSyl('+i+')">'+cn+'</button>';f=true}topics[i].forEach(function(t,k){if(t.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+t+'</button>';f=true}})});if(!f)h+='<div class="card"><p>No results.</p></div>';c.innerHTML=h;}
+function searchApp(q){q=q.toLowerCase().trim();var c=document.getElementById("content");if(q===""){showPage("home");return}var h='<div class="card"><b>Search: '+q+'</b></div>';var f=false;courses.forEach(function(cn,i){if(cn.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-white" onclick="showSyl('+i+')">'+cn+'</button>';f=true}topics[i].forEach(function(t,k){if(t.toLowerCase().indexOf(q)>=0){h+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+t+'</button>';f=true}})});lecturers.forEach(function(l){if(l.name.toLowerCase().indexOf(q)>=0||l.course.toLowerCase().indexOf(q)>=0){h+='<div class="card"><p>👨‍🏫 '+l.name+' - '+l.course+'</p></div>';f=true}});if(!f)h+='<div class="card"><p>No results.</p></div>';c.innerHTML=h;}
 function hlNav(id){document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('active')});var el=document.getElementById('nav-'+id);if(el)el.classList.add('active')}
 
 function showPage(p,d){
@@ -334,12 +380,12 @@ function showPage(p,d){
       h+='<button class="btn btn-green" onclick="window.open(\'media-hub.html\',\'_self\')">🎬 Media Hub</button>';
       h+='<button class="btn btn-green" onclick="window.open(\'chat.html\',\'_self\')">💬 Student Chat</button>';
       h+='<button class="btn btn-green" onclick="window.open(\'results.html\',\'_self\')">📊 Check Results</button>';
-      h+='<button class="btn btn-green" onclick="window.open(\'dashboard.html\',\'_self\')">📊 Student Dashboard</button>';
+      h+='<button class="btn btn-green" onclick="window.open(\'dashboard.html\',\'_self\')">📊 Dashboard</button>';
       h+='<button class="btn btn-green" onclick="window.open(\'leaderboard.html\',\'_self\')">🏆 Leaderboard</button>';
       h+='<div class="home-section-title">📰 LATEST NEWS</div><div id="newsContainer">Loading...</div>';
       c.innerHTML=h;showNews('newsContainer');
     }
-      else if(p==='courses'){hlNav('courses');var ch='<div class="card"><b>📚 ND1 Courses</b><p style="font-size:11px;color:#4caf50;">Tap a course</p></div>';courses.forEach(function(n,i){ch+='<button class="btn btn-white" onclick="showSyl('+i+')">📘 '+n+'</button>'});c.innerHTML=ch}
+    else if(p==='courses'){hlNav('courses');var ch='<div class="card"><b>📚 ND1 Courses</b><p style="font-size:11px;color:#4caf50;">Tap a course</p></div>';courses.forEach(function(n,i){ch+='<button class="btn btn-white" onclick="showSyl('+i+')">📘 '+n+'</button>'});c.innerHTML=ch}
     else if(p==='syl'){hlNav('courses');var i=d;var sh='<div class="card"><b>📖 '+courses[i]+'</b><p style="font-size:11px;color:#4caf50;">Tap a topic</p></div>';topics[i].forEach(function(t,k){sh+='<button class="btn btn-light" onclick="showLec('+i+','+k+')">'+(k+1)+'. '+t+'</button>'});sh+='<button class="btn btn-orange" onclick="showPage(\'courses\')">← Back</button>';c.innerHTML=sh}
     else if(p==='lec'){hlNav('courses');var ci=d[0],ti=d[1];c.innerHTML='<div class="card"><h3 style="color:#4caf50;">📖 '+topics[ci][ti]+'</h3><p style="font-size:11px;color:#999;">'+courses[ci]+'</p></div><div style="padding:5px"><p class="lecture-text"><strong>🎯 Learning Objectives</strong></p><p class="lecture-text">✓ Understand all key concepts of '+topics[ci][ti]+'</p><p class="lecture-text"><strong>📝 Detailed Explanation</strong></p><p class="lecture-text">'+topics[ci][ti]+' is a fundamental topic in '+courses[ci]+'. This comprehensive lecture covers definitions, core principles, practical examples, and exam-focused tips to ensure mastery of the subject matter.</p><p class="lecture-text"><strong>⭐ Rating:</strong> ⭐⭐⭐⭐⭐</p><p class="lecture-text"><strong>✅ Summary</strong></p><p class="lecture-text">Master this topic thoroughly for exam success.</p><p class="lecture-text"><strong>📌 Prepared by: Aliyu Salihu | ND1 Computer Science</strong></p></div><button class="btn btn-orange" onclick="showSyl('+ci+')">← Back</button>'}
     else if(p==='timetable'){hlNav('timetable');var th='<div class="card"><b>🗓️ Weekly Timetable</b></div>';schedule.forEach(function(d){th+='<div class="day">▌ '+d.day+'</div>';d.cls.forEach(function(cl){th+='<div class="class-item">'+cl+'</div>'})});c.innerHTML=th}
