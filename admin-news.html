@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin News - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:white}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.content{padding:15px}
+.card{background:#1a1a2e;padding:20px;border-radius:12px;margin-bottom:15px;box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+.card h2{color:#4caf50;font-size:16px;margin-bottom:12px}
+.card input,.card textarea,.card select{width:100%;padding:14px;margin:8px 0;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none}
+.card input:focus,.card textarea:focus,.card select:focus{border-color:#4caf50}
+.card textarea{min-height:120px;resize:vertical}
+.btn{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;color:white}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.success{color:#4caf50;text-align:center;margin:10px 0;font-size:12px}
+.footer{text-align:center;padding:20px;color:#555;font-size:11px}
+</style>
+</head>
+<body>
+<div class="header"><h1>📰 Admin News</h1><a href="index.html">← Home</a></div>
+<div class="content">
+<div class="card">
+<h2>📰 Post News</h2>
+<input type="text" id="newsTitle" placeholder="News Title">
+<input type="text" id="newsAuthor" placeholder="Author Name">
+<input type="date" id="newsDate">
+<textarea id="newsContent" placeholder="News Content (10,000+ characters supported)..."></textarea>
+<input type="text" id="newsImage" placeholder="Image URL (any link)">
+<input type="text" id="newsVideo" placeholder="Video URL (any link)">
+<select id="newsCategory"><option value="">Category</option><option value="Academic">📚 Academic</option><option value="Sports">⚽ Sports</option><option value="Events">🎉 Events</option><option value="Campus">🏫 Campus</option><option value="Urgent">🔴 Urgent</option></select>
+<button class="btn btn-green" onclick="postNews()">📤 Post News</button>
+<p class="success" id="newsMsg"></p>
+</div>
+</div>
+<div class="footer">© 2026 CampusConnect Admin</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const app = initializeApp({apiKey:"AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",authDomain:"campuconnect-bd52f.firebaseapp.com",projectId:"campuconnect-bd52f",storageBucket:"campuconnect-bd52f.firebasestorage.app",messagingSenderId:"762013163609",appId:"1:762013163609:web:7f565fbde05a4ad35ed148"});
+const db = getFirestore(app);
+
+window.postNews = async function() {
+  var t=document.getElementById('newsTitle').value.trim(), a=document.getElementById('newsAuthor').value.trim()||'Admin';
+  var d=document.getElementById('newsDate').value, c=document.getElementById('newsContent').value.trim();
+  var img=document.getElementById('newsImage').value.trim(), vid=document.getElementById('newsVideo').value.trim();
+  var cat=document.getElementById('newsCategory').value;
+  if(!t||!d||!c||!cat){alert('Fill all required fields');return}
+  await addDoc(collection(db,'news'),{title:t,author:a,date:d,content:c,imageUrl:img,videoUrl:vid,category:cat,createdAt:new Date()});
+  document.getElementById('newsMsg').innerHTML='✅ News posted!';
+  document.getElementById('newsTitle').value='';document.getElementById('newsContent').value='';
+};
+</script>
+</body>
+</html>
