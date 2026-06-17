@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Manage - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:white}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.content{padding:15px}
+.card{background:#1a1a2e;padding:20px;border-radius:12px;margin-bottom:15px}
+.card h2{color:#4caf50;font-size:16px;margin-bottom:12px}
+.news-item{background:#0d0d1a;padding:12px;border-radius:8px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;border:1px solid #333}
+.news-item span{font-size:13px;flex:1}
+.news-item button{background:#cc0000;color:white;border:none;padding:8px 14px;border-radius:6px;font-size:11px;cursor:pointer;margin-left:8px}
+.btn{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;color:white}
+.btn-blue{background:linear-gradient(135deg,#0f3460,#1a5276)}
+</style>
+</head>
+<body>
+<div class="header"><h1>📋 Manage Content</h1><a href="index.html">← Home</a></div>
+<div class="content">
+<div class="card">
+<h2>📋 News List</h2>
+<button class="btn btn-blue" onclick="loadNews()">🔄 Refresh</button>
+<div id="newsList">Loading...</div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const app = initializeApp({apiKey:"AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",authDomain:"campuconnect-bd52f.firebaseapp.com",projectId:"campuconnect-bd52f",storageBucket:"campuconnect-bd52f.firebasestorage.app",messagingSenderId:"762013163609",appId:"1:762013163609:web:7f565fbde05a4ad35ed148"});
+const db = getFirestore(app);
+
+window.loadNews = async function() {
+  var list=document.getElementById('newsList'); list.innerHTML='Loading...';
+  var snap=await getDocs(collection(db,'news')), h='';
+  snap.forEach(function(d){var data=d.data();h+='<div class="news-item"><span>'+ (data.title||'Untitled') +'</span><button onclick="delNews(\''+d.id+'\')">🗑️</button></div>';});
+  list.innerHTML=h||'<p style="color:#999;">No news found.</p>';
+};
+
+window.delNews = async function(id) {
+  if(confirm('Delete this news?')){ await deleteDoc(doc(db,'news',id)); loadNews(); }
+};
+loadNews();
+</script>
+</body>
+</html>
