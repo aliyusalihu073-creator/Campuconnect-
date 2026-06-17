@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Timetable - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:white}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.content{padding:15px}
+.card{background:#1a1a2e;padding:20px;border-radius:12px;margin-bottom:15px}
+.card h2{color:#4caf50;font-size:16px;margin-bottom:12px}
+.card select,.card textarea{width:100%;padding:14px;margin:8px 0;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none}
+.card textarea{min-height:100px;resize:vertical}
+.btn{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;color:white}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.success{color:#4caf50;text-align:center;margin:10px 0;font-size:12px}
+</style>
+</head>
+<body>
+<div class="header"><h1>🗓️ Admin Timetable</h1><a href="index.html">← Home</a></div>
+<div class="content">
+<div class="card">
+<h2>🗓️ Update Timetable</h2>
+<select id="ttDay"><option value="">Select Day</option><option value="MONDAY">Monday</option><option value="TUESDAY">Tuesday</option><option value="WEDNESDAY">Wednesday</option><option value="THURSDAY">Thursday</option><option value="FRIDAY">Friday</option></select>
+<textarea id="ttClasses" placeholder='Paste classes as JSON: ["8:00-10:00 | COM111 | Hall A"]'></textarea>
+<button class="btn btn-green" onclick="updateTT()">📤 Update</button>
+<p class="success" id="ttMsg"></p>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+const app = initializeApp({apiKey:"AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",authDomain:"campuconnect-bd52f.firebaseapp.com",projectId:"campuconnect-bd52f",storageBucket:"campuconnect-bd52f.firebasestorage.app",messagingSenderId:"762013163609",appId:"1:762013163609:web:7f565fbde05a4ad35ed148"});
+const db = getFirestore(app);
+
+window.updateTT = async function() {
+  var day=document.getElementById('ttDay').value, ct=document.getElementById('ttClasses').value.trim();
+  if(!day||!ct){alert('Fill all fields');return}
+  try {
+    var classes=JSON.parse(ct);
+    await setDoc(doc(db,'timetable',day),{day:day,classes:classes,updatedAt:new Date()});
+    document.getElementById('ttMsg').innerHTML='✅ Timetable updated for '+day;
+  } catch(e) { document.getElementById('ttMsg').innerHTML='❌ Invalid JSON'; }
+};
+</script>
+</body>
+</html>
