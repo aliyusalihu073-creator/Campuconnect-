@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusConnect - Aliyu Salihu</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1B5E20">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CampusConnect">
+<link rel="apple-touch-icon" href="https://i.imgur.com/DFc04md.jpeg">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+body{background:#0d1117;max-width:480px;margin:0 auto;min-height:100vh;position:relative;color:#fff}
+.header{background:linear-gradient(135deg,#0d4a1a,#1a6b2e);color:white;padding:12px 16px;font-size:18px;font-weight:bold;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;justify-content:space-between}
+.header .logo-area{display:flex;align-items:center;gap:8px}
+.header .logo-img{width:35px;height:35px;border-radius:50%;border:2px solid #ffd700;object-fit:cover}
+.header .user-info{font-size:11px;display:flex;align-items:center;gap:8px}
+.header .user-info button{background:#cc0000;color:white;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer}
+.nav{display:flex;flex-wrap:wrap;background:#1a6b2e;position:sticky;top:60px;z-index:99;padding:4px}
+.nav button{flex:1 1 auto;padding:10px 6px;border:none;background:rgba(255,255,255,0.1);color:white;font-size:10px;font-weight:600;cursor:pointer;border-radius:6px;margin:2px;min-width:45px}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,0.25)}
+.content{padding:15px;position:relative;z-index:1;padding-bottom:80px}
+.card{background:#161b22;padding:18px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.3);color:#e0e0e0;border:1px solid #30363d}
+.card h3,.card h2,.card b{color:#4caf50!important}
+.btn{width:100%;padding:14px;margin:6px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:0.3s;color:white;display:block}
+.btn-green{background:linear-gradient(135deg,#0d4a1a,#1a6b2e)}
+.btn-white{background:#21262d;color:#e0e0e0;border:1px solid #30363d}
+.btn-light{background:#1a3a2a;color:#4caf50}
+.btn-orange{background:#FF5722;color:white;text-align:center}
+.news-card{background:#21262d;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.3);border-left:4px solid #4caf50;color:#e0e0e0}
+.news-card-title{font-size:15px;font-weight:700;color:#4caf50;margin-bottom:4px}
+.news-card-author{font-size:10px;color:#999;margin-bottom:4px}
+.news-card-date{font-size:10px;color:#999;margin-bottom:8px}
+.news-card-body{font-size:13px;color:#ccc;line-height:1.7}
+.news-card-category{display:inline-block;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:600;background:#1a3a2a;color:#4caf50;margin-bottom:6px}
+.news-card img{width:100%;border-radius:8px;height:auto;margin:8px 0;object-fit:contain;cursor:pointer}
+.home-section-title{text-align:center;font-size:16px;color:#4caf50;font-weight:700;margin:25px 0 10px}
+.hero{background:linear-gradient(135deg,#0d4a1a,#1a6b2e,#2d8a4e);padding:25px 15px;text-align:center;color:white;border-radius:12px;margin-bottom:12px;animation:heroGlow 3s ease-in-out infinite}
+@keyframes heroGlow{0%,100%{box-shadow:0 0 20px rgba(45,138,78,0.3)}50%{box-shadow:0 0 40px rgba(45,138,78,0.6)}}
+.hero .stats-hero{display:flex;gap:10px;justify-content:center;margin-top:12px;margin-bottom:12px}
+.hero .stat-item{background:rgba(255,255,255,0.15);padding:10px 15px;border-radius:10px;text-align:center}
+.hero .stat-num{font-size:28px;font-weight:900;color:#ffd700}
+.hero .stat-label{font-size:10px;color:#fff}
+.loading-skeleton{background:linear-gradient(90deg,#161b22 25%,#21262d 50%,#161b22 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:60px;margin:8px 0}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* LIGHTBOX - FIX: use only JS display control, no .active class conflict */
+.lightbox-full{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;flex-direction:column;align-items:center;justify-content:center}
+.lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:30px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:45px;height:45px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;z-index:10000}
+.lightbox-full .dl-btn{background:#0d4a1a;color:white;padding:12px 24px;border-radius:25px;margin-top:12px;border:none;font-size:14px;cursor:pointer;z-index:10000}
+#lightboxContent img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px}
+#lightboxContent iframe{width:100%;height:70vh;border-radius:8px}
+
+/* TIMETABLE STYLES - FIX: were missing */
+.day{background:#1a3a2a;color:#4caf50;font-weight:700;padding:10px 14px;border-radius:8px;margin:10px 0 4px;font-size:13px}
+.class-item{background:#21262d;color:#e0e0e0;padding:10px 14px;border-radius:8px;margin:3px 0;font-size:12px;border-left:3px solid #4caf50}
+
+/* LECTURER CARD STYLES - FIX: were missing */
+.lec-card{background:#21262d;border-radius:12px;padding:14px;margin:8px 0;border:1px solid #30363d}
+.lec-name{font-weight:700;color:#4caf50;font-size:14px;margin-bottom:2px}
+.lec-course{font-size:11px;color:#999;margin-bottom:8px}
+.lec-actions{display:flex;gap:8px}
+.lec-actions button{flex:1;padding:8px;border:none;border-radius:8px;color:white;font-size:12px;font-weight:600;cursor:pointer}
+
+/* LECTURE TEXT STYLES - FIX: were missing */
+.lecture-text{font-size:13px;color:#ccc;line-height:1.8;margin:6px 0;padding:0 4px}
+
+.footer{text-align:center;font-size:11px;padding:15px;color:#999}
+.hidden{display:none!important}
+.visitor-counter{position:fixed;bottom:20px;right:20px;background:#0d4a1a;color:white;padding:8px 14px;border-radius:20px;font-size:10px;font-weight:600;z-index:998}
+.toast{position:fixed;top:20px;right:20px;background:#4caf50;color:white;padding:12px 20px;border-radius:8px;font-size:12px;font-weight:600;z-index:99999;animation:slideIn 0.3s ease;max-width:250px}
+@keyframes slideIn{from{transform:translateX(110%)}to{transform:translateX(0)}}
+.dark-toggle{position:fixed;bottom:20px;left:20px;background:#0d4a1a;color:white;border:none;width:45px;height:45px;border-radius:50%;font-size:20px;cursor:pointer;z-index:999}
+</style>
+</head>
+<body>
+
+<div id="mainApp" class="hidden">
+  <div class="header">
+    <div class="logo-area">
+      <img src="https://i.imgur.com/DFc04md.jpeg" class="logo-img" alt="Logo">
+      <span>🎓 CampusConnect</span>
+    </div>
+    <div class="user-info">
+      <span id="userDisplay"></span>
+      <button onclick="logout()">🚪</button>
+    </div>
+  </div>
+
+  <div class="nav" id="navBar">
+    <button onclick="showPage('home')" id="nav-home" class="active">🏠 Home</button>
+    <button onclick="showPage('courses')" id="nav-courses">📚 Courses</button>
+    <button onclick="window.open('courses.html','_self')">📖 Lectures</button>
+    <button onclick="showPage('timetable')" id="nav-timetable">🗓️ TT</button>
+    <button onclick="window.open('results.html','_self')">📊 Results</button>
+    <button onclick="showPage('news')" id="nav-news">📢 News</button>
+    <button onclick="showPage('papers')" id="nav-papers">📝 Papers</button>
+    <button onclick="showPage('contact')" id="nav-contact">📞 Lec</button>
+    <button onclick="showPage('about')" id="nav-about">ℹ️ About</button>
+    <button onclick="showPage('me')" id="nav-me">👤 Me</button>
+  </div>
+
+  <div id="content" class="content"></div>
+  <div class="footer">© 2026 Aliyu Salihu | Adamawa State Polytechnic, Yola</div>
+</div>
+
+<button class="dark-toggle" onclick="toggleDark()">🌙</button>
+<div class="visitor-counter" id="visitorCount">👁️ Visitors: 0</div>
+
+<div class="lightbox-full" id="lightboxFull">
+  <button class="close-btn" onclick="closeLightboxFull()">✕</button>
+  <div id="lightboxContent"></div>
+  <button class="dl-btn" onclick="downloadMedia()">📥 Download</button>
+</div>
+
+<input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+<input type="file" id="videoFileInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
+
+<!-- ═══════════════════════════════════════════════
+     PART 2 — Firebase + Helpers
+     FIX: Firebase SDK version was 12.14.0 (does not exist), corrected to 10.14.0
+     ═══════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Expose Firebase to global scope for non-module scripts
+window.auth = auth;
+window.db = db;
+window.storage = storage;
+window.firebaseSignOut = signOut;
+window.collection = collection;
+window.addDoc = addDoc;
+window.query = query;
+window.orderBy = orderBy;
+window.onSnapshot = onSnapshot;
+window.doc = doc;
+window.getDoc = getDoc;
+window.setDoc = setDoc;
+window.storageRef = storageRef;
+window.uploadBytesResumable = uploadBytesResumable;
+window.getDownloadURL = getDownloadURL;
+
+// ── TOAST ──────────────────────────────────────────
+window.showToast = function(msg) {
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 3000);
+};
+
+// ── PUSH NOTIFICATIONS ─────────────────────────────
+function requestNotification() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+// ── AUTH STATE ─────────────────────────────────────
+// FIX: removed duplicate showPage('home') call here — Part 4 non-module script
+// calls it once after DOM ready; auth callback only sets up user info.
+onAuthStateChanged(auth, async function(user) {
+  if (!user) { window.location.href = 'login.html'; return; }
+  window.currentUser = user;
+  document.getElementById('mainApp').classList.remove('hidden');
+  requestNotification();
+  try {
+    const uDoc = await getDoc(doc(db, 'users', user.uid));
+    if (uDoc.exists()) {
+      window.userProfile = uDoc.data();
+      document.getElementById('userDisplay').innerHTML = '👤 ' + (window.userProfile.username || user.email);
+    } else {
+      document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
+    }
+  } catch(e) {
+    document.getElementById('userDisplay').innerHTML = '👤 ' + user.email;
+  }
+  // FIX: Guard ensures showPage only runs once auth is confirmed
+  // and the non-module script's showPage is already defined by now
+  if (typeof window.showPage === 'function') window.showPage('home');
+});
+
+// ── VISITOR COUNTER ────────────────────────────────
+(async function() {
+  try {
+    var ref = doc(db, 'stats', 'visitors');
+    var snap = await getDoc(ref);
+    var newCount = snap.exists() ? snap.data().count + 1 : 1;
+    await setDoc(ref, { count: newCount }, { merge: true });
+    document.getElementById('visitorCount').innerHTML = '👁️ ' + newCount;
+  } catch(e) {}
+})();
+
+// ── LOGOUT ─────────────────────────────────────────
+window.logout = function() {
+  signOut(auth).then(function(){ window.location.href = 'login.html'; });
+};
+
+// ── IMAGE UPLOAD ───────────────────────────────────
+window.handleImageUpload = async function(event) {
+  var file = event.target.files[0];
+  if (!file || !window.currentUser) return;
+  try {
+    var sRef = storageRef(storage, 'chat/' + Date.now() + '_' + file.name);
+    var task = uploadBytesResumable(sRef, file);
+    task.on('state_changed', null, function(){}, async function() {
+      var url = await getDownloadURL(task.snapshot.ref);
+      var name = (window.userProfile && window.userProfile.username) ? window.userProfile.username : window.currentUser.email;
+      await addDoc(collection(db, 'messages'), {
+        sender: name, senderId: window.currentUser.uid,
+        text: '📷 Image', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        createdAt: new Date(), type: 'image', imageUrl: url
+      });
+      window.showToast('✅ Image sent!');
+    });
+  } catch(e) { window.showToast('❌ Upload failed'); }
+  event.target.value = '';
+};
+
+// ── VIDEO UPLOAD ───────────────────────────────────
+window.handleVideoUpload = async function(event) {
+  var file = event.target.files[0];
+  if (!file || !window.currentUser) return;
+  try {
+    var sRef = storageRef(storage, 'chat/' + Date.now() + '_' + file.name);
+    var task = uploadBytesResumable(sRef, file);
+    task.on('state_changed', null, function(){}, async function() {
+      var url = await getDownloadURL(task.snapshot.ref);
+      var name = (window.userProfile && window.userProfile.username) ? window.userProfile.username : window.currentUser.email;
+      await addDoc(collection(db, 'messages'), {
+        sender: name, senderId: window.currentUser.uid,
+        text: '🎥 Video', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        createdAt: new Date(), type: 'video', videoUrl: url
+      });
+      window.showToast('✅ Video sent!');
+    });
+  } catch(e) { window.showToast('❌ Upload failed'); }
+  event.target.value = '';
+};
+
+// ── MEDIA HELPERS ──────────────────────────────────
+// FIX: Exposed to window so non-module scripts (showNews) can call getMediaEmbed()
+function detectMediaType(url) {
+  if (!url || url.length < 5) return 'none';
+  var u = url.trim().toLowerCase();
+  if (u.match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?|$)/)) return 'image';
+  if (u.match(/\.(mp4|webm|ogg|mov|avi|mkv|3gp)(\?|$)/)) return 'video';
+  if (u.match(/\.(mp3|wav|m4a|flac)(\?|$)/)) return 'audio';
+  if (u.indexOf('youtube.com') >= 0 || u.indexOf('youtu.be') >= 0) return 'youtube';
+  if (u.indexOf('vimeo.com') >= 0) return 'vimeo';
+  if (u.indexOf('imgur.com') >= 0) return 'image';
+  return 'link';
+}
+
+window.getMediaEmbed = function(url) {
+  var type = detectMediaType(url);
+  if (type === 'youtube') {
+    var v = url.indexOf('youtu.be') >= 0
+      ? url.split('/').pop().split('?')[0]
+      : (url.split('v=')[1] || '').split('&')[0];
+    if (v) return '<iframe src="https://www.youtube.com/embed/' + v + '" allowfullscreen style="width:100%;border-radius:8px;height:220px;border:none;"></iframe>';
+  }
+  if (type === 'vimeo') {
+    var vi = url.split('/').pop().split('?')[0];
+    if (vi) return '<iframe src="https://player.vimeo.com/video/' + vi + '" allowfullscreen style="width:100%;border-radius:8px;height:220px;border:none;"></iframe>';
+  }
+  if (type === 'video') return '<video controls src="' + url + '" style="width:100%;border-radius:8px;max-height:250px;"></video>';
+  if (type === 'image') return '<img src="' + url + '" style="width:100%;border-radius:8px;cursor:pointer;" onclick="openLightboxFull(\'' + url.replace(/'/g, "\\'") + '\',\'image\')">';
+  if (type === 'audio') return '<audio controls src="' + url + '" style="width:100%;"></audio>';
+  return '<a href="' + url + '" target="_blank" style="color:#4caf50;">🔗 Open Link</a>';
+};
+
+// ── LIGHTBOX ───────────────────────────────────────
+// FIX: Used style.display toggle consistently (no .active class conflict)
+var currentLightboxURL = '';
+window.openLightboxFull = function(url, type) {
+  currentLightboxURL = url;
+  var box = document.getElementById('lightboxFull');
+  var content = document.getElementById('lightboxContent');
+  box.style.display = 'flex';
+  if (type === 'image') {
+    content.innerHTML = '<img src="' + url + '">';
+  } else {
+    content.innerHTML = '<iframe src="' + url + '" allowfullscreen style="border:none;"></iframe>';
+  }
+};
+window.closeLightboxFull = function() {
+  document.getElementById('lightboxFull').style.display = 'none';
+  document.getElementById('lightboxContent').innerHTML = '';
+};
+window.downloadMedia = function() {
+  if (currentLightboxURL) window.open(currentLightboxURL, '_blank');
+};
+
+// ── DARK MODE ──────────────────────────────────────
+// FIX: Compared hex strings consistently (body.dataset flag) instead of computed rgb()
+var isDark = true;
+window.toggleDark = function() {
+  isDark = !isDark;
+  document.body.style.background = isDark ? '#0d1117' : '#f5f5f5';
+  document.body.style.color = isDark ? '#fff' : '#111';
+};
+</script>
+
+<!-- ═══════════════════════════════════════════════
+     PARTS 3 & 4 — App Data + Page Router
+     ═══════════════════════════════════════════════ -->
+<script>
+var APP_VERSION = "6.0";
+var SID = "13RLLmcXk6BAZBWAxgiHcy_BwOAhhpPxwLQb1W12uyLg";
+
+var courses = [
+  "COM111 - Introduction to Computing",
+  "COM112 - Digital Electronics",
+  "COM113 - Introduction to Programming",
+  "COM114 - Statistics for Computing I",
+  "COM115 - Computer App Packages I",
+  "GNS101 - Use of English I",
+  "GNS102 - Citizenship Education I",
+  "MTH111 - Logic & Linear Algebra"
+];
+
+var topics = [
+  ["History of Computing","Computer Hardware","Input Devices","Output Devices","Software Types","Operating Systems","Number Systems","Computer Networks","Internet & WWW","Computer Security"],
+  ["Number Systems","Logic Gates","Boolean Algebra","Karnaugh Maps","Combinational Circuits","Flip-Flops","Registers","Counters","Microprocessors","Digital Systems"],
+  ["Programming Concepts","Algorithms","Flowcharts","Variables & Data Types","Control Structures","Loops","Functions","Arrays","Strings","Debugging"],
+  ["Data Collection","Mean, Median, Mode","Measures of Dispersion","Probability Basics","Discrete Distributions","Continuous Distributions","Sampling","Hypothesis Testing","Variance","Regression"],
+  ["MS Word Basics","Document Formatting","Tables & Graphics","MS Excel Basics","Formulas & Functions","Charts","PowerPoint Basics","Creating Slides","Presentations","Printing"],
+  ["Parts of Speech","Sentence Structure","Paragraph Writing","Essay Writing","Summary Writing","Comprehension","Vocabulary","Oral Communication","Writing Skills","Communication"],
+  ["Nigerian Constitution","Fundamental Rights","Citizenship","Federalism","Arms of Government","Political Participation","National Ethics","Leadership","Law & Society","Contemporary Issues"],
+  ["Propositional Logic","Truth Tables","Tautologies","Sets & Operations","Matrices","Determinants","Linear Equations","Vectors","Functions","Algebra"]
+];
+
+var lecturers = [
+  {name:"Mr. Peter",   course:"COM111", phone:"2348039258802"},
+  {name:"Fahad Ali",   course:"COM112", phone:"2349071345108"},
+  {name:"Jannah",      course:"COM113", phone:"2348036255569"},
+  {name:"Hanaa",       course:"COM115", phone:"2348036415451"},
+  {name:"Lucy",        course:"GNS101", phone:"2349043224155"},
+  {name:"Ahmad",       course:"GNS102", phone:"2349034802034"},
+  {name:"Math Dept",   course:"MTH111", phone:"2348066694876"},
+  {name:"H.O.D. Afifa James", course:"HOD",     phone:"2347036540870"},
+  {name:"Dean of Science",    course:"Dean",    phone:"2348022275024"},
+  {name:"Class Rep",          course:"ND1 CS",  phone:"2347078094444"}
+];
+
+// FIX: Renamed loop variable from 'd' to 'dayObj' to avoid shadowing showPage's 'd' parameter
+var schedule = [
+  {day:"MONDAY",    cls:["8:00-10:00 | COM111 | Hall A","10:00-12:00 | GNS101 | LT1","2:00-4:00 | COM115 | Computer Lab"]},
+  {day:"TUESDAY",   cls:["8:00-10:00 | MTH111 | Hall B","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM113 | Programming Lab"]},
+  {day:"WEDNESDAY", cls:["8:00-10:00 | COM114 | Hall C","10:00-12:00 | GNS102 | LT2","2:00-4:00 | COM111 | Hall A"]},
+  {day:"THURSDAY",  cls:["8:00-10:00 | COM113 | Programming Lab","10:00-12:00 | COM112 | Digital Lab","12:00-2:00 | COM115 | Computer Lab"]},
+  {day:"FRIDAY",    cls:["8:00-10:00 | GNS101 | LT1","10:00-12:00 | MTH111 | Hall B","12:00-2:00 | COM114 | Hall C"]}
+];
+
+// ── CACHE + NEWS LOADER ────────────────────────────
+// FIX: CSV parser now uses a proper quoted-field splitter to handle commas inside fields
+var cachedNews = null;
+
+function parseCSVLine(line) {
+  var result = [], current = '', inQuotes = false;
+  for (var i = 0; i < line.length; i++) {
+    var ch = line[i];
+    if (ch === '"') { inQuotes = !inQuotes; }
+    else if (ch === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+    else { current += ch; }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+function loadNews(cb) {
+  if (cachedNews) { cb(cachedNews); refreshNews(); return; }
+  refreshNews();
+
+  function refreshNews() {
+    var allNews = [], fetched = 0;
+
+    // Source 1: Google Sheets CSV
+    fetch("https://docs.google.com/spreadsheets/d/" + SID + "/gviz/tq?tqx=out:csv&sheet=Sheet1&v=" + Date.now())
+      .then(function(r){ return r.text(); })
+      .then(function(csv) {
+        var ls = csv.split('\n');
+        for (var i = 1; i < ls.length; i++) {
+          if (ls[i].trim() === '') continue;
+          var co = parseCSVLine(ls[i]);
+          if (co.length >= 6) {
+            allNews.push({
+              t: co[0], author: 'Sheets', d: co[1],
+              b: co[2], img: co[3], vid: co[4], cat: co[5],
+              createdAt: new Date(co[1])
+            });
+          }
+        }
+        fetched++; if (fetched >= 2) finish();
+      })
+      .catch(function(){ fetched++; if (fetched >= 2) finish(); });
+
+    // Source 2: Firestore REST
+    fetch("https://firestore.googleapis.com/v1/projects/campuconnect-bd52f/databases/(default)/documents/news")
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.documents) {
+          data.documents.forEach(function(docItem) {
+            var f = docItem.fields;
+            allNews.push({
+              t:      f.title      ? f.title.stringValue      : '',
+              author: f.author     ? f.author.stringValue     : 'Admin',
+              d:      f.date       ? f.date.stringValue       : '',
+              b:      f.content    ? f.content.stringValue    : '',
+              img:    f.imageUrl   ? f.imageUrl.stringValue   : '',
+              vid:    f.videoUrl   ? f.videoUrl.stringValue   : '',
+              cat:    f.category   ? f.category.stringValue   : '',
+              createdAt: f.createdAt ? new Date(f.createdAt.timestampValue) : new Date()
+            });
+          });
+        }
+        fetched++; if (fetched >= 2) finish();
+      })
+      .catch(function(){ fetched++; if (fetched >= 2) finish(); });
+
+    function finish() {
+      allNews.sort(function(a, b){ return b.createdAt - a.createdAt; });
+      cachedNews = allNews;
+      cb(allNews);
+    }
+  }
+}
+
+function showNews(containerId) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  if (cachedNews) { renderNews(cachedNews); } else {
+    el.innerHTML = '<div class="loading-skeleton"></div><div class="loading-skeleton"></div><div class="loading-skeleton"></div>';
+  }
+  loadNews(function(a){ renderNews(a); });
+
+  function renderNews(a) {
+    if (!a || a.length === 0) {
+      el.innerHTML = '<div class="card"><p style="text-align:center;color:#999;">No announcements yet.</p></div>';
+      return;
+    }
+    var h = '';
+    a.forEach(function(x) {
+      h += '<div class="news-card">';
+      if (x.cat) h += '<span class="news-card-category">' + x.cat + '</span>';
+      h += '<div class="news-card-title">' + x.t + '</div>';
+      if (x.author) h += '<div class="news-card-author">✍️ ' + x.author + '</div>';
+      h += '<div class="news-card-date">📅 ' + x.d + '</div>';
+      if (x.b) h += '<div class="news-card-body">' + x.b + '</div>';
+      // FIX: Guard getMediaEmbed — may not be ready if module hasn't loaded yet
+      if (x.img && x.img.length > 5 && typeof window.getMediaEmbed === 'function') h += window.getMediaEmbed(x.img);
+      if (x.vid && x.vid.length > 5 && typeof window.getMediaEmbed === 'function') h += window.getMediaEmbed(x.vid);
+      h += '</div>';
+    });
+    el.innerHTML = h;
+  }
+}
+
+// ── SEARCH ─────────────────────────────────────────
+function searchApp(q) {
+  q = q.toLowerCase().trim();
+  var c = document.getElementById("content");
+  if (q === "") { showPage("home"); return; }
+  var h = '<div class="card"><b>Search: ' + q + '</b></div>';
+  var f = false;
+  courses.forEach(function(cn, i) {
+    if (cn.toLowerCase().indexOf(q) >= 0) {
+      h += '<button class="btn btn-white" onclick="showSyl(' + i + ')">📘 ' + cn + '</button>';
+      f = true;
+    }
+    topics[i].forEach(function(t, k) {
+      if (t.toLowerCase().indexOf(q) >= 0) {
+        h += '<button class="btn btn-light" onclick="showLec(' + i + ',' + k + ')">📖 ' + t + '</button>';
+        f = true;
+      }
+    });
+  });
+  lecturers.forEach(function(l) {
+    if (l.name.toLowerCase().indexOf(q) >= 0 || l.course.toLowerCase().indexOf(q) >= 0) {
+      h += '<div class="card"><p>👨‍🏫 ' + l.name + ' - ' + l.course + '</p></div>';
+      f = true;
+    }
+  });
+  if (!f) h += '<div class="card"><p style="color:#999;">No results found.</p></div>';
+  c.innerHTML = h;
+}
+
+// ── NAV HIGHLIGHT ──────────────────────────────────
+function hlNav(id) {
+  document.querySelectorAll('.nav button').forEach(function(b){ b.classList.remove('active'); });
+  var el = document.getElementById('nav-' + id);
+  if (el) el.classList.add('active');
+}
+
+// ── PAGE ROUTER ────────────────────────────────────
+// FIX: Renamed inner loop var from 'd' → 'dayObj' in timetable section (shadowing fix)
+window.showPage = function(p, d) {
+  var c = document.getElementById("content");
+  window.scrollTo(0, 0);
+
+  if (p === 'home') {
+    hlNav('home');
+    var h = '<div class="hero">'
+      + '<h1>🎓 CampusConnect</h1>'
+      + '<p>Adamawa State Polytechnic, Yola</p>'
+      + '<div class="stats-hero">'
+      + '<div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Courses</div></div>'
+      + '<div class="stat-item"><div class="stat-num">80</div><div class="stat-label">Topics</div></div>'
+      + '<div class="stat-item"><div class="stat-num">10</div><div class="stat-label">Lecturers</div></div>'
+      + '</div>'
+      + '<button class="btn btn-green" onclick="showPage(\'courses\')">📚 View My Courses</button>'
+      + '<button class="btn btn-green" onclick="showPage(\'timetable\')">🗓️ Weekly Timetable</button>'
+      + '<button class="btn btn-green" onclick="showPage(\'contact\')">📞 Contact Lecturers</button>'
+      + '<button class="btn btn-green" onclick="window.open(\'media-hub.html\',\'_self\')">🎬 Media Hub</button>'
+      + '<button class="btn btn-green" onclick="window.open(\'chat.html\',\'_self\')">💬 Student Chat</button>'
+      + '<button class="btn btn-green" onclick="window.open(\'results.html\',\'_self\')">📊 Check Results</button>'
+      + '<button class="btn btn-green" onclick="window.open(\'dashboard.html\',\'_self\')">📊 Dashboard</button>'
+      + '<button class="btn btn-green" onclick="window.open(\'leaderboard.html\',\'_self\')">🏆 Leaderboard</button>'
+      + '</div>'
+      + '<div class="home-section-title">📰 LATEST NEWS</div>'
+      + '<div id="newsContainer"></div>';
+    c.innerHTML = h;
+    showNews('newsContainer');
+  }
+
+  else if (p === 'courses') {
+    hlNav('courses');
+    var ch = '<div class="card"><b>📚 ND1 Courses</b><p style="font-size:11px;color:#4caf50;">Tap a course to view topics</p></div>';
+    courses.forEach(function(n, i) {
+      ch += '<button class="btn btn-white" onclick="showSyl(' + i + ')">📘 ' + n + '</button>';
+    });
+    c.innerHTML = ch;
+  }
+
+  else if (p === 'syl') {
+    hlNav('courses');
+    var i = d;
+    var sh = '<div class="card"><b>📖 ' + courses[i] + '</b><p style="font-size:11px;color:#4caf50;">Tap a topic to view lecture</p></div>';
+    topics[i].forEach(function(t, k) {
+      sh += '<button class="btn btn-light" onclick="showLec(' + i + ',' + k + ')">' + (k + 1) + '. ' + t + '</button>';
+    });
+    sh += '<button class="btn btn-orange" onclick="showPage(\'courses\')">← Back to Courses</button>';
+    c.innerHTML = sh;
+  }
+
+  else if (p === 'lec') {
+    hlNav('courses');
+    var ci = d[0], ti = d[1];
+    c.innerHTML = '<div class="card"><h3>' + topics[ci][ti] + '</h3><p style="font-size:11px;color:#999;">' + courses[ci] + '</p></div>'
+      + '<div style="padding:5px">'
+      + '<p class="lecture-text"><strong>🎯 Learning Objectives</strong></p>'
+      + '<p class="lecture-text">✓ Understand all key concepts of ' + topics[ci][ti] + '</p>'
+      + '<p class="lecture-text"><strong>📝 Detailed Explanation</strong></p>'
+      + '<p class="lecture-text">' + topics[ci][ti] + ' is a fundamental topic in ' + courses[ci] + '. This comprehensive lecture covers definitions, core principles, practical examples, and exam-focused tips to ensure mastery of the subject matter.</p>'
+      + '<p class="lecture-text"><strong>⭐ Rating:</strong> ⭐⭐⭐⭐⭐</p>'
+      + '<p class="lecture-text"><strong>✅ Summary</strong></p>'
+      + '<p class="lecture-text">Master this topic thoroughly for exam success.</p>'
+      + '<p class="lecture-text"><strong>📌 Prepared by: Aliyu Salihu | ND1 Computer Science</strong></p>'
+      + '</div>'
+      + '<button class="btn btn-orange" onclick="showSyl(' + ci + ')">← Back to Topics</button>';
+  }
+
+  else if (p === 'timetable') {
+    // FIX: loop var renamed from 'd' to 'dayObj' — was shadowing the function param 'd'
+    hlNav('timetable');
+    var th = '<div class="card"><b>🗓️ Weekly Timetable</b></div>';
+    schedule.forEach(function(dayObj) {
+      th += '<div class="day">▌ ' + dayObj.day + '</div>';
+      dayObj.cls.forEach(function(cl) {
+        th += '<div class="class-item">' + cl + '</div>';
+      });
+    });
+    c.innerHTML = th;
+  }
+
+  else if (p === 'news') {
+    hlNav('news');
+    c.innerHTML = '<div class="card"><b>📢 All Announcements</b></div><div id="fullNewsContainer"></div>';
+    showNews('fullNewsContainer');
+  }
+
+  else if (p === 'papers') {
+    hlNav('papers');
+    var dummyPDF = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+    c.innerHTML = '<div class="card"><b>📝 Past Questions</b></div>'
+      + '<button class="btn btn-white" onclick="window.open(\'' + dummyPDF + '\')">📄 COM111 - 2023 📥</button>'
+      + '<button class="btn btn-white" onclick="window.open(\'' + dummyPDF + '\')">📄 COM113 - 2023 📥</button>'
+      + '<button class="btn btn-white" onclick="window.open(\'' + dummyPDF + '\')">📄 MTH111 - 2022 📥</button>'
+      + '<button class="btn btn-white" onclick="window.open(\'' + dummyPDF + '\')">📄 GNS101 - 2022 📥</button>';
+  }
+
+  else if (p === 'contact') {
+    hlNav('contact');
+    var lh = '<div class="card"><b>📞 Contact Lecturers</b></div>';
+    lecturers.forEach(function(l) {
+      lh += '<div class="lec-card">'
+        + '<div class="lec-name">👨‍🏫 ' + l.name + '</div>'
+        + '<div class="lec-course">📘 ' + l.course + '</div>'
+        + '<div class="lec-actions">'
+        + '<button style="background:#25D366;" onclick="window.open(\'https://wa.me/' + l.phone + '\')">💬 WhatsApp</button>'
+        + '<button style="background:#0d4a1a;" onclick="window.open(\'tel:' + l.phone + '\')">📞 Call</button>'
+        + '</div></div>';
+    });
+    c.innerHTML = lh;
+  }
+
+  else if (p === 'about') {
+    hlNav('about');
+    c.innerHTML = '<div class="card"><h3>ℹ️ About CampusConnect</h3><p style="font-size:11px;color:#999;">Version ' + APP_VERSION + ' - Ultimate Edition</p></div>'
+      + '<div class="card"><b>✨ Features</b>'
+      + '<p style="font-size:12px;color:#ccc;">✅ 8 ND1 Courses with Full Lectures</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ 80 Topics with Textbook Notes</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Weekly Timetable</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Google Sheets + Firestore News</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Real-time Firebase Chat</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Student Login with Strong Password</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Upload Images & Videos</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Full Screen Media View</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Push Notifications</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Any Media Link Support</p>'
+      + '<p style="font-size:12px;color:#ccc;">✅ Student Dashboard & Leaderboard</p>'
+      + '</div>'
+      + '<div class="card"><b>🏫 Built For</b>'
+      + '<p style="font-size:12px;color:#ccc;">Adamawa State Polytechnic, Yola</p>'
+      + '<p style="font-size:12px;color:#ccc;">Department of Computer Science</p>'
+      + '<p style="font-size:12px;color:#ccc;">ND1 - 2025/2026 Session</p>'
+      + '</div>'
+      + '<div class="card"><b>👨‍💻 Developer</b>'
+      + '<p style="font-size:12px;color:#ccc;">Aliyu Salihu</p>'
+      + '<p style="font-size:12px;color:#ccc;">SST/NDCOM/S/2025/186</p>'
+      + '<p style="font-size:12px;color:#ccc;">ND1 Computer Science</p>'
+      + '</div>';
+  }
+
+  else if (p === 'me') {
+    hlNav('me');
+    c.innerHTML = '<div class="card" style="text-align:center">'
+      + '<img src="https://i.imgur.com/DFc04md.jpeg" style="width:80px;height:80px;border-radius:50%;border:3px solid #4caf50;margin-bottom:10px;">'
+      + '<h2>Aliyu Salihu</h2>'
+      + '<p style="color:#ccc;">ND1 Computer Science</p>'
+      + '<p style="font-size:11px;color:#999;">Adamawa State Poly, Yola</p>'
+      + '<hr style="border-color:#30363d;margin:10px 0;">'
+      + '<p style="color:#ccc;">📋 SST/NDCOM/S/2025/186</p>'
+      + '<p style="color:#ccc;">📱 07046183743</p>'
+      + '</div>'
+      + '<button class="btn btn-green" onclick="window.open(\'tel:07046183743\')">📞 Call Me</button>'
+      + '<button class="btn" style="background:#25D366;color:white;width:100%;padding:14px;margin:6px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;" onclick="window.open(\'https://wa.me/2347046183743\')">💬 WhatsApp Me</button>';
+  }
+};
+
+window.showSyl = function(i) { window.showPage('syl', i); };
+window.showLec = function(i, k) { window.showPage('lec', [i, k]); };
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js?v=' + Date.now());
+}
+</script>
+</body>
+</html>

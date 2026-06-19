@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documents - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0d1117;color:#fff;max-width:480px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#0d4a1a,#1a6b2e);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header h1{font-size:16px;color:white}
+.header a{color:white;font-size:12px;text-decoration:none;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px}
+.content{padding:15px;padding-bottom:40px}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.filter-btn{padding:7px 14px;border:1px solid #30363d;background:#161b22;color:#aaa;border-radius:20px;font-size:11px;cursor:pointer;transition:0.2s}
+.filter-btn.active,.filter-btn:hover{background:#1a3a2a;color:#4caf50;border-color:#4caf50}
+.doc-card{background:#161b22;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #30363d;display:flex;align-items:center;gap:14px;transition:0.2s}
+.doc-card:hover{border-color:#4caf50;background:#1a1f27}
+.doc-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.icon-pdf{background:#2a0d0d}
+.icon-doc{background:#0d1a2a}
+.icon-ppt{background:#2a1a0d}
+.icon-txt{background:#1a2a1a}
+.doc-info{flex:1;min-width:0}
+.doc-title{font-size:13px;font-weight:700;color:#e0e0e0;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-meta{font-size:10px;color:#666;margin-bottom:6px}
+.doc-cat{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:600;background:#1a3a2a;color:#4caf50}
+.doc-actions{display:flex;gap:6px;margin-top:8px}
+.doc-btn{padding:6px 12px;border:none;border-radius:8px;font-size:11px;cursor:pointer;font-weight:600;transition:0.2s}
+.btn-download{background:#0d4a1a;color:white}
+.btn-download:hover{background:#1a6b2e}
+.btn-preview{background:#21262d;color:#4caf50;border:1px solid #30363d}
+.btn-preview:hover{background:#1a3a2a}
+.skeleton{background:linear-gradient(90deg,#161b22 25%,#21262d 50%,#161b22 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:10px;height:80px;margin:8px 0}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.empty{text-align:center;color:#999;padding:40px;font-size:13px}
+.search-bar{position:relative;margin-bottom:12px}
+.search-bar input{width:100%;padding:12px 16px 12px 40px;border-radius:10px;border:2px solid #30363d;background:#161b22;color:white;font-size:13px;outline:none;transition:0.3s}
+.search-bar input:focus{border-color:#4caf50}
+.search-bar .icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#666;font-size:14px}
+.count-badge{background:#1a3a2a;color:#4caf50;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:600}
+.footer{text-align:center;padding:15px;color:#555;font-size:10px}
+.footer a{color:#4caf50;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📚 Documents</h1>
+  <a href="index.html">← Home</a>
+</div>
+<div class="content">
+  <div class="search-bar">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search documents..." oninput="filterDocs()">
+  </div>
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="setFilter('All')">All</button>
+    <button class="filter-btn" onclick="setFilter('Lecture Notes')">📖 Lecture Notes</button>
+    <button class="filter-btn" onclick="setFilter('Past Questions')">📝 Past Questions</button>
+    <button class="filter-btn" onclick="setFilter('Textbook')">📚 Textbook</button>
+    <button class="filter-btn" onclick="setFilter('Other')">📄 Other</button>
+  </div>
+  <div id="countBar" style="margin-bottom:10px;display:none"><span class="count-badge" id="countBadge"></span></div>
+  <div id="docsContainer">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+</div>
+<div class="footer"><a href="index.html">← Back to CampusConnect</a></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const db = getFirestore(app);
+
+var allDocs = [];
+var currentFilter = 'All';
+
+function getDocIcon(fileName) {
+  if (!fileName) return { icon: '📄', cls: 'icon-txt' };
+  var ext = fileName.split('.').pop().toLowerCase();
+  if (ext === 'pdf') return { icon: '📕', cls: 'icon-pdf' };
+  if (['doc','docx'].includes(ext)) return { icon: '📘', cls: 'icon-doc' };
+  if (['ppt','pptx'].includes(ext)) return { icon: '📙', cls: 'icon-ppt' };
+  return { icon: '📄', cls: 'icon-txt' };
+}
+
+function formatDate(ts) {
+  if (!ts) return '';
+  try { return new Date(ts.seconds ? ts.seconds*1000 : ts).toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}); }
+  catch(e){ return ''; }
+}
+
+window.setFilter = function(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  event.target.classList.add('active');
+  renderDocs();
+};
+
+window.filterDocs = function() { renderDocs(); };
+
+function renderDocs() {
+  var q = document.getElementById('searchInput').value.toLowerCase().trim();
+  var filtered = allDocs.filter(function(d) {
+    var matchCat = currentFilter === 'All' || d.category === currentFilter;
+    var matchQ = !q || d.title.toLowerCase().includes(q) || (d.author||'').toLowerCase().includes(q) || (d.category||'').toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+
+  var countBar = document.getElementById('countBar');
+  var countBadge = document.getElementById('countBadge');
+  countBar.style.display = 'block';
+  countBadge.innerHTML = filtered.length + ' document' + (filtered.length !== 1 ? 's' : '');
+
+  if (filtered.length === 0) {
+    document.getElementById('docsContainer').innerHTML = '<div class="empty">📭 No documents found.<br><span style="font-size:11px">Check back later or try a different filter.</span></div>';
+    return;
+  }
+
+  var h = '';
+  filtered.forEach(function(d) {
+    var docInfo = getDocIcon(d.fileName);
+    h += '<div class="doc-card">'
+      + '<div class="doc-icon ' + docInfo.cls + '">' + docInfo.icon + '</div>'
+      + '<div class="doc-info">'
+      + '<div class="doc-title">' + d.title + '</div>'
+      + '<div class="doc-meta">✍️ ' + (d.author||'Admin') + (d.uploadedAt ? ' · 📅 ' + formatDate(d.uploadedAt) : '') + '</div>'
+      + '<span class="doc-cat">' + (d.category||'Other') + '</span>'
+      + '<div class="doc-actions">'
+      + '<button class="doc-btn btn-download" onclick="window.open(\'' + d.fileUrl + '\',\'_blank\')">📥 Download</button>'
+      + '<button class="doc-btn btn-preview" onclick="window.open(\'' + d.fileUrl + '\',\'_blank\')">👁️ Preview</button>'
+      + '</div></div></div>';
+  });
+  document.getElementById('docsContainer').innerHTML = h;
+}
+
+async function loadDocs() {
+  try {
+    var q = query(collection(db, 'documents'), orderBy('createdAt', 'desc'));
+    var snap = await getDocs(q);
+    allDocs = [];
+    snap.forEach(function(d) {
+      var data = d.data();
+      data.id = d.id;
+      allDocs.push(data);
+    });
+    renderDocs();
+  } catch(err) {
+    document.getElementById('docsContainer').innerHTML = '<div class="empty">❌ Could not load documents.<br>Please check your connection.</div>';
+  }
+}
+
+loadDocs();
+</script>
+</body>
+</html>

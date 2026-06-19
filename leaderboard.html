@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0d1117;color:#fff;max-width:450px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#0d4a1a,#1a6b2e);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header h1{font-size:16px;color:white}
+.header a{color:white;font-size:12px;text-decoration:none;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px}
+.content{padding:15px;padding-bottom:40px}
+.card{background:#161b22;padding:16px;border-radius:12px;margin-bottom:12px;border:1px solid #30363d}
+.card h2{color:#4caf50;font-size:15px;text-align:center;margin-bottom:14px}
+.top3{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin-bottom:20px}
+.podium{text-align:center;flex:1}
+.podium .avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 6px;border:3px solid}
+.podium.p1 .avatar{border-color:#ffd700;background:#2a2500;width:60px;height:60px;font-size:26px}
+.podium.p2 .avatar{border-color:#c0c0c0;background:#1a1a1a}
+.podium.p3 .avatar{border-color:#cd7f32;background:#1a1000}
+.podium .pname{font-size:11px;font-weight:700;margin-bottom:2px}
+.podium .pgpa{font-size:13px;font-weight:900}
+.podium.p1 .pgpa{color:#ffd700;font-size:16px}
+.podium.p2 .pgpa{color:#c0c0c0}
+.podium.p3 .pgpa{color:#cd7f32}
+.podium .pbase{margin-top:6px;border-radius:8px 8px 0 0;height:10px}
+.podium.p1 .pbase{background:#ffd700;height:20px}
+.podium.p2 .pbase{background:#c0c0c0;height:14px}
+.podium.p3 .pbase{background:#cd7f32;height:8px}
+.rank-item{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid #30363d;transition:0.2s}
+.rank-item:last-child{border-bottom:none}
+.rank-item:hover{background:#21262d;border-radius:8px}
+.rank-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:13px;flex-shrink:0}
+.r1{background:linear-gradient(135deg,#b8860b,#ffd700);color:#000}
+.r2{background:linear-gradient(135deg,#888,#c0c0c0);color:#000}
+.r3{background:linear-gradient(135deg,#7a4419,#cd7f32);color:#fff}
+.ro{background:#21262d;color:#aaa}
+.rank-info{flex:1}
+.rank-name{font-size:13px;font-weight:700;color:#e0e0e0}
+.rank-reg{font-size:10px;color:#666;margin-top:2px}
+.rank-gpa{font-size:18px;font-weight:900;color:#4caf50}
+.rank-bar{height:4px;background:#30363d;border-radius:2px;margin-top:4px;overflow:hidden}
+.rank-bar-fill{height:100%;background:linear-gradient(90deg,#1a6b2e,#4caf50);border-radius:2px}
+.skeleton{background:linear-gradient(90deg,#161b22 25%,#21262d 50%,#161b22 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;margin:8px 0}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.empty{text-align:center;color:#999;padding:30px;font-size:13px}
+.update-info{text-align:center;font-size:10px;color:#555;margin-top:10px}
+.footer{text-align:center;padding:15px;color:#555;font-size:10px}
+.footer a{color:#4caf50;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏆 Leaderboard</h1>
+  <a href="index.html">← Home</a>
+</div>
+<div class="content">
+  <div class="card">
+    <h2>🏆 Top Students — ND1 CS</h2>
+    <div id="leaderboardContent">
+      <div class="skeleton" style="height:80px"></div>
+      <div class="skeleton" style="height:50px"></div>
+      <div class="skeleton" style="height:50px"></div>
+      <div class="skeleton" style="height:50px"></div>
+    </div>
+    <p class="update-info" id="updateInfo"></p>
+  </div>
+</div>
+<div class="footer"><a href="index.html">← Back to CampusConnect</a></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const db = getFirestore(app);
+
+async function loadLeaderboard() {
+  try {
+    var snap = await getDocs(collection(db, 'results'));
+
+    // Group by student (regNo), average GPA across semesters
+    var students = {};
+    snap.forEach(function(d) {
+      var data = d.data();
+      var reg = data.regNo || '';
+      if (!reg) return;
+      if (!students[reg]) {
+        students[reg] = { name: data.name || reg, regNo: reg, gpas: [], totalGPA: 0, count: 0 };
+      }
+      if (data.gpa) {
+        students[reg].gpas.push(data.gpa);
+        students[reg].totalGPA += data.gpa;
+        students[reg].count++;
+      }
+    });
+
+    // Calculate average GPA and sort
+    var list = Object.values(students).map(function(s) {
+      s.avgGPA = s.count > 0 ? (s.totalGPA / s.count).toFixed(2) : '0.00';
+      return s;
+    }).sort(function(a, b) { return parseFloat(b.avgGPA) - parseFloat(a.avgGPA); });
+
+    if (list.length === 0) {
+      document.getElementById('leaderboardContent').innerHTML = '<p class="empty">📭 No results published yet.<br>Check back after results are uploaded.</p>';
+      return;
+    }
+
+    var maxGPA = parseFloat(list[0].avgGPA) || 4.0;
+    var h = '';
+
+    // Top 3 podium
+    if (list.length >= 3) {
+      var medals = ['🥇','🥈','🥉'];
+      h += '<div class="top3">';
+      // Order: 2nd, 1st, 3rd for podium visual
+      var podiumOrder = list.length >= 3 ? [list[1], list[0], list[2]] : [list[0]];
+      var podiumClass = ['p2','p1','p3'];
+      podiumOrder.forEach(function(s, i) {
+        if (!s) return;
+        var pci = i === 1 ? 'p1' : i === 0 ? 'p2' : 'p3';
+        h += '<div class="podium ' + pci + '">'
+          + '<div class="avatar">' + medals[podiumOrder.indexOf(s) === 1 ? 0 : podiumOrder.indexOf(s) === 0 ? 1 : 2] + '</div>'
+          + '<div class="pname">' + s.name.split(' ')[0] + '</div>'
+          + '<div class="pgpa">' + s.avgGPA + '</div>'
+          + '<div class="pbase"></div>'
+          + '</div>';
+      });
+      h += '</div>';
+    }
+
+    // Full ranked list
+    list.forEach(function(s, i) {
+      var rankClass = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : 'ro';
+      var barWidth = Math.round((parseFloat(s.avgGPA) / maxGPA) * 100);
+      h += '<div class="rank-item">'
+        + '<div class="rank-num ' + rankClass + '">' + (i + 1) + '</div>'
+        + '<div class="rank-info">'
+        + '<div class="rank-name">' + s.name + '</div>'
+        + '<div class="rank-reg">' + s.regNo + '</div>'
+        + '<div class="rank-bar"><div class="rank-bar-fill" style="width:' + barWidth + '%"></div></div>'
+        + '</div>'
+        + '<div class="rank-gpa">' + s.avgGPA + '</div>'
+        + '</div>';
+    });
+
+    document.getElementById('leaderboardContent').innerHTML = h;
+    document.getElementById('updateInfo').innerHTML = '🕐 Updated: ' + new Date().toLocaleString();
+
+  } catch(err) {
+    document.getElementById('leaderboardContent').innerHTML = '<p class="empty">❌ Could not load leaderboard.<br>Please check your connection.</p>';
+  }
+}
+
+loadLeaderboard();
+</script>
+</body>
+</html>

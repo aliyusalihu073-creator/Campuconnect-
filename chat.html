@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Chat - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#e5ddd5;max-width:600px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.header{background:#075e54;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.header a{color:white;font-size:18px;text-decoration:none}
+.header .title{color:white;font-size:17px;font-weight:600;flex:1}
+.header .online{font-size:10px;color:#a5d6a7}
+.chat-area{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.msg-wrapper{display:flex;flex-direction:column;max-width:82%}
+.msg-wrapper.me{align-self:flex-end;align-items:flex-end}
+.msg-wrapper.other{align-self:flex-start;align-items:flex-start}
+.msg-sender{font-size:11px;color:#075e54;margin-bottom:2px;font-weight:600}
+.msg-bubble{padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;word-wrap:break-word;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+.msg-wrapper.me .msg-bubble{background:#dcf8c6;color:#333;border-top-right-radius:2px}
+.msg-wrapper.other .msg-bubble{background:white;color:#333;border-top-left-radius:2px}
+.msg-bubble img{width:100%;border-radius:8px;max-height:220px;object-fit:cover;cursor:pointer;margin:4px 0;display:block}
+.msg-bubble video{width:100%;border-radius:8px;max-height:180px;margin:4px 0;display:block}
+.msg-bubble audio{width:100%;margin:4px 0}
+.msg-bubble a{color:#075e54;text-decoration:underline;font-size:12px}
+.msg-time{font-size:10px;opacity:0.55;margin-top:3px}
+.load-more{text-align:center;padding:8px}
+.load-more button{background:rgba(7,94,84,0.1);border:1px solid #075e54;color:#075e54;padding:6px 16px;border-radius:20px;font-size:11px;cursor:pointer}
+.attach-bar{display:flex;gap:6px;padding:7px 12px;background:#f0f0f0;border-top:1px solid #ddd}
+.attach-bar button{flex:1;padding:8px 4px;background:white;color:#075e54;border:none;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.1);transition:0.2s}
+.attach-bar button:hover{background:#e8f5e9}
+.input-bar{display:flex;gap:8px;padding:8px 12px;background:#f0f0f0;align-items:center}
+.input-bar input{flex:1;padding:12px 16px;border-radius:25px;border:none;background:white;color:#333;font-size:13px;outline:none;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.input-bar button{width:44px;height:44px;border-radius:50%;border:none;background:#075e54;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.2s;flex-shrink:0}
+.input-bar button:hover{background:#0d6b5e}
+.input-bar button:disabled{opacity:0.5;cursor:not-allowed}
+.lightbox-full{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;flex-direction:column;align-items:center;justify-content:center}
+.lightbox-full.show{display:flex}
+.lightbox-full img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px}
+.lightbox-full .close-btn{position:absolute;top:15px;right:15px;font-size:26px;color:white;cursor:pointer;background:rgba(255,255,255,0.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none}
+.lightbox-full .dl-btn{background:#075e54;color:white;padding:10px 22px;border-radius:20px;margin-top:12px;border:none;font-size:13px;cursor:pointer}
+.uploading-indicator{text-align:center;padding:6px;font-size:11px;color:#075e54;display:none}
+.uploading-indicator.show{display:block}
+.date-divider{text-align:center;margin:8px 0}
+.date-divider span{background:rgba(0,0,0,0.15);color:#555;font-size:10px;padding:3px 10px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html">←</a>
+  <div>
+    <div class="title">💬 Student Chat</div>
+    <div class="online" id="onlineStatus">● Connecting...</div>
+  </div>
+</div>
+
+<div class="chat-area" id="chatArea">
+  <p style="text-align:center;color:#999;padding:20px;font-size:12px;">Loading messages...</p>
+</div>
+
+<div class="uploading-indicator" id="uploadIndicator">⏳ Uploading file...</div>
+
+<div class="attach-bar">
+  <button onclick="document.getElementById('imageInput').click()">📷 Photo</button>
+  <button onclick="document.getElementById('videoInput').click()">🎥 Video</button>
+  <button onclick="document.getElementById('docInput').click()">📄 Doc</button>
+  <button onclick="document.getElementById('voiceInput').click()">🎤 Voice</button>
+</div>
+
+<div class="input-bar">
+  <input type="text" id="msgInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}">
+  <button id="sendBtn" onclick="sendMessage()">➤</button>
+</div>
+
+<input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadFile('image')">
+<input type="file" id="videoInput" accept="video/*" style="display:none" onchange="uploadFile('video')">
+<input type="file" id="docInput" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx" style="display:none" onchange="uploadFile('document')">
+<input type="file" id="voiceInput" accept="audio/*" style="display:none" onchange="uploadFile('voice')">
+
+<div class="lightbox-full" id="lightboxFull">
+  <button class="close-btn" onclick="closeLightbox()">✕</button>
+  <div id="lightboxContent"></div>
+  <button class="dl-btn" onclick="downloadMedia()">📥 Download</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, doc, getDoc, setDoc, startAfter, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+let currentUser = null, userProfile = null, currentLightboxURL = '';
+const MSG_LIMIT = 50; // Load only last 50 messages for speed
+
+onAuthStateChanged(auth, async function(user) {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  try {
+    var uDoc = await getDoc(doc(db, 'users', user.uid));
+    if (uDoc.exists()) userProfile = uDoc.data();
+    // Mark online
+    await setDoc(doc(db, 'online', user.uid), { online: true, lastSeen: new Date(), name: userProfile?.username || user.email }, { merge: true });
+  } catch(e) {}
+  loadMessages();
+  document.getElementById('onlineStatus').innerHTML = '● Online';
+});
+
+window.sendMessage = async function() {
+  var inp = document.getElementById('msgInput');
+  var text = inp.value.trim();
+  if (!text || !currentUser) return;
+  inp.value = '';
+  document.getElementById('sendBtn').disabled = true;
+  var name = (userProfile && userProfile.username) ? userProfile.username : currentUser.email.split('@')[0];
+  try {
+    await addDoc(collection(db, 'messages'), {
+      sender: name, senderId: currentUser.uid, text: text,
+      time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+      createdAt: new Date(), type: 'text'
+    });
+  } catch(e) { inp.value = text; }
+  document.getElementById('sendBtn').disabled = false;
+};
+
+window.uploadFile = async function(type) {
+  var inputId = {image:'imageInput',video:'videoInput',document:'docInput',voice:'voiceInput'}[type];
+  var file = document.getElementById(inputId).files[0];
+  if (!file || !currentUser) return;
+  document.getElementById(inputId).value = '';
+  document.getElementById('uploadIndicator').classList.add('show');
+
+  var folder = {image:'chat',video:'chat',document:'documents',voice:'voice'}[type];
+  var sRef = storageRef(storage, folder + '/' + Date.now() + '_' + file.name);
+  var task = uploadBytesResumable(sRef, file);
+
+  task.on('state_changed', null,
+    function(err) { document.getElementById('uploadIndicator').classList.remove('show'); alert('Upload failed: ' + err.message); },
+    async function() {
+      var url = await getDownloadURL(task.snapshot.ref);
+      var name = (userProfile && userProfile.username) ? userProfile.username : currentUser.email.split('@')[0];
+      var labels = {image:'📷 Photo',video:'🎥 Video',voice:'🎤 Voice note',document:'📄 ' + file.name};
+      await addDoc(collection(db, 'messages'), {
+        sender: name, senderId: currentUser.uid,
+        text: labels[type], time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        createdAt: new Date(), type: type,
+        imageUrl: type==='image'?url:null,
+        videoUrl: type==='video'?url:null,
+        voiceUrl: type==='voice'?url:null,
+        docUrl: type==='document'?url:null,
+        docName: type==='document'?file.name:null
+      });
+      document.getElementById('uploadIndicator').classList.remove('show');
+    }
+  );
+};
+
+function formatDate(date) {
+  var today = new Date(); var d = new Date(date);
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  var yest = new Date(today); yest.setDate(yest.getDate()-1);
+  if (d.toDateString() === yest.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+}
+
+function loadMessages() {
+  var el = document.getElementById('chatArea');
+  // FIX: limit to last 50 messages for speed
+  var q = query(collection(db, 'messages'), orderBy('createdAt', 'asc'), limit(MSG_LIMIT));
+
+  onSnapshot(q, function(snapshot) {
+    var h = '';
+    var lastDate = '';
+
+    snapshot.forEach(function(d) {
+      var m = d.data();
+      var isMe = currentUser && m.senderId === currentUser.uid;
+
+      // Date divider
+      var msgDate = m.createdAt ? formatDate(m.createdAt.toDate ? m.createdAt.toDate() : new Date(m.createdAt)) : '';
+      if (msgDate && msgDate !== lastDate) {
+        h += '<div class="date-divider"><span>' + msgDate + '</span></div>';
+        lastDate = msgDate;
+      }
+
+      h += '<div class="msg-wrapper ' + (isMe?'me':'other') + '">';
+      if (!isMe) h += '<div class="msg-sender">' + (m.sender||'Unknown') + '</div>';
+      h += '<div class="msg-bubble">';
+      if (m.type === 'text' || !m.type) h += m.text || '';
+      if (m.imageUrl) h += '<img src="' + m.imageUrl + '" loading="lazy" onclick="openLightbox(\'' + m.imageUrl + '\')" alt="Photo">';
+      if (m.videoUrl) h += '<video controls src="' + m.videoUrl + '" preload="none"></video>';
+      if (m.voiceUrl) h += '<audio controls src="' + m.voiceUrl + '" preload="none"></audio>';
+      if (m.docUrl) h += '<a href="' + m.docUrl + '" target="_blank">📄 ' + (m.docName||'Download') + '</a>';
+      h += '</div><div class="msg-time">' + (m.time||'') + '</div></div>';
+    });
+
+    if (!h) h = '<p style="text-align:center;color:#999;padding:30px;font-size:12px;">No messages yet. Say hello! 👋</p>';
+    el.innerHTML = h;
+    // Scroll to bottom
+    el.scrollTop = el.scrollHeight;
+  }, function(err) {
+    el.innerHTML = '<p style="text-align:center;color:#f44336;padding:20px;font-size:12px;">❌ Could not load messages.</p>';
+  });
+}
+
+window.openLightbox = function(url) {
+  currentLightboxURL = url;
+  document.getElementById('lightboxContent').innerHTML = '<img src="' + url + '">';
+  document.getElementById('lightboxFull').classList.add('show');
+};
+window.closeLightbox = function() {
+  document.getElementById('lightboxFull').classList.remove('show');
+  document.getElementById('lightboxContent').innerHTML = '';
+};
+window.downloadMedia = function() { if (currentLightboxURL) window.open(currentLightboxURL, '_blank'); };
+</script>
+</body>
+</html>

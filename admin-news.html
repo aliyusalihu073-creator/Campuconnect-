@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin News - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:white}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.content{padding:15px;padding-bottom:40px}
+.card{background:#1a1a2e;padding:20px;border-radius:14px;margin-bottom:15px;border:1px solid #2a2a3e}
+.card h2{color:#4caf50;font-size:16px;margin-bottom:14px}
+label{display:block;color:#aaa;font-size:11px;font-weight:600;margin-bottom:4px;margin-top:12px}
+.card input,.card textarea,.card select{width:100%;padding:13px 14px;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none;transition:0.3s}
+.card input:focus,.card textarea:focus,.card select:focus{border-color:#4caf50;box-shadow:0 0 8px rgba(76,175,80,0.15)}
+.card textarea{min-height:130px;resize:vertical;line-height:1.6}
+.char-count{font-size:10px;color:#555;text-align:right;margin-top:2px}
+.preview-box{background:#0d0d1a;border-radius:10px;padding:12px;margin-top:8px;border:1px dashed #333;display:none}
+.preview-box img{width:100%;border-radius:8px;max-height:200px;object-fit:cover}
+.preview-box iframe{width:100%;height:180px;border:none;border-radius:8px}
+.btn{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;color:white;transition:0.3s}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.btn-green:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-green:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-grey{background:#21262d;color:#aaa}
+.toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;max-width:260px}
+.toast.success{background:#1a3a2a;color:#4caf50;border:1px solid #4caf50}
+.toast.error{background:#2a1a1a;color:#f44336;border:1px solid #f44336}
+@keyframes slideIn{from{transform:translateX(110%)}to{transform:translateX(0)}}
+</style>
+</head>
+<body>
+<div class="header"><h1>📰 Post News</h1><a href="admin.html">← Admin</a></div>
+<div class="content">
+  <div class="card">
+    <h2>📰 Create Announcement</h2>
+
+    <label>📌 News Title *</label>
+    <input type="text" id="newsTitle" placeholder="Enter news title">
+
+    <label>✍️ Author Name</label>
+    <input type="text" id="newsAuthor" placeholder="Your name (default: Admin)">
+
+    <label>📅 Date *</label>
+    <input type="date" id="newsDate">
+
+    <label>📝 Content *</label>
+    <textarea id="newsContent" placeholder="Write your announcement here..." oninput="updateCharCount()"></textarea>
+    <div class="char-count" id="charCount">0 characters</div>
+
+    <label>🖼️ Image URL (optional)</label>
+    <input type="url" id="newsImage" placeholder="https://... (direct image link)" oninput="previewMedia('image')">
+    <div class="preview-box" id="imgPreview"></div>
+
+    <label>🎥 Video URL (optional)</label>
+    <input type="url" id="newsVideo" placeholder="YouTube or direct video link" oninput="previewMedia('video')">
+    <div class="preview-box" id="vidPreview"></div>
+
+    <label>🏷️ Category *</label>
+    <select id="newsCategory">
+      <option value="">— Select Category —</option>
+      <option value="Academic">📚 Academic</option>
+      <option value="Sports">⚽ Sports</option>
+      <option value="Events">🎉 Events</option>
+      <option value="Campus">🏫 Campus</option>
+      <option value="Urgent">🔴 Urgent</option>
+      <option value="General">📢 General</option>
+    </select>
+
+    <button class="btn btn-green" id="postBtn" onclick="postNews()">📤 Post News</button>
+    <button class="btn btn-grey" onclick="clearForm()">🗑️ Clear Form</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const db = getFirestore(app);
+
+function showToast(msg, type) {
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type||'success');
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 4000);
+}
+
+window.updateCharCount = function() {
+  var len = document.getElementById('newsContent').value.length;
+  document.getElementById('charCount').innerHTML = len.toLocaleString() + ' characters';
+};
+
+window.previewMedia = function(type) {
+  if (type === 'image') {
+    var url = document.getElementById('newsImage').value.trim();
+    var box = document.getElementById('imgPreview');
+    if (url.length > 10) { box.style.display='block'; box.innerHTML='<img src="'+url+'" onerror="this.parentElement.style.display=\'none\'">'; }
+    else { box.style.display='none'; }
+  } else {
+    var url = document.getElementById('newsVideo').value.trim();
+    var box = document.getElementById('vidPreview');
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      var v = url.includes('youtu.be') ? url.split('/').pop().split('?')[0] : (url.split('v=')[1]||'').split('&')[0];
+      if (v) { box.style.display='block'; box.innerHTML='<iframe src="https://www.youtube.com/embed/'+v+'" allowfullscreen></iframe>'; }
+    } else { box.style.display='none'; }
+  }
+};
+
+// Set today's date by default
+document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
+
+window.postNews = async function() {
+  var t = document.getElementById('newsTitle').value.trim();
+  var a = document.getElementById('newsAuthor').value.trim() || 'Admin';
+  var d = document.getElementById('newsDate').value;
+  var c = document.getElementById('newsContent').value.trim();
+  var img = document.getElementById('newsImage').value.trim();
+  var vid = document.getElementById('newsVideo').value.trim();
+  var cat = document.getElementById('newsCategory').value;
+
+  if (!t || !d || !c || !cat) { showToast('⚠️ Please fill all required fields (*)', 'error'); return; }
+
+  var btn = document.getElementById('postBtn');
+  btn.disabled = true; btn.innerHTML = '⏳ Posting...';
+
+  try {
+    await addDoc(collection(db, 'news'), {
+      title: t, author: a, date: d, content: c,
+      imageUrl: img, videoUrl: vid, category: cat,
+      createdAt: new Date()
+    });
+    showToast('✅ News posted successfully! Students can see it now.', 'success');
+    clearForm();
+  } catch(err) {
+    showToast('❌ Failed to post: ' + err.message, 'error');
+  }
+  btn.disabled = false; btn.innerHTML = '📤 Post News';
+};
+
+window.clearForm = function() {
+  document.getElementById('newsTitle').value = '';
+  document.getElementById('newsAuthor').value = '';
+  document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('newsContent').value = '';
+  document.getElementById('newsImage').value = '';
+  document.getElementById('newsVideo').value = '';
+  document.getElementById('newsCategory').value = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('vidPreview').style.display = 'none';
+  document.getElementById('charCount').innerHTML = '0 characters';
+};
+</script>
+</body>
+</html>
