@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:white}
+.header-actions{display:flex;gap:8px;align-items:center}
+.header a{color:white;font-size:12px;text-decoration:none;background:rgba(255,255,255,0.2);padding:7px 13px;border-radius:20px}
+.header .logout-btn{background:rgba(200,0,0,0.4);color:white;border:none;font-size:12px;padding:7px 13px;border-radius:20px;cursor:pointer}
+.content{padding:15px;padding-bottom:40px}
+.welcome{background:linear-gradient(135deg,#0d2a10,#1a3a1e);padding:20px;border-radius:14px;text-align:center;margin-bottom:18px;border:1px solid #2a4a2e}
+.welcome h2{color:#4caf50;font-size:18px;margin-bottom:4px}
+.welcome p{color:#888;font-size:11px}
+.welcome .admin-badge{display:inline-block;background:#1a3a1a;color:#4caf50;border:1px solid #4caf50;padding:4px 14px;border-radius:20px;font-size:10px;font-weight:700;margin-top:8px;letter-spacing:1px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#1a1a2e;padding:22px 14px;border-radius:14px;text-align:center;cursor:pointer;transition:0.3s;border:1px solid #2a2a3e;text-decoration:none;color:white;display:flex;flex-direction:column;align-items:center;gap:8px}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.5);border-color:#4caf50}
+.card .icon{font-size:38px}
+.card .title{font-size:13px;font-weight:700;color:#4caf50}
+.card .desc{font-size:10px;color:#666}
+.section-title{color:#4caf50;font-size:12px;font-weight:700;letter-spacing:1px;margin:18px 0 10px;padding-left:4px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
+.stat-box{background:#1a1a2e;border-radius:10px;padding:12px 8px;text-align:center;border:1px solid #2a2a3e}
+.stat-box .snum{font-size:20px;font-weight:900;color:#ffd700}
+.stat-box .slabel{font-size:9px;color:#666;margin-top:2px}
+.loading-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.loading-overlay.show{display:flex}
+.spinner{width:36px;height:36px;border:3px solid rgba(76,175,80,0.2);border-top-color:#4caf50;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.footer{text-align:center;padding:20px;color:#444;font-size:11px}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay" style="display:flex">
+  <div class="spinner"></div>
+  <p style="color:#4caf50;font-size:13px">Verifying admin access...</p>
+</div>
+
+<div id="mainContent" style="display:none">
+  <div class="header">
+    <h1>🔧 Admin Panel</h1>
+    <div class="header-actions">
+      <a href="index.html">🏠 Home</a>
+      <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="welcome">
+      <h2>👋 Welcome, Admin</h2>
+      <p id="adminEmail" style="color:#aaa;font-size:12px;margin-top:4px;"></p>
+      <span class="admin-badge">🔐 ADMIN ACCESS</span>
+    </div>
+
+    <!-- Live Stats -->
+    <p class="section-title">📊 QUICK STATS</p>
+    <div class="stats-row">
+      <div class="stat-box"><div class="snum" id="statNews">—</div><div class="slabel">News Posts</div></div>
+      <div class="stat-box"><div class="snum" id="statResults">—</div><div class="slabel">Results</div></div>
+      <div class="stat-box"><div class="snum" id="statDocs">—</div><div class="slabel">Documents</div></div>
+    </div>
+
+    <p class="section-title">📋 MANAGE CONTENT</p>
+    <div class="grid">
+      <a href="admin-news.html" class="card">
+        <div class="icon">📰</div>
+        <div class="title">Post News</div>
+        <div class="desc">Add announcements</div>
+      </a>
+      <a href="admin-media.html" class="card">
+        <div class="icon">📸</div>
+        <div class="title">Upload Media</div>
+        <div class="desc">Images & videos</div>
+      </a>
+      <a href="admin-pdfs.html" class="card">
+        <div class="icon">📚</div>
+        <div class="title">Documents</div>
+        <div class="desc">PDFs & notes</div>
+      </a>
+      <a href="admin-results.html" class="card">
+        <div class="icon">📊</div>
+        <div class="title">Results</div>
+        <div class="desc">Add student results</div>
+      </a>
+      <a href="admin-timetable.html" class="card">
+        <div class="icon">🗓️</div>
+        <div class="title">Timetable</div>
+        <div class="desc">Update schedule</div>
+      </a>
+      <a href="admin-manage.html" class="card">
+        <div class="icon">🗑️</div>
+        <div class="title">Manage</div>
+        <div class="desc">Delete & edit posts</div>
+      </a>
+      <a href="admin-handout.html" class="card">
+        <div class="icon">📚</div>
+        <div class="title">Handout</div>
+        <div class="desc">Upload PDFs by semester</div>
+      </a>
+    </div>
+  </div>
+  <div class="footer">© 2026 CampusConnect | Built by Aliyu Salihu</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, collection, getCountFromServer, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ADMIN EMAILS — add your email here
+const ADMIN_EMAILS = ['aliyusalihu@gmail.com', 'admin@campusconnect.com'];
+
+onAuthStateChanged(auth, async function(user) {
+  if (!user) { window.location.href = 'login.html'; return; }
+
+  // Check admin access
+  if (!ADMIN_EMAILS.includes(user.email)) {
+    document.getElementById('loadingOverlay').innerHTML =
+      '<div style="text-align:center;padding:30px">' +
+      '<p style="font-size:40px">🚫</p>' +
+      '<p style="color:#f44336;font-size:16px;margin:10px 0">Access Denied</p>' +
+      '<p style="color:#999;font-size:12px">You do not have admin privileges.</p>' +
+      '<a href="index.html" style="display:inline-block;margin-top:16px;background:#0d4a1a;color:white;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px">← Go Home</a>' +
+      '</div>';
+    return;
+  }
+
+  document.getElementById('loadingOverlay').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+  document.getElementById('adminEmail').innerHTML = '📧 ' + user.email;
+
+  // Load quick stats
+  try {
+    var [newsSnap, resultsSnap, docsSnap] = await Promise.all([
+      getCountFromServer(collection(db, 'news')),
+      getCountFromServer(collection(db, 'results')),
+      getCountFromServer(collection(db, 'documents'))
+    ]);
+    document.getElementById('statNews').innerHTML = newsSnap.data().count;
+    document.getElementById('statResults').innerHTML = resultsSnap.data().count;
+    document.getElementById('statDocs').innerHTML = docsSnap.data().count;
+  } catch(e) {
+    // getCountFromServer may not be available on all plans — fallback silently
+    document.getElementById('statNews').innerHTML = '✓';
+    document.getElementById('statResults').innerHTML = '✓';
+    document.getElementById('statDocs').innerHTML = '✓';
+  }
+});
+
+window.doLogout = function() {
+  signOut(auth).then(function(){ window.location.href = 'login.html'; });
+};
+</script>
+</body>
+</html>
