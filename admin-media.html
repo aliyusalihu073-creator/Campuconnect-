@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Media - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:white}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.content{padding:15px;padding-bottom:40px}
+.card{background:#1a1a2e;padding:20px;border-radius:14px;margin-bottom:15px;border:1px solid #2a2a3e}
+.card h2{color:#4caf50;font-size:16px;margin-bottom:14px}
+label{display:block;color:#aaa;font-size:11px;font-weight:600;margin-bottom:4px;margin-top:12px}
+.card input,.card select{width:100%;padding:13px 14px;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none;transition:0.3s}
+.card input:focus,.card select:focus{border-color:#4caf50}
+.file-drop{border:2px dashed #333;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:0.3s;margin-top:8px;background:#0d0d1a}
+.file-drop:hover{border-color:#4caf50;background:#0d1a0d}
+.file-drop p{color:#666;font-size:12px;margin-top:6px}
+.file-drop .icon{font-size:32px}
+.file-name{font-size:11px;color:#4caf50;margin-top:6px;font-weight:600}
+.progress-bar{width:100%;height:10px;background:#333;border-radius:5px;margin:10px 0;overflow:hidden;display:none}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#1B5E20,#4caf50);border-radius:5px;transition:width 0.3s}
+.progress-text{text-align:center;font-size:11px;color:#4caf50;margin-bottom:4px;display:none}
+.btn{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;color:white;transition:0.3s}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.btn-green:hover{opacity:0.9}
+.btn-green:disabled{opacity:0.5;cursor:not-allowed}
+.toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;max-width:280px}
+.toast.success{background:#1a3a2a;color:#4caf50;border:1px solid #4caf50}
+.toast.error{background:#2a1a1a;color:#f44336;border:1px solid #f44336}
+@keyframes slideIn{from{transform:translateX(110%)}to{transform:translateX(0)}}
+</style>
+</head>
+<body>
+<div id="authGate" style="position:fixed;inset:0;background:#0a0a0a;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;font-family:'Segoe UI',Arial,sans-serif">
+  <div style="width:36px;height:36px;border:3px solid rgba(76,175,80,0.2);border-top-color:#4caf50;border-radius:50%;animation:authSpin 0.8s linear infinite"></div>
+  <p style="color:#4caf50;font-size:13px">Verifying admin access...</p>
+</div>
+<style>@keyframes authSpin{to{transform:rotate(360deg)}}</style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const __guardApp = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+}, "authGuard");
+const __guardAuth = getAuth(__guardApp);
+const ADMIN_EMAILS = ['aliyusalihu@gmail.com', 'admin@campusconnect.com', 'aliyusalihu073@gmail.com'];
+onAuthStateChanged(__guardAuth, function(user) {
+  var gate = document.getElementById('authGate');
+  if (!user) { window.location.href = 'login.html'; return; }
+  if (!ADMIN_EMAILS.includes(user.email)) {
+    gate.innerHTML = '<div style="text-align:center;padding:30px">'
+      + '<p style="font-size:40px">🚫</p>'
+      + '<p style="color:#f44336;font-size:16px;margin:10px 0">Access Denied</p>'
+      + '<p style="color:#999;font-size:12px">You do not have admin privileges.</p>'
+      + '<a href="index.html" style="display:inline-block;margin-top:16px;background:#0d4a1a;color:white;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px">← Go Home</a>'
+      + '</div>';
+    return;
+  }
+  gate.remove();
+});
+</script>
+
+<div class="header"><h1>📸 Upload Media</h1><a href="admin.html">← Admin</a></div>
+<div class="content">
+  <div class="card">
+    <h2>📸 Upload Image or Video</h2>
+    <p style="font-size:11px;color:#666;margin-bottom:10px;">Uploaded media will appear in the News Feed for all students.</p>
+
+    <label>📌 Title *</label>
+    <input type="text" id="mediaTitle" placeholder="Describe this media">
+
+    <label>✍️ Author</label>
+    <input type="text" id="mediaAuthor" placeholder="Your name (default: Admin)">
+
+    <label>🏷️ Category *</label>
+    <select id="mediaCategory">
+      <option value="">— Select Category —</option>
+      <option value="Academic">📚 Academic</option>
+      <option value="Sports">⚽ Sports</option>
+      <option value="Events">🎉 Events</option>
+      <option value="Campus">🏫 Campus</option>
+      <option value="General">📢 General</option>
+    </select>
+
+    <label>📁 Select File *</label>
+    <div class="file-drop" onclick="document.getElementById('mediaFile').click()">
+      <div class="icon">📁</div>
+      <p>Tap to select image or video</p>
+      <p style="font-size:10px;color:#444">JPG, PNG, MP4, MOV supported</p>
+      <div class="file-name" id="fileName"></div>
+    </div>
+    <input type="file" id="mediaFile" accept="image/*,video/*" style="display:none" onchange="onFileSelect()">
+
+    <div class="progress-text" id="progressText">Uploading... 0%</div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+
+    <button class="btn btn-green" id="uploadBtn" onclick="uploadMedia()">📤 Upload & Post</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+function showToast(msg, type) {
+  var t = document.createElement('div'); t.className='toast '+(type||'success'); t.innerHTML=msg;
+  document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 4000);
+}
+
+window.onFileSelect = function() {
+  var file = document.getElementById('mediaFile').files[0];
+  if (file) document.getElementById('fileName').innerHTML = '✅ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+};
+
+window.uploadMedia = async function() {
+  var t = document.getElementById('mediaTitle').value.trim();
+  var a = document.getElementById('mediaAuthor').value.trim() || 'Admin';
+  var cat = document.getElementById('mediaCategory').value;
+  var file = document.getElementById('mediaFile').files[0];
+
+  if (!t || !cat || !file) { showToast('⚠️ Fill all required fields and select a file', 'error'); return; }
+
+  var isVid = file.type.startsWith('video/');
+  var btn = document.getElementById('uploadBtn');
+  btn.disabled = true; btn.innerHTML = '⏳ Uploading...';
+  document.getElementById('progressBar').style.display = 'block';
+  document.getElementById('progressText').style.display = 'block';
+
+  var sRef = storageRef(storage, 'media/' + Date.now() + '_' + file.name);
+  var task = uploadBytesResumable(sRef, file);
+
+  task.on('state_changed',
+    function(snap) {
+      var p = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+      document.getElementById('progressFill').style.width = p + '%';
+      document.getElementById('progressText').innerHTML = 'Uploading... ' + p + '%';
+    },
+    function(err) {
+      btn.disabled = false; btn.innerHTML = '📤 Upload & Post';
+      document.getElementById('progressBar').style.display = 'none';
+      document.getElementById('progressText').style.display = 'none';
+      showToast('❌ Upload failed: ' + err.message, 'error');
+    },
+    async function() {
+      var url = await getDownloadURL(task.snapshot.ref);
+      var today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      await addDoc(collection(db, 'news'), {
+        title: t, author: a, date: today,
+        content: isVid ? '🎥 ' + t : '📸 ' + t,
+        imageUrl: isVid ? '' : url,
+        videoUrl: isVid ? url : '',
+        category: cat, createdAt: new Date()
+      });
+      btn.disabled = false; btn.innerHTML = '📤 Upload & Post';
+      document.getElementById('progressBar').style.display = 'none';
+      document.getElementById('progressText').style.display = 'none';
+      document.getElementById('fileName').innerHTML = '';
+      document.getElementById('mediaFile').value = '';
+      document.getElementById('mediaTitle').value = '';
+      document.getElementById('mediaCategory').value = '';
+      showToast('✅ Media uploaded & posted! Students can see it now.', 'success');
+    }
+  );
+};
+</script>
+<script>
+// Service worker registration - auto-checks for updates and reloads when a new version is ready
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js?v=10', { updateViaCache: 'none' })
+      .then(function(reg) {
+        reg.update(); // check for a new version right away
+        setInterval(function() { reg.update(); }, 30 * 60 * 1000); // re-check every 30 min while the tab is open
+      })
+      .catch(function() {});
+  });
+
+  var __swRefreshed = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (__swRefreshed) return;
+    __swRefreshed = true;
+    window.location.reload();
+  });
+}
+</script>
+</body>
+</html>

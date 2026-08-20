@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hangout - CampusConnect</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0d1117;color:#fff;max-width:480px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#0d4a1a,#1a6b2e);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header h1{font-size:16px;color:white}
+.header a{color:white;font-size:12px;text-decoration:none;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px}
+.content{padding:15px;padding-bottom:40px}
+
+/* SEMESTER SELECTION SCREEN */
+.sem-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.sem-card{background:#161b22;border:2px solid #30363d;border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;transition:0.25s;display:flex;flex-direction:column;align-items:center;gap:10px}
+.sem-card:hover{border-color:#4caf50;background:#1a3a2a;transform:translateY(-3px)}
+.sem-card .sem-icon{font-size:36px}
+.sem-card .sem-title{font-size:14px;font-weight:700;color:#4caf50}
+.sem-card .sem-desc{font-size:10px;color:#666;line-height:1.4}
+.sem-card .sem-count{display:inline-block;background:#1a3a2a;color:#4caf50;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;margin-top:4px}
+
+/* BACK BAR */
+.back-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back-bar button{background:#1a3a2a;color:#4caf50;border:1px solid #2a4a3a;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer}
+.back-bar .section-label{font-size:15px;font-weight:700;color:#e0e0e0}
+.section-label span{color:#4caf50}
+
+/* DOC CARDS */
+.doc-card{background:#161b22;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #30363d;transition:0.2s}
+.doc-card:hover{border-color:#4caf50}
+.doc-top{display:flex;align-items:center;gap:12px}
+.doc-icon{font-size:30px;flex-shrink:0}
+.doc-info{flex:1;min-width:0}
+.doc-title{font-size:13px;font-weight:700;color:#e0e0e0;margin-bottom:3px}
+.doc-meta{font-size:10px;color:#666;margin-top:2px}
+.doc-cat{display:inline-block;padding:2px 8px;border-radius:8px;font-size:9px;font-weight:700;background:#1a3a2a;color:#4caf50;margin-top:4px}
+.doc-actions{display:flex;gap:8px;margin-top:10px}
+.doc-btn{flex:1;padding:9px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:0.2s}
+.btn-open{background:linear-gradient(135deg,#0d4a1a,#1a6b2e);color:white}
+.btn-dl{background:#21262d;color:#4caf50;border:1px solid #30363d}
+
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,#161b22 25%,#21262d 50%,#161b22 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:12px;height:90px;margin:8px 0}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.empty{text-align:center;color:#555;padding:40px;font-size:13px;line-height:1.8}
+
+/* PDF VIEWER */
+.viewer-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column}
+.viewer-overlay.show{display:flex}
+.viewer-header{background:#0d4a1a;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.viewer-title{font-size:13px;font-weight:700;color:white;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:10px}
+.viewer-btns{display:flex;gap:8px;flex-shrink:0}
+.viewer-btns button{padding:7px 12px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-close{background:rgba(255,255,255,0.2);color:white}
+.btn-dl2{background:#ffd700;color:#000}
+.viewer-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;color:#4caf50}
+.spinner{width:40px;height:40px;border:3px solid rgba(76,175,80,0.2);border-top-color:#4caf50;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.viewer-frame{flex:1;width:100%;border:none;background:#fff}
+
+.footer{text-align:center;padding:15px;color:#555;font-size:10px}
+.footer a{color:#4caf50;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📚 Hangout</h1>
+  <a href="index.html">← Home</a>
+</div>
+
+<div class="content">
+
+  <!-- SEMESTER SELECTION -->
+  <div id="semSelection">
+    <div class="card" style="background:#161b22;border:1px solid #30363d;padding:14px;border-radius:12px;margin-bottom:14px">
+      <b style="color:#4caf50">📚 Hangout Portal</b>
+      <p style="font-size:11px;color:#666;margin-top:4px">Choose a semester to view PDFs & handouts</p>
+    </div>
+    <div class="sem-grid">
+      <div class="sem-card" onclick="openSemester('First Semester')">
+        <div class="sem-icon">📘</div>
+        <div class="sem-title">First Semester</div>
+        <div class="sem-desc">Lecture notes, handouts & materials</div>
+        <span class="sem-count" id="count-first">Loading...</span>
+      </div>
+      <div class="sem-card" onclick="openSemester('Second Semester')">
+        <div class="sem-icon">📗</div>
+        <div class="sem-title">Second Semester</div>
+        <div class="sem-desc">Lecture notes, handouts & materials</div>
+        <span class="sem-count" id="count-second">Loading...</span>
+      </div>
+      <div class="sem-card" onclick="openSemester('First Semester Past Questions')">
+        <div class="sem-icon">📝</div>
+        <div class="sem-title">1st Sem Past Q</div>
+        <div class="sem-desc">Past questions & exam prep</div>
+        <span class="sem-count" id="count-firstpq">Loading...</span>
+      </div>
+      <div class="sem-card" onclick="openSemester('Second Semester Past Questions')">
+        <div class="sem-icon">📋</div>
+        <div class="sem-title">2nd Sem Past Q</div>
+        <div class="sem-desc">Past questions & exam prep</div>
+        <span class="sem-count" id="count-secondpq">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCS LIST (shown after semester selected) -->
+  <div id="docsList" style="display:none">
+    <div class="back-bar">
+      <button onclick="goBack()">← Back</button>
+      <div class="section-label" id="semLabel">Loading...</div>
+    </div>
+    <div id="docsContainer">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer"><a href="index.html">← Back to CampusConnect</a></div>
+
+<!-- PDF VIEWER MODAL -->
+<div class="viewer-overlay" id="viewerOverlay">
+  <div class="viewer-header">
+    <div class="viewer-title" id="viewerTitle">Document</div>
+    <div class="viewer-btns">
+      <button class="btn-dl2" onclick="dlCurrent()">📥 Download</button>
+      <button class="btn-close" onclick="closeViewer()">✕ Close</button>
+    </div>
+  </div>
+  <div class="viewer-loading" id="viewerLoading">
+    <div class="spinner"></div>
+    <p style="font-size:13px">Opening PDF...</p>
+  </div>
+  <iframe class="viewer-frame" id="viewerFrame" src="" style="display:none"
+    onload="document.getElementById('viewerLoading').style.display='none';this.style.display='block'">
+  </iframe>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy, where }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain:"campuconnect-bd52f.firebaseapp.com",
+  projectId:"campuconnect-bd52f",
+  storageBucket:"campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId:"762013163609",
+  appId:"1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const db = getFirestore(app);
+
+var allDocs = [];
+var currentDlUrl = '';
+
+// Load all docs once and cache
+async function loadAllDocs() {
+  try {
+    var q = query(collection(db, 'handouts'), orderBy('createdAt', 'desc'));
+    var snap = await getDocs(q);
+    allDocs = [];
+    snap.forEach(function(d) {
+      var data = d.data();
+      data.id = d.id;
+      allDocs.push(data);
+    });
+    updateCounts();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function updateCounts() {
+  var semKeys = {
+    'First Semester': 'count-first',
+    'Second Semester': 'count-second',
+    'First Semester Past Questions': 'count-firstpq',
+    'Second Semester Past Questions': 'count-secondpq'
+  };
+  Object.keys(semKeys).forEach(function(sem) {
+    var count = allDocs.filter(function(d){ return d.semester === sem; }).length;
+    var el = document.getElementById(semKeys[sem]);
+    if (el) el.innerHTML = count + ' file' + (count !== 1 ? 's' : '');
+  });
+}
+
+function toViewUrl(url) {
+  if (!url) return '';
+  if (url.includes('/preview')) return url;
+  if (url.includes('drive.google.com/file/d/')) {
+    var id = url.split('/d/')[1].split('/')[0];
+    return 'https://drive.google.com/file/d/' + id + '/preview';
+  }
+  if (url.includes('drive.google.com/open?id=')) {
+    var id = url.split('id=')[1].split('&')[0];
+    return 'https://drive.google.com/file/d/' + id + '/preview';
+  }
+  return 'https://docs.google.com/viewer?url=' + encodeURIComponent(url) + '&embedded=true';
+}
+
+function toDlUrl(url) {
+  if (!url) return '';
+  if (url.includes('drive.google.com/file/d/')) {
+    var id = url.split('/d/')[1].split('/')[0];
+    return 'https://drive.google.com/uc?export=download&id=' + id;
+  }
+  if (url.includes('drive.google.com/open?id=')) {
+    var id = url.split('id=')[1].split('&')[0];
+    return 'https://drive.google.com/uc?export=download&id=' + id;
+  }
+  return url;
+}
+
+function getDocIcon(fileName) {
+  var ext = (fileName || '').split('.').pop().toLowerCase();
+  if (ext === 'pdf') return '📕';
+  if (['doc','docx'].includes(ext)) return '📘';
+  if (['ppt','pptx'].includes(ext)) return '📙';
+  return '📄';
+}
+
+window.openSemester = function(sem) {
+  document.getElementById('semSelection').style.display = 'none';
+  document.getElementById('docsList').style.display = 'block';
+  document.getElementById('semLabel').innerHTML = '<span>' + sem + '</span>';
+
+  var filtered = allDocs.filter(function(d){ return d.semester === sem; });
+  var el = document.getElementById('docsContainer');
+
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="empty">📭 No files uploaded yet for<br><b style="color:#4caf50">' + sem + '</b><br><br><span style="font-size:11px">Check back later</span></div>';
+    return;
+  }
+
+  var h = '';
+  filtered.forEach(function(d) {
+    var viewUrl = toViewUrl(d.fileUrl || d.originalUrl || '');
+    var dlUrl = toDlUrl(d.originalUrl || d.fileUrl || '');
+    var icon = getDocIcon(d.fileName || '');
+    h += '<div class="doc-card">'
+      + '<div class="doc-top">'
+      + '<div class="doc-icon">' + icon + '</div>'
+      + '<div class="doc-info">'
+      + '<div class="doc-title">' + (d.title || 'Document') + '</div>'
+      + '<div class="doc-meta">✍️ ' + (d.author || 'Admin') + ' · 📂 ' + (d.category || 'Handout') + '</div>'
+      + '<span class="doc-cat">' + (d.semester || sem) + '</span>'
+      + '</div></div>'
+      + '<div class="doc-actions">'
+      + '<button class="doc-btn btn-open" onclick="openPDF(\'' + viewUrl.replace(/'/g,"\\'") + '\',\'' + (d.title||'Document').replace(/'/g,"\\'") + '\',\'' + dlUrl.replace(/'/g,"\\'") + '\')">👁️ Open PDF</button>'
+      + '<button class="doc-btn btn-dl" onclick="window.open(\'' + dlUrl.replace(/'/g,"\\'") + '\',\'_blank\')">📥 Download</button>'
+      + '</div></div>';
+  });
+  el.innerHTML = h;
+};
+
+window.goBack = function() {
+  document.getElementById('docsList').style.display = 'none';
+  document.getElementById('semSelection').style.display = 'block';
+  document.getElementById('docsContainer').innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+};
+
+window.openPDF = function(viewUrl, title, dlUrl) {
+  currentDlUrl = dlUrl;
+  document.getElementById('viewerTitle').innerHTML = title;
+  document.getElementById('viewerLoading').style.display = 'flex';
+  document.getElementById('viewerFrame').style.display = 'none';
+  document.getElementById('viewerFrame').src = viewUrl;
+  document.getElementById('viewerOverlay').classList.add('show');
+};
+
+window.closeViewer = function() {
+  document.getElementById('viewerOverlay').classList.remove('show');
+  document.getElementById('viewerFrame').src = '';
+  document.getElementById('viewerFrame').style.display = 'none';
+  document.getElementById('viewerLoading').style.display = 'flex';
+};
+
+window.dlCurrent = function() {
+  if (currentDlUrl) window.open(currentDlUrl, '_blank');
+};
+
+loadAllDocs();
+</script>
+<script>
+// Service worker registration - auto-checks for updates and reloads when a new version is ready
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js?v=10', { updateViaCache: 'none' })
+      .then(function(reg) {
+        reg.update(); // check for a new version right away
+        setInterval(function() { reg.update(); }, 30 * 60 * 1000); // re-check every 30 min while the tab is open
+      })
+      .catch(function() {});
+  });
+
+  var __swRefreshed = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (__swRefreshed) return;
+    __swRefreshed = true;
+    window.location.reload();
+  });
+}
+</script>
+</body>
+</html>

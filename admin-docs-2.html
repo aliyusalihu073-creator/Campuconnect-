@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Docs - CampusConnect</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;max-width:500px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;color:white}
+.header a{color:white;font-size:13px;text-decoration:none;background:rgba(255,255,255,0.2);padding:8px 14px;border-radius:20px}
+.content{padding:15px;padding-bottom:40px}
+.card{background:#1a1a2e;padding:20px;border-radius:14px;margin-bottom:15px;border:1px solid #2a2a3e}
+.card h2{color:#4caf50;font-size:16px;margin-bottom:14px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;background:#0d0d1a;padding:5px;border-radius:10px}
+.tab{flex:1;padding:10px;border:none;border-radius:8px;background:transparent;color:#666;font-size:12px;font-weight:600;cursor:pointer;transition:0.2s}
+.tab.active{background:#1B5E20;color:white}
+label{display:block;color:#aaa;font-size:11px;font-weight:600;margin-bottom:4px;margin-top:12px}
+input,select,textarea{width:100%;padding:13px 14px;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none;transition:0.3s}
+input:focus,select:focus,textarea:focus{border-color:#4caf50}
+textarea{min-height:60px;resize:vertical}
+.btn{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;color:white;transition:0.3s}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.btn-green:disabled{opacity:0.5;cursor:not-allowed}
+.hint{background:#0d1a0d;border:1px solid #1a3a1a;border-radius:10px;padding:12px;margin-top:8px}
+.hint p{font-size:11px;color:#4caf50;line-height:1.7;margin:2px 0}
+.hint b{color:#ffd700}
+.progress-bar{width:100%;height:10px;background:#333;border-radius:5px;margin:10px 0;overflow:hidden;display:none}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#1B5E20,#4caf50);border-radius:5px;transition:width 0.3s}
+.progress-text{text-align:center;font-size:11px;color:#4caf50;margin-bottom:4px;display:none}
+.file-drop{border:2px dashed #333;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:0.3s;background:#0d0d1a}
+.file-drop:hover{border-color:#4caf50}
+.file-drop .icon{font-size:28px}
+.file-drop p{color:#666;font-size:11px;margin-top:4px}
+.file-name{font-size:11px;color:#4caf50;margin-top:4px;font-weight:600}
+.toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;max-width:280px}
+.toast.success{background:#1a3a2a;color:#4caf50;border:1px solid #4caf50}
+.toast.error{background:#2a1a1a;color:#f44336;border:1px solid #f44336}
+@keyframes slideIn{from{transform:translateX(110%)}to{transform:translateX(0)}}
+</style>
+</head>
+<body>
+<div id="authGate" style="position:fixed;inset:0;background:#0a0a0a;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;font-family:'Segoe UI',Arial,sans-serif">
+  <div style="width:36px;height:36px;border:3px solid rgba(76,175,80,0.2);border-top-color:#4caf50;border-radius:50%;animation:authSpin 0.8s linear infinite"></div>
+  <p style="color:#4caf50;font-size:13px">Verifying admin access...</p>
+</div>
+<style>@keyframes authSpin{to{transform:rotate(360deg)}}</style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const __guardApp = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+}, "authGuard");
+const __guardAuth = getAuth(__guardApp);
+const ADMIN_EMAILS = ['aliyusalihu@gmail.com', 'admin@campusconnect.com', 'aliyusalihu073@gmail.com'];
+onAuthStateChanged(__guardAuth, function(user) {
+  var gate = document.getElementById('authGate');
+  if (!user) { window.location.href = 'login.html'; return; }
+  if (!ADMIN_EMAILS.includes(user.email)) {
+    gate.innerHTML = '<div style="text-align:center;padding:30px">'
+      + '<p style="font-size:40px">🚫</p>'
+      + '<p style="color:#f44336;font-size:16px;margin:10px 0">Access Denied</p>'
+      + '<p style="color:#999;font-size:12px">You do not have admin privileges.</p>'
+      + '<a href="index.html" style="display:inline-block;margin-top:16px;background:#0d4a1a;color:white;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px">← Go Home</a>'
+      + '</div>';
+    return;
+  }
+  gate.remove();
+});
+</script>
+
+<div class="header"><h1>📚 Upload Document</h1><a href="admin.html">← Admin</a></div>
+<div class="content">
+  <div class="card">
+    <h2>📚 Add Document</h2>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('link')">🔗 Paste Link (Fast)</button>
+      <button class="tab" onclick="switchTab('upload')">📁 Upload File</button>
+    </div>
+
+    <!-- COMMON FIELDS -->
+    <label>📌 Document Title *</label>
+    <input type="text" id="docTitle" placeholder="e.g. COM111 Lecture Notes Week 1">
+
+    <label>✍️ Author</label>
+    <input type="text" id="docAuthor" placeholder="Your name (default: Admin)">
+
+    <label>🏷️ Category *</label>
+    <select id="docCategory">
+      <option value="">— Select Category —</option>
+      <option value="Lecture Notes">📖 Lecture Notes</option>
+      <option value="Past Questions">📝 Past Questions</option>
+      <option value="Textbook">📚 Textbook</option>
+      <option value="Other">📄 Other</option>
+    </select>
+
+    <!-- TAB 1: LINK METHOD (FAST - RECOMMENDED) -->
+    <div id="linkTab">
+      <label>🔗 Document Link *</label>
+      <input type="url" id="docLink" placeholder="Paste Google Drive, Telegram, or any PDF link here">
+
+      <div class="hint">
+        <p><b>📌 How to get a fast link:</b></p>
+        <p>1️⃣ Upload PDF to <b>Google Drive</b></p>
+        <p>2️⃣ Right-click → <b>Share → Anyone with link</b></p>
+        <p>3️⃣ Copy link and paste here</p>
+        <p>✅ <b>No upload wait! Students see it instantly.</b></p>
+        <p style="margin-top:6px">Also works with: Telegram file links, Dropbox, OneDrive</p>
+      </div>
+
+      <button class="btn btn-green" id="linkBtn" onclick="saveLink()">💾 Save Document</button>
+    </div>
+
+    <!-- TAB 2: FILE UPLOAD -->
+    <div id="uploadTab" style="display:none">
+      <label>📁 Select File</label>
+      <div class="file-drop" onclick="document.getElementById('docFile').click()">
+        <div class="icon">📄</div>
+        <p>Tap to select PDF, DOC, PPT, TXT</p>
+        <div class="file-name" id="docFileName"></div>
+      </div>
+      <input type="file" id="docFile" accept=".pdf,.txt,.doc,.docx,.ppt,.pptx" style="display:none" onchange="onDocSelect()">
+
+      <div class="hint">
+        <p><b>⚠️ Upload Tips for Slow Network:</b></p>
+        <p>• Keep files under <b>5MB</b> for faster upload</p>
+        <p>• Use <b>WiFi</b> when uploading</p>
+        <p>• 🔗 <b>Paste Link tab is much faster!</b></p>
+      </div>
+
+      <div class="progress-text" id="progressText">Uploading... 0%</div>
+      <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+
+      <button class="btn btn-green" id="uploadBtn" onclick="uploadFile()">📤 Upload File</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain:"campuconnect-bd52f.firebaseapp.com",
+  projectId:"campuconnect-bd52f",
+  storageBucket:"campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId:"762013163609",
+  appId:"1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+function showToast(msg, type) {
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || 'success');
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 4000);
+}
+
+function getCommonFields() {
+  return {
+    title: document.getElementById('docTitle').value.trim(),
+    author: document.getElementById('docAuthor').value.trim() || 'Admin',
+    category: document.getElementById('docCategory').value
+  };
+}
+
+// ── TAB SWITCH ──
+window.switchTab = function(tab) {
+  document.getElementById('linkTab').style.display = tab === 'link' ? 'block' : 'none';
+  document.getElementById('uploadTab').style.display = tab === 'upload' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(function(b, i){
+    b.classList.toggle('active', (i === 0 && tab === 'link') || (i === 1 && tab === 'upload'));
+  });
+};
+
+// ── METHOD 1: SAVE LINK (INSTANT) ──
+window.saveLink = async function() {
+  var f = getCommonFields();
+  var link = document.getElementById('docLink').value.trim();
+  if (!f.title || !f.category || !link) {
+    showToast('⚠️ Fill all required fields and paste a link', 'error'); return;
+  }
+
+  // Convert Google Drive share link to direct view link
+  var fileUrl = link;
+  if (link.includes('drive.google.com/file/d/')) {
+    var fileId = link.split('/d/')[1].split('/')[0];
+    fileUrl = 'https://drive.google.com/file/d/' + fileId + '/preview';
+  } else if (link.includes('drive.google.com/open?id=')) {
+    var fileId = link.split('id=')[1].split('&')[0];
+    fileUrl = 'https://drive.google.com/file/d/' + fileId + '/preview';
+  }
+
+  var btn = document.getElementById('linkBtn');
+  btn.disabled = true; btn.innerHTML = '⏳ Saving...';
+
+  try {
+    await addDoc(collection(db, 'documents'), {
+      title: f.title,
+      author: f.author,
+      category: f.category,
+      fileUrl: fileUrl,
+      originalUrl: link,
+      fileName: f.title + '.pdf',
+      uploadMethod: 'link',
+      createdAt: new Date()
+    });
+    showToast('✅ Document saved! Students can see it now.', 'success');
+    document.getElementById('docTitle').value = '';
+    document.getElementById('docAuthor').value = '';
+    document.getElementById('docCategory').value = '';
+    document.getElementById('docLink').value = '';
+  } catch(err) {
+    showToast('❌ Error: ' + err.message, 'error');
+  }
+  btn.disabled = false; btn.innerHTML = '💾 Save Document';
+};
+
+// ── METHOD 2: FILE UPLOAD ──
+window.onDocSelect = function() {
+  var file = document.getElementById('docFile').files[0];
+  if (!file) return;
+  var sizeMB = (file.size / 1024 / 1024).toFixed(2);
+  document.getElementById('docFileName').innerHTML = '✅ ' + file.name + ' (' + sizeMB + ' MB)';
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('⚠️ File is ' + sizeMB + 'MB. Large files may be slow. Consider using the Link method instead.', 'error');
+  }
+};
+
+window.uploadFile = async function() {
+  var f = getCommonFields();
+  var file = document.getElementById('docFile').files[0];
+  if (!f.title || !f.category || !file) {
+    showToast('⚠️ Fill all fields and select a file', 'error'); return;
+  }
+
+  var btn = document.getElementById('uploadBtn');
+  btn.disabled = true; btn.innerHTML = '⏳ Uploading...';
+  document.getElementById('progressBar').style.display = 'block';
+  document.getElementById('progressText').style.display = 'block';
+
+  var sRef = storageRef(storage, 'documents/' + Date.now() + '_' + file.name);
+  var task = uploadBytesResumable(sRef, file);
+
+  // Timeout: warn after 30 seconds
+  var warnTimeout = setTimeout(function() {
+    showToast('⏳ Upload is slow. Switch to WiFi or use the Link method instead.', 'error');
+  }, 30000);
+
+  task.on('state_changed',
+    function(snap) {
+      var p = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+      document.getElementById('progressFill').style.width = p + '%';
+      document.getElementById('progressText').innerHTML = 'Uploading... ' + p + '% (' + (snap.bytesTransferred/1024).toFixed(0) + 'KB / ' + (snap.totalBytes/1024).toFixed(0) + 'KB)';
+    },
+    function(err) {
+      clearTimeout(warnTimeout);
+      btn.disabled = false; btn.innerHTML = '📤 Upload File';
+      document.getElementById('progressBar').style.display = 'none';
+      document.getElementById('progressText').style.display = 'none';
+      showToast('❌ Upload failed: ' + err.message + '. Try the Link method instead!', 'error');
+    },
+    async function() {
+      clearTimeout(warnTimeout);
+      var url = await getDownloadURL(task.snapshot.ref);
+      try {
+        await addDoc(collection(db, 'documents'), {
+          title: f.title, author: f.author, category: f.category,
+          fileUrl: url, fileName: file.name,
+          fileSize: file.size, uploadMethod: 'storage',
+          createdAt: new Date()
+        });
+        showToast('✅ Document uploaded! Students can now access it.', 'success');
+        document.getElementById('docTitle').value = '';
+        document.getElementById('docAuthor').value = '';
+        document.getElementById('docCategory').value = '';
+        document.getElementById('docFile').value = '';
+        document.getElementById('docFileName').innerHTML = '';
+        document.getElementById('progressBar').style.display = 'none';
+        document.getElementById('progressText').style.display = 'none';
+      } catch(err) {
+        showToast('❌ Saved failed: ' + err.message, 'error');
+      }
+      btn.disabled = false; btn.innerHTML = '📤 Upload File';
+    }
+  );
+};
+</script>
+<script>
+// Service worker registration - auto-checks for updates and reloads when a new version is ready
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js?v=10', { updateViaCache: 'none' })
+      .then(function(reg) {
+        reg.update(); // check for a new version right away
+        setInterval(function() { reg.update(); }, 30 * 60 * 1000); // re-check every 30 min while the tab is open
+      })
+      .catch(function() {});
+  });
+
+  var __swRefreshed = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (__swRefreshed) return;
+    __swRefreshed = true;
+    window.location.reload();
+  });
+}
+</script>
+</body>
+</html>

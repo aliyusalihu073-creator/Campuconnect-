@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voting - CampusConnect</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#0d1117;color:#fff;max-width:480px;margin:0 auto;min-height:100vh}
+.header{background:linear-gradient(135deg,#0d4a1a,#1a6b2e);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header h1{font-size:16px;color:white}
+.header a{color:white;font-size:12px;text-decoration:none;background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:15px}
+.content{padding:15px;padding-bottom:40px}
+
+/* POLL CARD */
+.poll-card{background:#161b22;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #30363d;transition:0.2s}
+.poll-card.open{border-left:4px solid #4caf50}
+.poll-card.closed{border-left:4px solid #f44336;opacity:0.85}
+.poll-type-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:9px;font-weight:700;background:#1a3a2a;color:#4caf50;margin-bottom:8px}
+.poll-title{font-size:15px;font-weight:700;color:#e0e0e0;margin-bottom:4px}
+.poll-desc{font-size:11px;color:#666;margin-bottom:8px}
+.poll-meta{font-size:10px;color:#555;margin-bottom:12px;display:flex;gap:12px}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700}
+.status-open{background:#1a3a2a;color:#4caf50}
+.status-closed{background:#2a1a1a;color:#f44336}
+
+/* VOTE OPTIONS */
+.vote-option{background:#21262d;border:2px solid #30363d;border-radius:10px;padding:12px 14px;margin:6px 0;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:10px}
+.vote-option:hover{border-color:#4caf50;background:#1a3a2a}
+.vote-option.selected{border-color:#4caf50;background:#1a3a2a}
+.vote-option.disabled{cursor:not-allowed;opacity:0.7}
+.vote-option .opt-text{flex:1;font-size:13px;color:#e0e0e0;font-weight:600}
+.vote-option .opt-check{width:20px;height:20px;border-radius:50%;border:2px solid #30363d;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:0.2s}
+.vote-option.selected .opt-check{border-color:#4caf50;background:#4caf50;color:white}
+
+/* RESULTS (after voting) */
+.result-wrap{margin-top:10px}
+.result-row{margin:8px 0}
+.result-top{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+.result-name{color:#e0e0e0;font-weight:600}
+.result-pct{color:#4caf50;font-weight:700}
+.result-bar{height:10px;background:#21262d;border-radius:5px;overflow:hidden}
+.result-fill{height:100%;border-radius:5px;transition:width 0.8s ease}
+.result-fill.winner{background:linear-gradient(90deg,#b8860b,#ffd700)}
+.result-fill.normal{background:linear-gradient(90deg,#1a6b2e,#4caf50)}
+.result-votes{font-size:9px;color:#555;margin-top:2px}
+.winner-badge{display:inline-block;background:linear-gradient(135deg,#b8860b,#ffd700);color:#000;padding:3px 10px;border-radius:10px;font-size:9px;font-weight:900;margin-left:6px}
+
+/* VOTE BUTTON */
+.vote-btn{display:block;width:100%;padding:13px;margin-top:10px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;color:white;background:linear-gradient(135deg,#0d4a1a,#1a6b2e);transition:0.2s}
+.vote-btn:hover{opacity:0.9}
+.vote-btn:disabled{opacity:0.4;cursor:not-allowed}
+.already-voted{text-align:center;color:#4caf50;font-size:11px;font-weight:600;margin-top:8px;padding:8px;background:#1a3a2a;border-radius:8px}
+
+.skeleton{background:linear-gradient(90deg,#161b22 25%,#21262d 50%,#161b22 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:14px;height:120px;margin:8px 0}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.empty{text-align:center;color:#555;padding:40px;font-size:13px;line-height:1.8}
+.toast{position:fixed;top:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:12px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;max-width:250px}
+.toast.success{background:#1a3a2a;color:#4caf50;border:1px solid #4caf50}
+.toast.error{background:#2a1a1a;color:#f44336;border:1px solid #f44336}
+@keyframes slideIn{from{transform:translateX(110%)}to{transform:translateX(0)}}
+.footer{text-align:center;padding:15px;color:#555;font-size:10px}
+.footer a{color:#4caf50;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🗳️ Voting</h1>
+  <a href="index.html">← Home</a>
+</div>
+
+<div class="content">
+  <div id="pollsContainer">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+</div>
+
+<div class="footer"><a href="index.html">← Back to CampusConnect</a></div>
+
+<div class="toast" id="toastEl" style="display:none"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, arrayUnion, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain:"campuconnect-bd52f.firebaseapp.com",
+  projectId:"campuconnect-bd52f",
+  storageBucket:"campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId:"762013163609",
+  appId:"1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+var currentUser = null;
+var votedPolls = {}; // pollId -> optionIndex voted
+
+function escapeHtml(str) {
+  var d = document.createElement('div');
+  d.textContent = str == null ? '' : String(str);
+  return d.innerHTML;
+}
+
+function showToast(msg, type) {
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type||'success');
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 3500);
+}
+
+onAuthStateChanged(auth, function(user) {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  loadPolls();
+});
+
+async function loadPolls() {
+  var el = document.getElementById('pollsContainer');
+  try {
+    var q = query(collection(db, 'polls'), orderBy('createdAt', 'desc'));
+    var snap = await getDocs(q);
+
+    if (snap.empty) {
+      el.innerHTML = '<div class="empty">🗳️ No polls available yet.<br><span style="font-size:11px">Check back later!</span></div>';
+      return;
+    }
+
+    var h = '';
+    var polls = [];
+    snap.forEach(function(d) {
+      var p = d.data(); p.id = d.id; polls.push(p);
+    });
+
+    // Load user's vote history
+    try {
+      var userVoteDoc = await getDoc(doc(db, 'userVotes', currentUser.uid));
+      if (userVoteDoc.exists()) votedPolls = userVoteDoc.data() || {};
+    } catch(e) {}
+
+    polls.forEach(function(p) {
+      var typeLabels = {election:'🏆 Election',poll:'📊 Poll',award:'🎓 Best Student Award',custom:'✏️ Custom'};
+      var isOpen = p.status === 'open';
+      var hasVoted = votedPolls[p.id] !== undefined;
+      var totalVotes = p.totalVotes || 0;
+
+      h += '<div class="poll-card ' + (isOpen ? 'open' : 'closed') + '">';
+      h += '<span class="poll-type-badge">' + (typeLabels[p.type] || '🗳️ Poll') + '</span>';
+      h += '<span class="status-badge ' + (isOpen ? 'status-open' : 'status-closed') + '">'
+        + (isOpen ? '🟢 Open' : '🔴 Closed') + '</span>';
+      h += '<div class="poll-title">' + escapeHtml(p.title) + '</div>';
+      if (p.description) h += '<div class="poll-desc">' + escapeHtml(p.description) + '</div>';
+      h += '<div class="poll-meta"><span>👥 ' + totalVotes + ' votes</span>'
+        + (p.endDate ? '<span>📅 Ends: ' + p.endDate + '</span>' : '') + '</div>';
+
+      if (hasVoted || !isOpen) {
+        // Show results
+        h += '<div class="result-wrap">';
+        var maxVotes = Math.max.apply(null, (p.options||[]).map(function(o){ return o.votes||0; }));
+        (p.options||[]).forEach(function(opt, i) {
+          var votes = opt.votes || 0;
+          var pct = totalVotes > 0 ? Math.round((votes/totalVotes)*100) : 0;
+          var isWinner = votes === maxVotes && maxVotes > 0;
+          var isMyVote = votedPolls[p.id] === i;
+          h += '<div class="result-row">';
+          h += '<div class="result-top"><span class="result-name">'
+            + (isMyVote ? '✅ ' : '') + escapeHtml(opt.text)
+            + (isWinner && totalVotes > 0 ? '<span class="winner-badge">🏆 Leading</span>' : '')
+            + '</span><span class="result-pct">' + pct + '%</span></div>';
+          h += '<div class="result-bar"><div class="result-fill ' + (isWinner ? 'winner' : 'normal')
+            + '" style="width:' + pct + '%"></div></div>';
+          h += '<div class="result-votes">' + votes + ' vote' + (votes!==1?'s':'') + '</div>';
+          h += '</div>';
+        });
+        h += '</div>';
+
+        if (hasVoted && isOpen) {
+          h += '<div class="already-voted">✅ You have voted! Results update live.</div>';
+        } else if (!isOpen) {
+          h += '<div class="already-voted" style="background:#2a1a1a;color:#f44336">🔴 This poll is closed.</div>';
+        }
+
+      } else {
+        // Show voting options
+        h += '<div id="opts-' + p.id + '">';
+        (p.options||[]).forEach(function(opt, i) {
+          h += '<div class="vote-option" id="opt-' + p.id + '-' + i + '" onclick="selectOption(\'' + p.id + '\',' + i + ')">'
+            + '<div class="opt-check" id="check-' + p.id + '-' + i + '"></div>'
+            + '<div class="opt-text">' + escapeHtml(opt.text) + '</div>'
+            + '</div>';
+        });
+        h += '</div>';
+        h += '<button class="vote-btn" id="vbtn-' + p.id + '" onclick="submitVote(\'' + p.id + '\')" disabled>'
+          + '🗳️ Cast Your Vote</button>';
+      }
+
+      h += '</div>';
+    });
+
+    el.innerHTML = h;
+
+  } catch(e) {
+    el.innerHTML = '<div class="empty" style="color:#f44336">❌ Could not load polls. Check connection.</div>';
+  }
+}
+
+// Track selection per poll
+var selectedOptions = {};
+
+window.selectOption = function(pollId, optIdx) {
+  // Deselect previous
+  if (selectedOptions[pollId] !== undefined) {
+    var prev = document.getElementById('opt-' + pollId + '-' + selectedOptions[pollId]);
+    var prevCheck = document.getElementById('check-' + pollId + '-' + selectedOptions[pollId]);
+    if (prev) prev.classList.remove('selected');
+    if (prevCheck) prevCheck.innerHTML = '';
+  }
+  // Select new
+  selectedOptions[pollId] = optIdx;
+  var el = document.getElementById('opt-' + pollId + '-' + optIdx);
+  var check = document.getElementById('check-' + pollId + '-' + optIdx);
+  if (el) el.classList.add('selected');
+  if (check) check.innerHTML = '✓';
+  // Enable vote button
+  var btn = document.getElementById('vbtn-' + pollId);
+  if (btn) { btn.disabled = false; btn.innerHTML = '🗳️ Cast Your Vote'; }
+};
+
+window.submitVote = async function(pollId) {
+  if (!currentUser) { showToast('⚠️ Please login first', 'error'); return; }
+  var optIdx = selectedOptions[pollId];
+  if (optIdx === undefined) { showToast('⚠️ Please select an option', 'error'); return; }
+
+  var btn = document.getElementById('vbtn-' + pollId);
+  if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Submitting...'; }
+
+  try {
+    // Get current poll data
+    var pollSnap = await getDoc(doc(db, 'polls', pollId));
+    if (!pollSnap.exists()) { showToast('❌ Poll not found', 'error'); return; }
+    var pollData = pollSnap.data();
+
+    // Check if still open
+    if (pollData.status !== 'open') { showToast('❌ This poll is now closed', 'error'); return; }
+
+    // Check if user already voted (server-side check)
+    var votersList = pollData.voters || [];
+    if (votersList.includes(currentUser.uid)) {
+      showToast('⚠️ You have already voted', 'error'); return;
+    }
+
+    // Update vote count
+    var options = pollData.options || [];
+    options[optIdx].votes = (options[optIdx].votes || 0) + 1;
+
+    await updateDoc(doc(db, 'polls', pollId), {
+      options: options,
+      totalVotes: (pollData.totalVotes || 0) + 1,
+      voters: arrayUnion(currentUser.uid)
+    });
+
+    // Save user's vote locally
+    votedPolls[pollId] = optIdx;
+
+    // Save to userVotes collection
+    try {
+      var { setDoc } = await import('https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js');
+      await setDoc(doc(db, 'userVotes', currentUser.uid), votedPolls, { merge: true });
+    } catch(e) {}
+
+    showToast('✅ Vote submitted! Thank you.', 'success');
+    // Reload to show results
+    loadPolls();
+
+  } catch(e) {
+    showToast('❌ Error: ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '🗳️ Cast Your Vote'; }
+  }
+};
+</script>
+<script>
+// Service worker registration - auto-checks for updates and reloads when a new version is ready
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js?v=10', { updateViaCache: 'none' })
+      .then(function(reg) {
+        reg.update(); // check for a new version right away
+        setInterval(function() { reg.update(); }, 30 * 60 * 1000); // re-check every 30 min while the tab is open
+      })
+      .catch(function() {});
+  });
+
+  var __swRefreshed = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (__swRefreshed) return;
+    __swRefreshed = true;
+    window.location.reload();
+  });
+}
+</script>
+</body>
+</html>

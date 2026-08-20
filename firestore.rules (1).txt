@@ -1,0 +1,81 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Change these to your real admin emails
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email in [
+          'aliyusalihu@gmail.com',
+          'admin@campusconnect.com'
+        ];
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Public read (students), admin-only write
+    match /news/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /results/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /documents/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /handouts/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /timetable/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Polls: admin creates/deletes; signed-in students may update ONLY to cast
+    // a vote on an open poll. NOTE: this still can't cheaply guarantee a student
+    // increments exactly one option by exactly one vote (Firestore rules can't
+    // loop over the options array) — a technical user could still tamper with
+    // their own vote count. Closing that fully means moving vote tallying to a
+    // Cloud Function/transaction. Flagging this as a known, lower-severity gap.
+    match /polls/{docId} {
+      allow read: if isSignedIn();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (isSignedIn() && resource.data.status == 'open');
+    }
+
+    // Tracks which polls a user has voted on — user can only write their own
+    match /userVotes/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Users can read/write only their own profile; admins can read all
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Chat: signed-in users can post, only edit/delete their own messages
+    match /messages/{msgId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.senderId == request.auth.uid;
+      allow update, delete: if isSignedIn() && (resource.data.senderId == request.auth.uid || isAdmin());
+    }
+
+    // Default deny for anything not explicitly listed above
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

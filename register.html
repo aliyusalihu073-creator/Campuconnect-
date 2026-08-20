@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - CampusConnect</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#0a0a0a,#1a1a2e);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.register-container{width:100%;max-width:400px}
+.register-box{background:#1a1a2e;border-radius:20px;padding:35px 25px;box-shadow:0 20px 60px rgba(0,0,0,0.5);text-align:center;border:1px solid #2a2a3e;animation:fadeIn 0.6s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.logo{font-size:50px;margin-bottom:10px}
+h1{color:#4caf50;font-size:22px;margin-bottom:5px}
+.subtitle{color:#999;font-size:11px;margin-bottom:20px}
+.input-group{margin:10px 0;text-align:left}
+.input-group label{color:#aaa;font-size:11px;font-weight:600;display:block;margin-bottom:3px}
+.input-group input{width:100%;padding:13px 16px;border-radius:10px;border:2px solid #333;background:#0d0d1a;color:white;font-size:13px;outline:none;transition:0.3s}
+.input-group input:focus{border-color:#4caf50;box-shadow:0 0 12px rgba(76,175,80,0.2)}
+.btn{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:0.3s;color:white}
+.btn-green{background:linear-gradient(135deg,#1B5E20,#4caf50)}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(27,94,32,0.4)}
+.btn-green:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-google{background:white;color:#333;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-google:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,0.2)}
+.btn-google img{width:20px;height:20px}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:#999;font-size:11px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#333}
+.link{color:#4caf50;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block}
+.link:hover{text-decoration:underline}
+.password-strength{height:5px;background:#333;border-radius:3px;margin-top:5px;overflow:hidden}
+.strength-bar{height:100%;width:0%;transition:0.3s;border-radius:3px}
+.strength-weak{background:#f44336}
+.strength-medium{background:#ff9800}
+.strength-strong{background:#4caf50}
+.error{color:#f44336;font-size:11px;text-align:center;margin:5px 0;padding:8px;background:rgba(244,67,54,0.1);border-radius:8px;display:none}
+.success{color:#4caf50;font-size:11px;text-align:center;margin:5px 0;padding:8px;background:rgba(76,175,80,0.1);border-radius:8px;display:none}
+.requirements{font-size:10px;color:#999;text-align:left;margin-top:5px}
+.requirements span{display:block;margin:2px 0}
+.met{color:#4caf50}
+.unmet{color:#f44336}
+.loading-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:15px}
+.loading-overlay.show{display:flex}
+.spinner{width:36px;height:36px;border:3px solid rgba(76,175,80,0.2);border-top-color:#4caf50;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p style="color:#4caf50;font-size:13px">Creating your account...</p>
+</div>
+
+<div class="register-container">
+  <div class="register-box">
+    <div class="logo">📝</div>
+    <h1>Create Account</h1>
+    <p class="subtitle">Join CampusConnect — Adamawa State Polytechnic, Yola</p>
+
+    <button class="btn btn-google" onclick="signUpWithGoogle()">
+      <img src="https://www.google.com/favicon.ico" alt="G"> Sign up with Google
+    </button>
+
+    <div class="divider">OR REGISTER WITH EMAIL</div>
+
+    <div class="input-group">
+      <label>👤 Username *</label>
+      <input type="text" id="regUser" placeholder="Choose a username">
+    </div>
+    <div class="input-group">
+      <label>📧 Email Address *</label>
+      <input type="email" id="regEmail" placeholder="Enter your email">
+    </div>
+    <div class="input-group">
+      <label>📱 Phone Number *</label>
+      <input type="tel" id="regPhone" placeholder="e.g. 08012345678">
+    </div>
+    <div class="input-group">
+      <label>🎓 Registration Number *</label>
+      <input type="text" id="regNo" placeholder="e.g. SST/NDCOM/S/2025/186">
+    </div>
+    <div class="input-group">
+      <label>🔑 Password *</label>
+      <input type="password" id="regPass" placeholder="Create a strong password" oninput="checkPasswordStrength()">
+      <div class="password-strength"><div class="strength-bar" id="strengthBar"></div></div>
+      <div class="requirements">
+        <span id="req1" class="unmet">❌ Minimum 8 characters</span>
+        <span id="req2" class="unmet">❌ At least 1 uppercase letter</span>
+        <span id="req3" class="unmet">❌ At least 1 number</span>
+        <span id="req4" class="unmet">❌ At least 1 special character</span>
+      </div>
+    </div>
+
+    <p class="error" id="regError"></p>
+    <p class="success" id="regSuccess"></p>
+    <button class="btn btn-green" id="regBtn" onclick="signUp()">📝 Create Account</button>
+    <p style="margin-top:10px;"><a href="login.html" class="link">🔐 Already have an account? Login</a></p>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification,
+         GoogleAuthProvider, signInWithPopup }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, doc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB553_waOZcKoyvIdF7NsIH7EpjjbUeP68",
+  authDomain: "campuconnect-bd52f.firebaseapp.com",
+  projectId: "campuconnect-bd52f",
+  storageBucket: "campuconnect-bd52f.firebasestorage.app",
+  messagingSenderId: "762013163609",
+  appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+function showError(msg){ var e=document.getElementById('regError'); e.innerHTML=msg; e.style.display='block'; document.getElementById('regSuccess').style.display='none'; }
+function showSuccess(msg){ var s=document.getElementById('regSuccess'); s.innerHTML=msg; s.style.display='block'; document.getElementById('regError').style.display='none'; }
+function setLoading(on){ document.getElementById('loadingOverlay').classList.toggle('show',on); document.getElementById('regBtn').disabled=on; }
+
+window.checkPasswordStrength = function() {
+  var pass = document.getElementById('regPass').value;
+  var r1=pass.length>=8, r2=/[A-Z]/.test(pass), r3=/[0-9]/.test(pass), r4=/[!@#$%^&*(),.?":{}|<>]/.test(pass);
+  var score = (r1?1:0)+(r2?1:0)+(r3?1:0)+(r4?1:0);
+  var bar = document.getElementById('strengthBar');
+  bar.style.width = (score*25)+'%';
+  bar.className = 'strength-bar ' + (score<=1?'strength-weak':score<=3?'strength-medium':'strength-strong');
+  document.getElementById('req1').className=r1?'met':'unmet'; document.getElementById('req1').innerHTML=(r1?'✅':'❌')+' Minimum 8 characters';
+  document.getElementById('req2').className=r2?'met':'unmet'; document.getElementById('req2').innerHTML=(r2?'✅':'❌')+' At least 1 uppercase';
+  document.getElementById('req3').className=r3?'met':'unmet'; document.getElementById('req3').innerHTML=(r3?'✅':'❌')+' At least 1 number';
+  document.getElementById('req4').className=r4?'met':'unmet'; document.getElementById('req4').innerHTML=(r4?'✅':'❌')+' At least 1 special character';
+};
+
+window.signUp = async function() {
+  var u=document.getElementById('regUser').value.trim();
+  var e=document.getElementById('regEmail').value.trim();
+  var p=document.getElementById('regPhone').value.trim();
+  var r=document.getElementById('regNo').value.trim();
+  var pw=document.getElementById('regPass').value;
+
+  if (!u||!e||!p||!r||!pw) { showError('⚠️ Please fill all fields'); return; }
+  if (pw.length<8||!/[A-Z]/.test(pw)||!/[0-9]/.test(pw)||!/[!@#$%^&*(),.?":{}|<>]/.test(pw)) {
+    showError('⚠️ Password does not meet all requirements'); return;
+  }
+
+  setLoading(true);
+  try {
+    var cred = await createUserWithEmailAndPassword(auth, e, pw);
+    await setDoc(doc(db,'users',cred.user.uid), {
+      username:u, email:e, phone:p, regNo:r, createdAt:new Date()
+    });
+    await sendEmailVerification(cred.user);
+    showSuccess('✅ Account created! Verification email sent to '+e+'. Check your inbox then login.');
+    setTimeout(function(){ window.location.href='login.html'; }, 3000);
+  } catch(err) {
+    var msg = err.code==='auth/email-already-in-use' ? '❌ This email is already registered. Try logging in.'
+            : err.code==='auth/invalid-email' ? '❌ Invalid email address.'
+            : '❌ '+err.message;
+    showError(msg);
+  }
+  setLoading(false);
+};
+
+window.signUpWithGoogle = async function() {
+  setLoading(true);
+  try {
+    var result = await signInWithPopup(auth, provider);
+    if (result.user) {
+      await setDoc(doc(db,'users',result.user.uid), {
+        username: result.user.displayName||'Student',
+        email: result.user.email, phone:'', regNo:'',
+        photoURL: result.user.photoURL||'', createdAt:new Date()
+      }, { merge:true });
+      window.location.href = 'index.html';
+    }
+  } catch(err) {
+    showError('❌ Google sign-up failed: '+err.message);
+    setLoading(false);
+  }
+};
+</script>
+<script>
+// Service worker registration - auto-checks for updates and reloads when a new version is ready
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js?v=10', { updateViaCache: 'none' })
+      .then(function(reg) {
+        reg.update(); // check for a new version right away
+        setInterval(function() { reg.update(); }, 30 * 60 * 1000); // re-check every 30 min while the tab is open
+      })
+      .catch(function() {});
+  });
+
+  var __swRefreshed = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (__swRefreshed) return;
+    __swRefreshed = true;
+    window.location.reload();
+  });
+}
+</script>
+</body>
+</html>
