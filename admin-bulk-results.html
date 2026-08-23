@@ -96,7 +96,7 @@ const __guardApp = initializeApp({
   appId: "1:762013163609:web:7f565fbde05a4ad35ed148"
 }, "authGuard");
 const __guardAuth = getAuth(__guardApp);
-const ADMIN_EMAILS = ['aliyusalihu@gmail.com', 'admin@campusconnect.com', 'aliyusalihu073@gmail.com'];
+const ADMIN_EMAILS = ['aliyusalihu073@gmail.com', 'admin@campusconnect.com', 'aliyusalihu073@gmail.com'];
 onAuthStateChanged(__guardAuth, function(user) {
   var gate = document.getElementById('authGate');
   if (!user) { window.location.href = 'login.html'; return; }
